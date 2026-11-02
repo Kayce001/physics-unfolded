@@ -1,5 +1,5 @@
 // Chapter 3: circular motion and gravitation, on the shared book.
-import { startBook } from '../engine/book.js';
+import { startBook } from '../engine/book.js?v=20261102-nav';
 import { buildWorld } from './world.js';
 import { PAGES, PLATES, CH } from './pages.js';
 import * as M from './model.js';

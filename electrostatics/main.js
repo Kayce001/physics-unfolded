@@ -1,5 +1,5 @@
 // Chapter 9: electrostatics, on the shared book.
-import { startBook } from '../engine/book.js';
+import { startBook } from '../engine/book.js?v=20261102-nav';
 import { buildWorld } from './world.js';
 import { PAGES, PLATES, CH, RANGE } from './pages.js';
 import * as M from './model.js';

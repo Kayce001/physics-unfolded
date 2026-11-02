@@ -1,5 +1,5 @@
 // Chapter 5: momentum and impulse, on the shared book.
-import { startBook } from '../engine/book.js';
+import { startBook } from '../engine/book.js?v=20261102-nav';
 import { buildWorld } from './world.js';
 import { PAGES, PLATES, CH, COLL_T } from './pages.js';
 import * as M from './model.js';

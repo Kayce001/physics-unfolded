@@ -1,5 +1,5 @@
 // Chapter 1: kinematics, on the shared book.
-import { startBook } from '../engine/book.js';
+import { startBook } from '../engine/book.js?v=20261102-nav';
 import { buildWorld } from './world.js';
 import { PAGES, PLATES, KR, KC } from './pages.js';
 import * as M from './model.js';
