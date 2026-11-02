@@ -24,10 +24,10 @@ startBook({
       case 'sphere': { const r = M.gaussR(s.sweep.t, M.SPH.a, M.SPH.b); return `r ${f(r * 100, 1)} cm   E ${f(M.sphE(r), 0)} V/m\nC ${f(M.SPH.C * 1e12)} pF at ${M.V0} V`; }
       case 'coax': { const r = M.gaussR(s.sweep.t, M.CYL.a, M.CYL.b); return `r ${f(r * 100, 1)} cm   E ${f(M.cylE(r), 0)} V/m\nC ${f(M.CYL.C * 1e12)} pF at ${M.V0} V`; }
       case 'energy': { const r = M.filling(s.fill.t); return `q ${f(r.q * 1e12, 0)} pC   ΔV ${f(r.V, 1)} V\nU = q²/2C = ${f(r.U * 1e9)} nJ`; }
-      case 'circuits': return `series: C_eq ${f(M.SER.C * 1e6)} µF   Q ${f(M.SER.Q * 1e6, 0)} µC\nparallel: C_eq ${f(M.PAR.C * 1e6, 0)} µF   Q ${f(M.PAR.Q * 1e6, 0)} µC`;
-      case 'slab': { const x = M.fillOf(s.slide.t), r = M.slab(x, false); return `slab ${f(x * 100, 0)} % in   E ${f(r.E, 0)} V/m\nΔV ${f(r.V, 1)} V   C ${f(r.C * 1e12)} pF`; }
-      case 'compare': { const x = M.fillOf(s.slide.t), a = M.slab(x, true), b = M.slab(x, false); return `connected: Q ${f(a.Q * 1e12, 0)} pC  ΔV ${f(a.V, 0)} V\ndisconnected: Q ${f(b.Q * 1e12, 0)} pC  ΔV ${f(b.V, 1)} V`; }
-      case 'conductor': { const x = M.probeX(s.clock); return `probe x ${f(x * 100, 1)} cm\nE ${f(M.condAxisE(x), 0)} V/m`; }
+      case 'circuits': return `串联: C_eq ${f(M.SER.C * 1e6)} µF   Q ${f(M.SER.Q * 1e6, 0)} µC\n平行: C_eq ${f(M.PAR.C * 1e6, 0)} µF   Q ${f(M.PAR.Q * 1e6, 0)} µC`;
+      case 'slab': { const x = M.fillOf(s.slide.t), r = M.slab(x, false); return `薄片 ${f(x * 100, 0)} % in   E ${f(r.E, 0)} V/m\nΔV ${f(r.V, 1)} V   C ${f(r.C * 1e12)} pF`; }
+      case 'compare': { const x = M.fillOf(s.slide.t), a = M.slab(x, true), b = M.slab(x, false); return `连接电源: Q ${f(a.Q * 1e12, 0)} pC  ΔV ${f(a.V, 0)} V\n断开电源: Q ${f(b.Q * 1e12, 0)} pC  ΔV ${f(b.V, 1)} V`; }
+      case 'conductor': { const x = M.probeX(s.clock); return `探测点 x ${f(x * 100, 1)} cm\nE ${f(M.condAxisE(x), 0)} V/m`; }
     }
     return '';
   },
@@ -41,7 +41,7 @@ startBook({
     const fi = M.filling(s.fill.t), Rf = R.fill, X = v => CH.sx(v, Rf.x0, Rf.x1), Y = v => CH.sy(v, Rf.y0, Rf.y1), qp = fi.q * 1e12;
     put('fill', Rf, qp, fi.V);
     q('path[data-area="fill"]').forEach(p => p.setAttribute('d', `M${X(0)},${Y(0)}L${X(qp)},${Y(0)}L${X(qp)},${Y(fi.V)}Z`));
-    q('#filllive').forEach(el => { el.textContent = `shaded area ½·${f(qp, 0)} pC·${f(fi.V, 1)} V = ${f(fi.U * 1e9)} nJ = U`; });
+    q('#filllive').forEach(el => { el.textContent = `阴影面积 ½·${f(qp, 0)} pC·${f(fi.V, 1)} V = ${f(fi.U * 1e9)} nJ = U`; });
     const x = M.fillOf(s.slide.t);
     put('slab', R.slab, x, M.slab(x, false).E);
     put('enA', R.energy, x, M.slab(x, true).U / M.U0); put('enB', R.energy, x, M.slab(x, false).U / M.U0);

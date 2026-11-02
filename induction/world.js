@@ -44,8 +44,8 @@ export function buildWorld(E) {
 
   // ---------- kit ----------
   const onTop = a => { a.userData.arrow.shaft.material.transparent = true; return a; };
-  const bArrow = (g, r = 0.02, name = 'Magnetic field') => onTop(arrow(g, 'dark', { r, head: 0.11, headR: 0.055, name, tone: 'hi' }));
-  const iArrow = (g, name = 'Induced current') => onTop(arrow(g, 'ink', { r: 0.02, head: 0.11, headR: 0.055, name }));
+  const bArrow = (g, r = 0.02, name = "磁场") => onTop(arrow(g, 'dark', { r, head: 0.11, headR: 0.055, name, tone: 'hi' }));
+  const iArrow = (g, name = "感应电流") => onTop(arrow(g, 'ink', { r: 0.02, head: 0.11, headR: 0.055, name }));
   const flatMat = (pal, opacity) => { const m = shadeMat(pal, { opacity }); m.side = THREE.DoubleSide; return m; };
   const tipOf = (a, k = 0.16) => a.visible ? a.localToWorld(V(0, a.userData.arrow.shaft.scale.y + k, 0)) : null;
   const rodGeo = new THREE.CylinderGeometry(1, 1, 1, 12);
@@ -68,7 +68,7 @@ export function buildWorld(E) {
   };
   // a field line as a thin tube with an arrowhead part-way along (noEdge: it would outline a cage)
   const headGeo = new THREE.ConeGeometry(0.05, 0.14, 14);
-  function fieldLine(g, pts, { r = 0.011, mat, at = [0.5], name = 'Field lines', headScale = 1 } = {}) {
+  function fieldLine(g, pts, { r = 0.011, mat, at = [0.5], name = "场线", headScale = 1 } = {}) {
     if (pts.length < 3) return null;
     const curve = new THREE.CatmullRomCurve3(pts);
     const t = part(g, new THREE.TubeGeometry(curve, Math.min(200, pts.length * 2), r, 6), { tone: 'lo', name, mat });
@@ -82,7 +82,7 @@ export function buildWorld(E) {
   }
   // dashes: a field line or an arrow drawn as short rods, for the induced field
   const dashGeo = new THREE.CylinderGeometry(1, 1, 1, 8);
-  function dashedCurve(g, pts, { r = 0.012, dash = 0.09, gap = 0.07, name = 'Induced field', at = [0.5] } = {}) {
+  function dashedCurve(g, pts, { r = 0.012, dash = 0.09, gap = 0.07, name = "感应场", at = [0.5] } = {}) {
     const curve = new THREE.CatmullRomCurve3(pts), L = curve.getLength(), out = [];
     for (let s = 0; s + dash < L; s += dash + gap) {
       const a = curve.getPointAt(s / L), b = curve.getPointAt((s + dash) / L);
@@ -93,7 +93,7 @@ export function buildWorld(E) {
     const heads = at.map(u => { const h = part(g, headGeo, { tone: 'mid', pal: 'dark', name }); h.position.copy(curve.getPointAt(u)); h.userData.q = [curve.getTangentAt(u), curve.getTangentAt(u).negate()].map(t => new THREE.Quaternion().setFromUnitVectors(Y_, t)); h.quaternion.copy(h.userData.q[0]); h.userData.noEdge = true; return h; });
     return { dashes: out, heads, setSign(sg) { for (const h of heads) h.quaternion.copy(h.userData.q[sg >= 0 ? 0 : 1]); } };
   }
-  function dashArrow(g, name = 'Induced field', n = 7) {
+  function dashArrow(g, name = "感应场", n = 7) {
     const grp = new THREE.Group(); g.add(grp);
     const mat = shadeMat('dark').clone(); mat.depthTest = false;
     const ds = Array.from({ length: n }, () => { const m = part(grp, dashGeo, { tone: 'mid', pal: 'dark', name, mat }); m.renderOrder = 10; return m; });
@@ -157,7 +157,7 @@ export function buildWorld(E) {
   }
   // a bar magnet along x: the near pole at local x = 0, the far one at len (in metres × D)
   const polesOf = nearIsN => nearIsN ? [0, M.MAG.len] : [M.MAG.len, 0];
-  function magnet(g, D, nearIsN, name = 'Bar magnet') {
+  function magnet(g, D, nearIsN, name = "条形磁铁") {
     const mg = new THREE.Group(); g.add(mg);
     const L = M.MAG.len * D, w = M.MAG.w * D;
     part(mg, box(L / 2, w, w, 0.01), { tone: 'hi', pal: nearIsN ? 'dark' : 'paper', pos: [L / 4, 0, 0], name });
@@ -193,13 +193,13 @@ export function buildWorld(E) {
   // ======================================================================================
   // 0 · a bar magnet slides toward a loop and back: flux and Faraday's law
   const X0 = STATIONS.flux, D0 = DRAW.flux, CY0 = 1.7, c0 = V(X0, CY0, 0), A0 = M.FLUX.a * D0;
-  const g0 = asm('flux', root, { title: 'Flux through the loop', sub: 'Φ = ∫B·dA, summed over little patches dA' });
-  ring(g0, c0, A0, 0.024, 'Wire loop');
+  const g0 = asm('flux', root, { title: "通过环路的通量", sub: "Φ = ∫B·dA，对小块 dA 求和" });
+  ring(g0, c0, A0, 0.024, "线环");
   const mag0 = magnet(g0, D0, true);
   const lineMat0 = shadeMat('dark', { opacity: 0.6 });
   magnetLines(mag0, D0, true, { thetas: [18, 40, 70, 110], phis: [0, 90, 180, 270], box: 0.2, mat: lineMat0 });
   g0.userData.focus = () => ({ target: [X0 + 0.6, CY0, 0], radius: 1.3 });
-  const area0 = arrow(g0, 'ink', { r: 0.014, head: 0.09, headR: 0.042, name: 'Area vector' });
+  const area0 = arrow(g0, 'ink', { r: 0.014, head: 0.09, headR: 0.042, name: "面积矢量" });
   setArrow(area0, c0, V(-0.75, 0, 0));
   label('vec', '<i>A</i>', () => c0.clone().add(V(-0.95, 0.02, 0)));
   const I0arr = ringArrows(g0);
@@ -207,11 +207,11 @@ export function buildWorld(E) {
   const bind0 = dashArrow(g0);
   label('vec', grey('<i>B</i><sub>ind</sub>'), () => bind0.tip(-0.2));
   // breakdown: B·dA at patches across the loop's disc, the disc itself
-  const disc0 = part(g0, (() => { const d = new THREE.CircleGeometry(A0, 48); d.rotateY(-Math.PI / 2); return d; })(), { tone: 'lo', name: 'Flat surface across the loop', mat: flatMat('board', 0.55), pos: c0.toArray() });
+  const disc0 = part(g0, (() => { const d = new THREE.CircleGeometry(A0, 48); d.rotateY(-Math.PI / 2); return d; })(), { tone: 'lo', name: "整个环路表面平坦", mat: flatMat('board', 0.55), pos: c0.toArray() });
   disc0.userData.noEdge = true;
   const patches0 = [[0, 0]];
   for (const [rr, n] of [[0.45, 6], [0.85, 12]]) for (let i = 0; i < n; i++) { const t = 2 * Math.PI * (i + 0.5 * (n === 12)) / n; patches0.push([rr * A0 * Math.cos(t), rr * A0 * Math.sin(t)]); }
-  const dA0 = patches0.map(([y, z]) => ({ y, z, a: bArrow(g0, 0.012, 'B·dA at each patch') }));
+  const dA0 = patches0.map(([y, z]) => ({ y, z, a: bArrow(g0, 0.012, "每个补丁的 B·dA") }));
   label('tick', '<i>B</i>·<i>dA</i>', when(g0, () => tipOf(dA0[0].a)));
   label('tick', 'Φ = ∫<i>B</i>·<i>dA</i>', when(g0, () => c0.clone().add(V(0.05, -A0 - 0.3, 0))));
 
@@ -220,12 +220,12 @@ export function buildWorld(E) {
   const X1 = STATIONS.lenz, D1 = DRAW.lenz, A1 = M.LENZ.a * D1;
   const LZ = M.CASES.map((c, i) => {
     const o = V(X1 + (i % 2 ? 0.9 : -3.3), i < 2 ? 3.15 : 1.05, 0);
-    const g = asm(c.key, root, { title: c.name, sub: c.move === 'in' ? 'more flux: the loop’s field pushes back' : 'less flux: the loop’s field tries to keep it' });
-    ring(g, o, A1, 0.022, 'Wire loop');
+    const g = asm(c.key, root, { title: c.name, sub: c.move === 'in' ? "更多通量：环路的场向后推" : "更少的通量：环路的场试图保持它" });
+    ring(g, o, A1, 0.022, "线环");
     const mg = magnet(g, D1, c.pole === 'N');
     magnetLines(mg, D1, c.pole === 'N', { thetas: [22, 48, 80, 118], phis: [0, 180], box: 0.16, mat: shadeMat('dark', { opacity: 0.8 }), r: 0.01 });
-    const B = bArrow(g, 0.018, 'Magnet’s field at the loop'), ind = dashArrow(g), cur = ringArrows(g);
-    const v = arrow(g, 'ink', { r: 0.014, head: 0.09, headR: 0.042, name: 'Velocity' });
+    const B = bArrow(g, 0.018, "环路中的磁铁磁场"), ind = dashArrow(g), cur = ringArrows(g);
+    const v = arrow(g, 'ink', { r: 0.014, head: 0.09, headR: 0.042, name: "速度" });
     label('board', c.name, () => o.clone().add(V(-0.75, 0.82, 0)));
     label('vec', grey('<i>B</i>'), () => tipOf(B, 0.14));
     label('vec', grey('<i>B</i><sub>ind</sub>'), () => ind.tip(-0.22));
@@ -243,50 +243,50 @@ export function buildWorld(E) {
   // 2a · two coils on one axis: a changing current in one induces a current in the other
   const X2 = STATIONS.mutual, D2 = DRAW.mutual, A2 = M.COILS.a * D2, y2 = 2.95;
   const c21 = V(X2 - M.COILS.sep * D2 / 2, y2, 0), c22 = V(X2 + M.COILS.sep * D2 / 2, y2, 0);
-  const gC = asm('mutual', root, { title: 'Two coils', sub: 'coil 1’s changing field threads coil 2' });
-  ring(gC, c21, A2, 0.06, 'Coil 1 (100 turns, driven)');
+  const gC = asm('mutual', root, { title: "两个线圈", sub: "线圈 1 变化的磁场穿过线圈 2" });
+  ring(gC, c21, A2, 0.06, "线圈 1（100 匝，驱动）");
   ring(gC, c22, A2, 0.06, 'Coil 2 (100 turns)');
   const lineMatC = shadeMat('dark', { opacity: 0.8 });
   const linesC = new THREE.Group(); linesC.position.copy(c21); gC.add(linesC);
   for (const pts of ringLines(M.COILS.a, [0.25, 0.55, 0.8].flatMap(k => [k, -k]).map(k => k * M.COILS.a), 0.13))
     fieldLine(linesC, pts.filter((_, j) => j % 2 === 0).map(p => V(...p).multiplyScalar(D2)), { r: 0.01, mat: lineMatC, at: [0.12] });
-  const I1C = ringArrows(gC), I2C = ringArrows(gC), B1C = bArrow(gC, 0.02, 'Coil 1’s field at coil 2'), indC = dashArrow(gC);
+  const I1C = ringArrows(gC), I2C = ringArrows(gC), B1C = bArrow(gC, 0.02, "线圈 1 线圈 2 处的磁场"), indC = dashArrow(gC);
   label('vec', '<i>I</i><sub>1</sub>(<i>t</i>)', () => tipOf(I1C.a[0], 0.14)?.add(V(-0.25, 0.05, 0)));
   label('vec', '<i>I</i><sub>2</sub>', () => tipOf(I2C.a[0], 0.14));
   label('vec', grey('<i>B</i><sub>1</sub>'), () => tipOf(B1C, 0.14));
   label('vec', grey('<i>B</i><sub>ind</sub>'), () => indC.tip(-0.22));
   gC.userData.focus = () => ({ target: [X2, y2, 0], radius: 1.25 });
-  label('tick', 'coil 1', () => c21.clone().add(V(-0.1, -A2 - 0.32, 0)));
-  label('tick', 'coil 2', () => c22.clone().add(V(0.5, -A2 - 0.32, 0)));
-  const discC = part(gC, (() => { const d = new THREE.CircleGeometry(A2 - 0.05, 48); d.rotateY(Math.PI / 2); return d; })(), { tone: 'lo', name: 'Coil 2’s area', mat: flatMat('board', 0.55), pos: c22.toArray() });
+  label('tick', "线圈1", () => c21.clone().add(V(-0.1, -A2 - 0.32, 0)));
+  label('tick', "线圈2", () => c22.clone().add(V(0.5, -A2 - 0.32, 0)));
+  const discC = part(gC, (() => { const d = new THREE.CircleGeometry(A2 - 0.05, 48); d.rotateY(Math.PI / 2); return d; })(), { tone: 'lo', name: "线圈2的面积", mat: flatMat('board', 0.55), pos: c22.toArray() });
   discC.userData.noEdge = true;
   label('tick', 'Φ<sub>2</sub> = <i>MI</i><sub>1</sub>/<i>N</i><sub>2</sub>', when(gC, () => c22.clone().add(V(0.9, A2 + 0.3, 0))));
 
   // 2b · two windings on an iron rod
   const DC = DRAW.core, yC = 0.95, RC = M.CORE.r * DC, LC = M.CORE.len * DC;
-  const gK = asm('core', root, { title: 'An iron core', sub: 'the iron carries the flux from one winding to the other' });
-  part(gK, xAxis(new THREE.CylinderGeometry(RC, RC, LC, 40)), { tone: 'hi', pal: 'dark', pos: [X2, yC, 0], name: 'Iron core', mat: shadeMat('dark', { opacity: 0.55 }) });
+  const gK = asm('core', root, { title: "一个铁芯", sub: "铁将磁通从一个绕组传送到另一个绕组" });
+  part(gK, xAxis(new THREE.CylinderGeometry(RC, RC, LC, 40)), { tone: 'hi', pal: 'dark', pos: [X2, yC, 0], name: "铁芯", mat: shadeMat('dark', { opacity: 0.55 }) });
   const prim = new THREE.Group(); gK.add(prim);
   helix(prim, V(X2 + 0.3, yC, 0), V(X2 + 1.3, yC, 0), RC + 0.04, 10, 0.022, 'Primary (200 turns)');
   path(prim, [V(X2 + 0.3, yC + RC + 0.04, 0), V(X2 + 0.3, yC + 0.45, 0)]); path(prim, [V(X2 + 1.3, yC + RC + 0.04, 0), V(X2 + 1.3, yC + 0.45, 0)]);
   const sec = new THREE.Group(); sec.userData = { home: V(), ex: V(0, 0.75, 0) }; gK.add(sec);
   helix(sec, V(X2 - 1.3, yC, 0), V(X2 - 0.6, yC, 0), RC + 0.04, 5, 0.022, 'Secondary (100 turns)');
   path(sec, [V(X2 - 1.3, yC + RC + 0.04, 0), V(X2 - 1.3, yC + 0.45, 0)]); path(sec, [V(X2 - 0.6, yC + RC + 0.04, 0), V(X2 - 0.6, yC + 0.45, 0)]);
-  const BK = bArrow(gK, 0.024, 'Field in the iron'), indK = dashArrow(gK), I1K = iArrow(gK, 'Primary current'), I2K = iArrow(gK);
+  const BK = bArrow(gK, 0.024, "铁田里"), indK = dashArrow(gK), I1K = iArrow(gK, "初级电流"), I2K = iArrow(gK);
   label('vec', grey('<i>B</i>(<i>t</i>)'), () => tipOf(BK, 0)?.add(V(0, -0.33, 0)));
   label('vec', grey('<i>B</i><sub>ind</sub>'), () => indK.tip(-0.32));
   gK.userData.focus = () => ({ target: [X2, yC + 0.25, 0], radius: 1.45 });
   label('vec', '<i>I</i>(<i>t</i>)', () => tipOf(I1K, 0.14));
-  label('vec', '<i>I</i><sub>ind</sub>', () => tipOf(I2K, 0.14));
-  label('tick', 'iron', () => V(X2 - 0.05, yC - RC - 0.25, 0.2));
-  label('tick', 'Φ = <i>BA</i> through every turn', when(gK, () => V(X2 - 0.2, yC + RC + 0.45, 0)));
+  label('vec', "<i>I</i><sub>ind</sub>", () => tipOf(I2K, 0.14));
+  label('tick', "铁", () => V(X2 - 0.05, yC - RC - 0.25, 0.2));
+  label('tick', "每转 Φ = <i>BA</i>", when(gK, () => V(X2 - 0.2, yC + RC + 0.45, 0)));
 
   // ======================================================================================
   // 3 · a rectangular loop moving away from a long straight wire
   const X3 = STATIONS.wire, D3 = DRAW.wire, yW = 3.7, b3 = M.WIRE.b * D3, a3 = M.WIRE.a * D3;
-  const g3 = asm('wire', root, { title: 'A loop leaving a wire', sub: 'Φ = ∫B b dr, with B falling as 1/r' });
-  rod(g3, V(X3 - 3.1, yW, 0), V(X3 + 2.4, yW, 0), 0.035, 'ink', 'Long straight wire (50 A)');
-  const Iw = iArrow(g3, 'Long straight wire (50 A)'); setArrow(Iw, V(X3 - 3.05, yW + 0.15, 0), V(0.6, 0, 0));
+  const g3 = asm('wire', root, { title: "留下一条线的环", sub: "Φ = ∫B b dr，其中 B 为 1/r" });
+  rod(g3, V(X3 - 3.1, yW, 0), V(X3 + 2.4, yW, 0), 0.035, 'ink', "长直线 (50 A)");
+  const Iw = iArrow(g3, "长直线 (50 A)"); setArrow(Iw, V(X3 - 3.05, yW + 0.15, 0), V(0.6, 0, 0));
   label('vec', '<i>I</i> = 50 A', () => V(X3 - 2.75, yW + 0.45, 0));
   const rows3 = [[0.015, 1], [0.03, 1], [0.055, 1], [0.015, -1], [0.035, -1], [0.07, -1], [0.11, -1], [0.16, -1], [0.22, -1]];
   const mk3 = [];
@@ -294,9 +294,9 @@ export function buildWorld(E) {
   bMarkers(g3, mk3);
   label('vec', grey('<i>B</i>'), () => V(X3 - 2.5, yW - 0.8, 0));
   const loop3 = new THREE.Group(); g3.add(loop3);
-  path(loop3, [V(-b3 / 2, 0, 0), V(b3 / 2, 0, 0), V(b3 / 2, -a3, 0), V(-b3 / 2, -a3, 0), V(-b3 / 2, 0, 0)], 0.026, 'ink', 'Moving loop');
-  for (const p of [V(-b3 / 2, 0, 0), V(b3 / 2, 0, 0), V(b3 / 2, -a3, 0), V(-b3 / 2, -a3, 0)]) part(loop3, new THREE.SphereGeometry(0.026, 12, 8), { tone: 'hi', pal: 'ink', pos: p.toArray(), name: 'Moving loop' });
-  const I3 = rectArrows(g3), v3 = arrow(g3, 'ink', { r: 0.014, head: 0.09, headR: 0.042, name: 'Velocity' });
+  path(loop3, [V(-b3 / 2, 0, 0), V(b3 / 2, 0, 0), V(b3 / 2, -a3, 0), V(-b3 / 2, -a3, 0), V(-b3 / 2, 0, 0)], 0.026, 'ink', "移动循环");
+  for (const p of [V(-b3 / 2, 0, 0), V(b3 / 2, 0, 0), V(b3 / 2, -a3, 0), V(-b3 / 2, -a3, 0)]) part(loop3, new THREE.SphereGeometry(0.026, 12, 8), { tone: 'hi', pal: 'ink', pos: p.toArray(), name: "移动循环" });
+  const I3 = rectArrows(g3), v3 = arrow(g3, 'ink', { r: 0.014, head: 0.09, headR: 0.042, name: "速度" });
   label('vec', '<i>I</i>', () => tipOf(I3.sides[3].A, 0.14));
   label('vec', '<i>v</i>', () => tipOf(v3, 0.12));
   const bind3 = new THREE.Group(); g3.add(bind3);
@@ -304,7 +304,7 @@ export function buildWorld(E) {
     const k = r * 0.6; seg.push(-k, -k, 0, k, k, 0, -k, k, 0, k, -k, 0); lines(bind3, seg, '#55555b'); }
   label('vec', grey('<i>B</i><sub>ind</sub>'), () => bind3.visible ? bind3.position.clone().add(V(0.38, 0, 0)) : null);
   // breakdown: strips b·dr across the loop, shaded by the field in each
-  const strips3 = Array.from({ length: 8 }, () => { const m = part(g3, new THREE.PlaneGeometry(1, 1), { tone: 'lo', name: 'Strips b·dr', mat: flatMat('dark', 0.3) }); m.userData.noEdge = true; return m; });
+  const strips3 = Array.from({ length: 8 }, () => { const m = part(g3, new THREE.PlaneGeometry(1, 1), { tone: 'lo', name: "条b·dr", mat: flatMat('dark', 0.3) }); m.userData.noEdge = true; return m; });
   label('tick', '<i>dA</i> = <i>b dr</i>', when(g3, () => loop3.position.clone().add(V(-b3 / 2 - 0.1, -a3 / 16, 0.05))));
   label('tick', '<i>r</i>', () => loop3.position.clone().add(V(b3 / 2 + 0.35, 0.5 * (yW - loop3.position.y), 0)));
   g3.userData.focus = () => ({ target: [X3, loop3.position.y - a3 / 2 + 0.3, 0], radius: 1.5 });
@@ -313,46 +313,46 @@ export function buildWorld(E) {
   // ======================================================================================
   // 4 · a metal bar moving through a field: the charges separate
   const X4 = STATIONS.bar, D4 = DRAW.bar, yB = 1.75, L4 = M.BAR.L * D4;
-  const g4 = asm('bar', root, { title: 'A moving metal bar', sub: 'qv×B pushes charge until qE balances it' });
+  const g4 = asm('bar', root, { title: "移动的金属棒", sub: "qv×B 推动电荷直到 qE 平衡它" });
   { const mk = []; for (let i = 0; i < 8; i++) for (let j = 0; j < 6; j++) mk.push({ p: V(X4 - 1.75 + i * 0.5, 0.5 + j * 0.5, -0.1), r: 0.08 }); bMarkers(g4, mk); }
   label('vec', grey('<i>B</i>'), () => V(X4 - 2.2, 3.05, 0));
   const bar4 = new THREE.Group(); g4.add(bar4);
-  part(bar4, box(0.13, L4, 0.13, 0.02), { tone: 'hi', name: 'Metal bar' });
+  part(bar4, box(0.13, L4, 0.13, 0.02), { tone: 'hi', name: "金属棒" });
   const plus4 = marks(bar4, RED, 8), minus4 = marks(bar4, BLUE, 8);
-  const E4 = onTop(arrow(bar4, 'blue', { r: 0.02, head: 0.1, headR: 0.05, name: 'Electric field in the bar' }));
-  const v4 = arrow(g4, 'ink', { r: 0.016, head: 0.1, headR: 0.048, name: 'Velocity' });
+  const E4 = onTop(arrow(bar4, 'blue', { r: 0.02, head: 0.1, headR: 0.05, name: "导体棒内的电场" }));
+  const v4 = arrow(g4, 'ink', { r: 0.016, head: 0.1, headR: 0.048, name: "速度" });
   label('vec blue', '<i>E</i>', () => tipOf(E4, 0.1)?.add(V(0.22, 0.12, 0)));
   label('vec', '<i>v</i>', () => tipOf(v4, 0.12));
   label('tick', '<i>L</i>', () => bar4.localToWorld(V(-0.18, -L4 / 4, 0)));
   g4.userData.focus = () => ({ target: [bar4.position.x + 0.4, yB, 0], radius: 1.5 });
   // breakdown: one + charge in the bar with its two forces
-  const q4 = part(bar4, new THREE.SphereGeometry(0.06, 16, 12), { tone: 'hi', pal: 'red', pos: [0, 0.35, 0.07], name: 'A charge in the bar' });
-  const fm4 = onTop(arrow(bar4, 'ink', { r: 0.016, head: 0.09, headR: 0.045, name: 'Magnetic force qv×B' })), fe4 = onTop(arrow(bar4, 'ink', { r: 0.016, head: 0.09, headR: 0.045, name: 'Electric force qE' }));
+  const q4 = part(bar4, new THREE.SphereGeometry(0.06, 16, 12), { tone: 'hi', pal: 'red', pos: [0, 0.35, 0.07], name: "导体棒收费" });
+  const fm4 = onTop(arrow(bar4, 'ink', { r: 0.016, head: 0.09, headR: 0.045, name: "磁力qv×B" })), fe4 = onTop(arrow(bar4, 'ink', { r: 0.016, head: 0.09, headR: 0.045, name: "电力 qE" }));
   label('tick', '<i>q</i><i>v</i>×<i>B</i>', when(g4, () => tipOf(fm4, 0.05)?.add(V(-0.12, 0, 0))));
   label('tick', '<i>q</i><i>E</i>', when(g4, () => tipOf(fe4, 0.05)?.add(V(-0.12, -0.05, 0))));
 
   // ======================================================================================
   // 5 · a loop crossing a field region
   const X5 = STATIONS.crossing, D5 = DRAW.crossing, xR0 = X5 - M.CROSS.W * D5 / 2, w5 = M.CROSS.w * D5, h5 = M.CROSS.h * D5, y5 = 1.75;
-  const g5 = asm('crossing', root, { title: 'A loop crossing a field', sub: 'each side in the field carries BLv' });
+  const g5 = asm('crossing', root, { title: "穿过磁场的线框", sub: "场上双方都携带 BLv" });
   { const mk = []; for (let i = 0; i < 5; i++) for (let j = 0; j < 4; j++) mk.push({ p: V(xR0 + 0.2 + i * 0.5, y5 - 0.75 + j * 0.5, -0.06), r: 0.08 }); bMarkers(g5, mk);
     const x1 = xR0 + M.CROSS.W * D5, yb = y5 - 0.95, yt = y5 + 0.95; lines(g5, [xR0, yb, -0.06, x1, yb, -0.06, x1, yb, -0.06, x1, yt, -0.06, x1, yt, -0.06, xR0, yt, -0.06, xR0, yt, -0.06, xR0, yb, -0.06], '#a6a6ac'); }
   label('vec', grey('<i>B</i>'), () => V(xR0 + 0.05, y5 + 1.18, 0));
   const loop5 = new THREE.Group(); g5.add(loop5);
-  path(loop5, [V(-w5, h5 / 2, 0), V(0, h5 / 2, 0), V(0, -h5 / 2, 0), V(-w5, -h5 / 2, 0), V(-w5, h5 / 2, 0)], 0.026, 'ink', 'Moving loop');
-  for (const p of [V(-w5, h5 / 2, 0), V(0, h5 / 2, 0), V(0, -h5 / 2, 0), V(-w5, -h5 / 2, 0)]) part(loop5, new THREE.SphereGeometry(0.026, 12, 8), { tone: 'hi', pal: 'ink', pos: p.toArray(), name: 'Moving loop' });
-  const I5 = rectArrows(g5), v5 = arrow(g5, 'ink', { r: 0.014, head: 0.09, headR: 0.042, name: 'Velocity' });
+  path(loop5, [V(-w5, h5 / 2, 0), V(0, h5 / 2, 0), V(0, -h5 / 2, 0), V(-w5, -h5 / 2, 0), V(-w5, h5 / 2, 0)], 0.026, 'ink', "移动循环");
+  for (const p of [V(-w5, h5 / 2, 0), V(0, h5 / 2, 0), V(0, -h5 / 2, 0), V(-w5, -h5 / 2, 0)]) part(loop5, new THREE.SphereGeometry(0.026, 12, 8), { tone: 'hi', pal: 'ink', pos: p.toArray(), name: "移动循环" });
+  const I5 = rectArrows(g5), v5 = arrow(g5, 'ink', { r: 0.014, head: 0.09, headR: 0.042, name: "速度" });
   label('vec', '<i>I</i>', () => tipOf(I5.sides[0].A, 0.14));
   label('vec', '<i>v</i>', () => tipOf(v5, 0.12));
   // breakdown: the push along each side that is in the field, with its charges
-  const side5 = [0, 1].map(() => ({ A: onTop(arrow(g5, 'ink', { r: 0.014, head: 0.09, headR: 0.042, name: 'Push on charges: v×B' })), p: marks(g5, RED, 2), m: marks(g5, BLUE, 2) }));
+  const side5 = [0, 1].map(() => ({ A: onTop(arrow(g5, 'ink', { r: 0.014, head: 0.09, headR: 0.042, name: "推动电荷：v×B" })), p: marks(g5, RED, 2), m: marks(g5, BLUE, 2) }));
   g5.userData.focus = () => ({ target: [X5, y5, 0], radius: 2.4 });
   side5.forEach(s => label('tick', '<i>BLv</i>', when(g5, () => tipOf(s.A, 0.02)?.add(V(-0.1, 0, 0)))));
 
   // ======================================================================================
   // 6 · a bar sliding on rails, closed by a resistor
   const X6 = STATIONS.rails, D6 = DRAW.rails, xL6 = X6 - 2.2, yb6 = 1.15, yt6 = yb6 + M.RAIL.L * D6, xEnd6 = xL6 + M.RAIL.len * D6;
-  const g6 = asm('rails', root, { title: 'A bar on rails', sub: 'the current through the bar brakes it' });
+  const g6 = asm('rails', root, { title: "铁轨上的导体棒", sub: "通过棒的电流将其制动" });
   { const mk = []; for (let i = 0; i < 9; i++) for (const y of [0.75, 1.55, 2.0, 2.75]) mk.push({ p: V(X6 - 1.95 + i * 0.5, y + (y === 1.55 || y === 2.0 ? 0.0 : 0), -0.08), r: 0.08 }); bMarkers(g6, mk); }
   label('vec', grey('<i>B</i>'), () => V(X6 - 2.6, 2.95, 0));
   rod(g6, V(xL6, yb6, 0), V(xEnd6, yb6, 0), 0.03, 'dark', 'Rails'); rod(g6, V(xL6, yt6, 0), V(xEnd6, yt6, 0), 0.03, 'dark', 'Rails');
@@ -362,21 +362,21 @@ export function buildWorld(E) {
     path(g6, zp, 0.022, 'ink', 'Resistor (0.2 Ω)'); }
   label('tick', '<i>R</i>', () => V(xL6 - 0.2, (yb6 + yt6) / 2, 0));
   const bar6 = new THREE.Group(); g6.add(bar6);
-  part(bar6, box(0.11, yt6 - yb6 + 0.34, 0.11, 0.02), { tone: 'hi', name: 'Sliding bar (0.2 kg)' });
-  const v6 = arrow(g6, 'ink', { r: 0.016, head: 0.1, headR: 0.048, name: 'Velocity' });
-  const F6 = onTop(arrow(g6, 'red', { r: 0.022, head: 0.12, headR: 0.06, name: 'Magnetic force on the bar' }));
+  part(bar6, box(0.11, yt6 - yb6 + 0.34, 0.11, 0.02), { tone: 'hi', name: "滑杆（0.2公斤）" });
+  const v6 = arrow(g6, 'ink', { r: 0.016, head: 0.1, headR: 0.048, name: "速度" });
+  const F6 = onTop(arrow(g6, 'red', { r: 0.022, head: 0.12, headR: 0.06, name: "磁力棒上的磁力" }));
   label('vec', '<i>v</i>', () => tipOf(v6, 0.12));
   label('vec red', '<i>F</i><sub>B</sub>', () => tipOf(F6, 0.16));
   const I6 = [0, 1, 2, 3].map(() => iArrow(g6));
   label('vec', '<i>I</i>', () => tipOf(I6[0], 0.14));
   label('tick', '<i>L</i>', () => bar6.position.clone().add(V(0.2, 0.25, 0)));
-  const area6 = part(g6, new THREE.PlaneGeometry(1, 1), { tone: 'lo', name: 'Area Lx', mat: flatMat('dark', 0.22) }); area6.userData.noEdge = true;
-  label('tick', 'Φ = <i>BLx</i>', when(g6, () => V(xL6 + 0.75, (yb6 + yt6) / 2 + 0.05, 0.05)));
+  const area6 = part(g6, new THREE.PlaneGeometry(1, 1), { tone: 'lo', name: "面积Lx", mat: flatMat('dark', 0.22) }); area6.userData.noEdge = true;
+  label('tick', "Φ = <i>BLx</i>", when(g6, () => V(xL6 + 0.75, (yb6 + yt6) / 2 + 0.05, 0.05)));
 
   // ======================================================================================
   // 7 · a solenoid: inductance and back emf
   const X7 = STATIONS.solenoid, D7 = DRAW.solenoid, y7 = 1.75, R7 = M.SOL.r * D7, L7 = M.SOL.len * D7;
-  const g7 = asm('solenoid', root, { title: 'Flux through each turn', sub: 'NΦ = LI' });
+  const g7 = asm('solenoid', root, { title: "每转的通量", sub: 'NΦ = LI' });
   helix(g7, V(X7 - L7 / 2, y7, 0), V(X7 + L7 / 2, y7, 0), R7, 25, 0.018, 'Solenoid (400 turns)');
   const hi7 = y7 + R7 + 0.45;
   path(g7, [V(X7 - L7 / 2, y7 + R7, 0), V(X7 - L7 / 2, hi7, 0), V(X7 - L7 / 2 - 0.8, hi7, 0)], 0.022, 'ink', 'Leads');
@@ -390,16 +390,16 @@ export function buildWorld(E) {
   label('vec blue', '', () => V(X7 + L7 / 2 - 0.2, hi7 + 0.05, 0), () => (S.sol && S.sol.dI !== 0 ? (S.sol.dI > 0 ? '−' : '+') : ''));
   label('tick', '', () => V(X7 + 0.6, hi7 + 0.05, 0), () => S.sol ? `ε<sub>L</sub> = ${fmt(S.sol.emfL * 1e3, 2)} mV` : '');
   // breakdown: the cross-section of one turn with B·dA patches
-  const disc7 = part(g7, (() => { const d = new THREE.CircleGeometry(R7 - 0.03, 40); d.rotateY(Math.PI / 2); return d; })(), { tone: 'lo', name: 'One turn’s area', mat: flatMat('board', 0.7), pos: [X7 + 0.42, y7, 0] });
+  const disc7 = part(g7, (() => { const d = new THREE.CircleGeometry(R7 - 0.03, 40); d.rotateY(Math.PI / 2); return d; })(), { tone: 'lo', name: "一圈面积", mat: flatMat('board', 0.7), pos: [X7 + 0.42, y7, 0] });
   disc7.userData.noEdge = true;
-  const dA7 = [[0, 0], ...[0, 1, 2, 3, 4, 5].map(i => [0.2 * Math.cos(i * Math.PI / 3), 0.2 * Math.sin(i * Math.PI / 3)])].map(([y, z]) => ({ y, z, a: bArrow(g7, 0.013, 'B·dA through one turn') }));
+  const dA7 = [[0, 0], ...[0, 1, 2, 3, 4, 5].map(i => [0.2 * Math.cos(i * Math.PI / 3), 0.2 * Math.sin(i * Math.PI / 3)])].map(([y, z]) => ({ y, z, a: bArrow(g7, 0.013, "B·dA 通过一圈") }));
   g7.userData.focus = () => ({ target: [X7, y7 + 0.2, 0], radius: 1.7 });
-  label('tick', 'Φ = <i>BA</i> per turn', when(g7, () => V(X7 + 0.95, y7 - R7 - 0.35, 0)));
+  label('tick', "每转 Φ = <i>BA</i>", when(g7, () => V(X7 + 0.95, y7 - R7 - 0.35, 0)));
 
   // ======================================================================================
   // 8 · an RL circuit: growth and decay
   const X8 = STATIONS.rl, yb8 = 0.5, yt8 = 2.7, xR8 = X8 + 1.5, xB8 = X8 - 1.9, xS8 = X8 - 1.45, P8 = V(X8 - 0.85, yt8, 0), cA = V(xS8, yt8 + 0.38, 0), cB = V(xS8, yt8 - 0.38, 0);
-  const g8 = asm('rl', root, { title: 'Around the RL loop', sub: 'ε − IR − L dI/dt = 0' });
+  const g8 = asm('rl', root, { title: "围绕 RL 循环", sub: 'ε − IR − L dI/dt = 0' });
   // bottom, right (with the inductor), top (with the resistor)
   path(g8, [V(xB8, yb8, 0), V(xR8, yb8, 0), V(xR8, 1.05, 0), V(xR8 + 0.19, 1.05, 0)]);
   helix(g8, V(xR8, 1.05, 0), V(xR8, 2.15, 0), 0.19, 9, 0.024, 'Inductor (2 H)');
@@ -408,19 +408,19 @@ export function buildWorld(E) {
   path(g8, [V(X8 - 0.15, yt8, 0), P8]);
   // the switch: battery branch to contact A, plain wire to contact B
   path(g8, [cA, V(xB8, cA.y, 0), V(xB8, 1.95, 0)]); path(g8, [V(xB8, 1.05, 0), V(xB8, yb8, 0)]);
-  part(g8, new THREE.CylinderGeometry(0.16, 0.16, 0.8, 32), { tone: 'hi', pos: [xB8, 1.5, 0], name: 'Battery (12 V)' });
-  part(g8, new THREE.CylinderGeometry(0.065, 0.065, 0.07, 20), { tone: 'mid', pal: 'dark', pos: [xB8, 1.94, 0], name: 'Battery (12 V)' });
-  part(g8, new THREE.CylinderGeometry(0.163, 0.163, 0.1, 32), { tone: 'mid', pal: 'dark', pos: [xB8, 1.16, 0], name: 'Battery (12 V)' });
+  part(g8, new THREE.CylinderGeometry(0.16, 0.16, 0.8, 32), { tone: 'hi', pos: [xB8, 1.5, 0], name: "电池（12V）" });
+  part(g8, new THREE.CylinderGeometry(0.065, 0.065, 0.07, 20), { tone: 'mid', pal: 'dark', pos: [xB8, 1.94, 0], name: "电池（12V）" });
+  part(g8, new THREE.CylinderGeometry(0.163, 0.163, 0.1, 32), { tone: 'mid', pal: 'dark', pos: [xB8, 1.16, 0], name: "电池（12V）" });
   path(g8, [cB, V(xS8, yb8, 0)]);
-  for (const p of [cA, cB, P8]) part(g8, new THREE.SphereGeometry(0.05, 14, 10), { tone: 'hi', pal: 'ink', pos: p.toArray(), name: 'Switch' });
-  const lever8 = part(g8, rodGeo, { tone: 'hi', pal: 'ink', name: 'Switch' });
+  for (const p of [cA, cB, P8]) part(g8, new THREE.SphereGeometry(0.05, 14, 10), { tone: 'hi', pal: 'ink', pos: p.toArray(), name: "开关" });
+  const lever8 = part(g8, rodGeo, { tone: 'hi', pal: 'ink', name: "开关" });
   const I8 = [0, 1, 2, 3].map(() => iArrow(g8, 'Current'));
   label('vec', '<i>I</i>', () => tipOf(I8[0], 0.14));
   label('vec red', '+', () => V(xB8 - 0.3, 1.9, 0));
   label('board', 'ε = 12 V', () => V(xB8 - 0.95, 1.5, 0));
   label('board', '<i>R</i> = 4 Ω', () => V(X8 + 0.0, yt8 + 0.4, 0));
   label('board', '<i>L</i> = 2 H', () => V(xR8 + 0.32, 1.6, 0));
-  label('board', '', () => V(X8 - 1.2, yt8 + 0.75, 0), () => S.rl ? (S.rl.growing ? 'switch to the battery: growth' : 'battery out of the loop: decay') : '');
+  label('board', '', () => V(X8 - 1.2, yt8 + 0.75, 0), () => S.rl ? (S.rl.growing ? "切换到电池：增长" : "电池失灵：衰减") : '');
   // breakdown: each ΔV around the loop, live
   label('tick', '', when(g8, () => V(xB8 - 0.25, 1.2, 0)), () => S.rl ? `+${fmt(S.rl.emfBat, 1)} V` : '');
   label('tick', '', when(g8, () => V(X8 + 0.65, yt8 - 0.35, 0)), () => S.rl ? `−<i>IR</i> = −${fmt(S.rl.VR, 1)} V` : '');
@@ -437,32 +437,32 @@ export function buildWorld(E) {
   const I9 = [0, 1, 2].map(() => iArrow(wires9, 'Current'));
   label('vec', '<i>I</i>', () => tipOf(I9[0], 0.14));
   // the capacitor: two plates, the top one holding q
-  const g9 = asm('lcCap', root, { title: 'The capacitor', sub: 'U_E = q²/2C, in the field between the plates' });
-  part(g9, box(pw9, pt9, pd9, 0.01), { tone: 'hi', pos: [xC9, yTop9 + pt9 / 2, 0], name: 'Plates (25 µF)' });
-  part(g9, box(pw9, pt9, pd9, 0.01), { tone: 'hi', pos: [xC9, yBot9 - pt9 / 2, 0], name: 'Plates (25 µF)' });
+  const g9 = asm('lcCap', root, { title: "电容器", sub: "U_E = q²/2C，在板之间的区域" });
+  part(g9, box(pw9, pt9, pd9, 0.01), { tone: 'hi', pos: [xC9, yTop9 + pt9 / 2, 0], name: "板 (25 µF)" });
+  part(g9, box(pw9, pt9, pd9, 0.01), { tone: 'hi', pos: [xC9, yBot9 - pt9 / 2, 0], name: "板 (25 µF)" });
   const plus9 = marks(g9, RED, 8), minus9 = marks(g9, BLUE, 8);
-  const E9 = [-0.39, -0.13, 0.13, 0.39].map(x => ({ x, a: onTop(arrow(g9, 'blue', { r: 0.018, head: 0.1, headR: 0.05, name: 'Electric field E' })) }));
+  const E9 = [-0.39, -0.13, 0.13, 0.39].map(x => ({ x, a: onTop(arrow(g9, 'blue', { r: 0.018, head: 0.1, headR: 0.05, name: "电场E" })) }));
   label('vec blue', '<i>E</i>', () => tipOf(E9[3].a, 0) ? E9[3].a.localToWorld(V(0, E9[3].a.userData.arrow.shaft.scale.y / 2, 0)).add(V(0.22, 0, 0)) : null);
   label('board', '<i>C</i> = 25 µF', () => V(xC9 + 1.05, yTop9 + 0.35, 0));
   label('tick', '', () => V(xC9 + 1.05, yBot9 - 0.3, 0), () => S.lc ? `<i>q</i> = ${fmt(S.lc.q * 1e6, 0)} µC` : '');
-  const slab9 = part(g9, box(pw9 - 0.04, gap9 - 0.02, pd9 - 0.04, 0.005), { tone: 'lo', name: 'Energy in the field', mat: flatMat('blue', 0.3), pos: [xC9, yc9, 0] });
+  const slab9 = part(g9, box(pw9 - 0.04, gap9 - 0.02, pd9 - 0.04, 0.005), { tone: 'lo', name: "能源领域", mat: flatMat('blue', 0.3), pos: [xC9, yc9, 0] });
   slab9.userData.noEdge = true;
   g9.userData.focus = () => ({ target: [xC9, yc9, 0], radius: 1.7 });
   label('tick', '', when(g9, () => V(xC9 - 1.2, yc9 + 0.2, 0)), () => S.lc ? `Δ<i>V</i> = <i>q</i>/<i>C</i> = ${fmt(S.lc.V, 2)} V` : '');
   label('tick', '', when(g9, () => V(xC9 - 1.2, yc9 - 0.12, 0)), () => S.lc ? `<i>U<sub>E</sub></i> = ${fmt(S.lc.UE * 1e3, 3)} mJ` : '');
   // the coil: 1600 turns, 12 drawn
-  const gC9 = asm('lcCoil', root, { title: 'The coil', sub: 'U_B = ½LI², in the field inside the coil' });
+  const gC9 = asm('lcCoil', root, { title: "线圈", sub: "U_B = ½LI²，在线圈内部的磁场中" });
   helix(gC9, V(xR9, c0y9, 0), V(xR9, c1y9, 0), R9, 9, 0.022, 'Inductor (40 mH)');
   const B9 = [-0.1, 0.1].map(x => ({ x, a: bArrow(gC9, 0.016) }));
   label('vec', grey('<i>B</i>'), () => B9[1].a.visible ? V(xR9 - R9 - 0.2, yc9, 0) : null);
   label('board', '<i>L</i> = 40 mH', () => V(xR9 + 0.8, yc9 + 0.12, 0));
   label('tick', '', () => V(xR9 + 0.8, yc9 - 0.2, 0), () => S.lc ? `<i>I</i> = ${fmt(S.lc.I * 1e3, 0)} mA` : '');
-  const core9 = part(gC9, new THREE.CylinderGeometry(R9 - 0.04, R9 - 0.04, c1y9 - c0y9 - 0.06, 32), { tone: 'lo', name: 'Energy in the field', mat: flatMat('dark', 0.3), pos: [xR9, yc9, 0] });
+  const core9 = part(gC9, new THREE.CylinderGeometry(R9 - 0.04, R9 - 0.04, c1y9 - c0y9 - 0.06, 32), { tone: 'lo', name: "能源领域", mat: flatMat('dark', 0.3), pos: [xR9, yc9, 0] });
   core9.userData.noEdge = true;
   gC9.userData.focus = () => ({ target: [xR9, yc9, 0], radius: 1.7 });
   label('tick', '', when(gC9, () => V(xR9 - 1.05, yc9 + 0.2, 0)), () => S.lc ? `<i>L dI</i>/<i>dt</i> = ${fmt(S.lc.dI * M.LC.L, 2)} V` : '');
   label('tick', '', when(gC9, () => V(xR9 - 1.05, yc9 - 0.12, 0)), () => S.lc ? `<i>U<sub>B</sub></i> = ${fmt(S.lc.UB * 1e3, 3)} mJ` : '');
-  label('board', `slowed ${Math.round(M.LC.slow / 10) * 10}×: one ${f3(M.LC.T * 1e3)} ms swing takes ${M.LC.show} s`, () => V(X9, yt9 + 0.5, 0));
+  label('board', `减慢 ${Math.round(M.LC.slow / 10) * 10}×：${f3(M.LC.T * 1e3)} 毫秒摆动需要 ${M.LC.show} 秒`, () => V(X9, yt9 + 0.5, 0));
 
   // ---------- per-frame ----------
   const S = {};

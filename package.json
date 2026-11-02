@@ -1,9 +1,10 @@
 {
-  "name": "atlas-of-physics",
+  "name": "physics-unfolded",
   "version": "1.0.0",
-  "description": "An interactive 3D textbook for AP Physics 1 and AP Physics C",
+  "description": "物理展开：交互式三维物理教材中文翻译版",
   "scripts": {
-    "check": "for c in kinematics newton circular energy momentum oscillations rotation fluids electrostatics gauss potential capacitors circuits magnetism induction; do node $c/checks.mjs > /dev/null || { echo FAIL $c; exit 1; }; done; node equations/check.mjs"
+    "check": "node tools/check.mjs",
+    "start": "python -m http.server 8137"
   },
   "keywords": [],
   "author": "",
@@ -11,6 +12,7 @@
   "type": "module",
   "private": true,
   "devDependencies": {
+    "acorn": "^8.19.0",
     "puppeteer-core": "^25.16.0"
   }
 }

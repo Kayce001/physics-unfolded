@@ -3,3 +3,6 @@ shots/
 .DS_Store
 .vercel
 .env*
+.translation/
+qa-artifacts/
+__pycache__/

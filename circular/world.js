@@ -33,7 +33,7 @@ export function buildWorld(E) {
   const label = (cls, html, at, text) => labels.push({ cls, html, at, text });
 
   // ---------- helpers ----------
-  const vec = (g, pal = 'ink', size = 's') => arrow(g, pal, { ...SIZE[size], name: pal === 'blue' ? 'Velocity' : pal === 'dark' ? 'Components' : 'Forces', tone: pal === 'dark' ? 'mid' : 'hi' });
+  const vec = (g, pal = 'ink', size = 's') => arrow(g, pal, { ...SIZE[size], name: pal === 'blue' ? "速度" : pal === 'dark' ? "成分" : "部队", tone: pal === 'dark' ? 'mid' : 'hi' });
   const tip = (a, pad = 0.06) => {
     if (!a.visible) return null;
     const { tip: t, head } = a.userData.arrow;
@@ -55,13 +55,13 @@ export function buildWorld(E) {
   const circle = (c, r, opt) => { const n = 129, l = dyn(root, n, opt); l.set(arcPts(c, r, 0, 2 * Math.PI, n)); return l; };
   const seg = (parent, opt) => { const l = dyn(parent, 2, opt); return l; };
   const ball = (g, r, name = 'Ball', pal = 'paper') => part(g, new THREE.SphereGeometry(r, 32, 20), { tone: 'hi', name, pal });
-  const thin = (g, r = 0.006) => part(g, new THREE.CylinderGeometry(r, r, 1, 8), { tone: 'hi', pal: 'ink', name: 'String' });
+  const thin = (g, r = 0.006) => part(g, new THREE.CylinderGeometry(r, r, 1, 8), { tone: 'hi', pal: 'ink', name: "字符串" });
   const stringTo = (m, a, b) => { m.position.copy(a).add(b).multiplyScalar(0.5); m.scale.set(1, a.distanceTo(b), 1); m.quaternion.setFromUnitVectors(V(0, 1, 0), b.clone().sub(a).normalize()); };
   const orient = (obj, f, up) => obj.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(f, up, f.clone().cross(up).normalize()));
   const shrink = (mesh, g, s = 1) => mesh.scale.setScalar(s * (1 - 0.85 * Math.max(g.userData.explode, 0)));
   const ex = g => Math.max(g.userData.explode, 0);
   const ghostMat = shadeMat('paper', { opacity: 0.45 });
-  const table = (x, w, d) => part(root, box(w, 0.04, d, 0.01), { tone: 'lo', pal: 'board', pos: [x, 0.02, 0], name: 'Table' });
+  const table = (x, w, d) => part(root, box(w, 0.04, d, 0.01), { tone: 'lo', pal: 'board', pos: [x, 0.02, 0], name: "表" });
 
   // faint graph-paper ground under the earthbound scenes
   const grid = [];
@@ -72,21 +72,21 @@ export function buildWorld(E) {
   // a car, after the one in chapter 2: 4.2 m long, local +x forward, wheels on y = 0
   const car = parent => {
     const c = new THREE.Group(); parent.add(c);
-    part(c, box(4.2, 0.7, 1.8, 0.18), { tone: 'hi', pos: [0, 0.75, 0], name: 'Body' });
-    part(c, box(2.2, 0.6, 1.6, 0.2), { tone: 'hi', pos: [-0.3, 1.38, 0], name: 'Cabin' });
+    part(c, box(4.2, 0.7, 1.8, 0.18), { tone: 'hi', pos: [0, 0.75, 0], name: "身体" });
+    part(c, box(2.2, 0.6, 1.6, 0.2), { tone: 'hi', pos: [-0.3, 1.38, 0], name: "客舱" });
     for (const [x, z] of [[1.35, 0.85], [1.35, -0.85], [-1.35, 0.85], [-1.35, -0.85]]) {
-      part(c, new THREE.CylinderGeometry(0.36, 0.36, 0.26, 28).rotateX(Math.PI / 2), { tone: 'mid', pal: 'dark', pos: [x, 0.36, z], name: 'Wheels' });
+      part(c, new THREE.CylinderGeometry(0.36, 0.36, 0.26, 28).rotateX(Math.PI / 2), { tone: 'mid', pal: 'dark', pos: [x, 0.36, z], name: "轮子" });
     }
     return c;
   };
-  const flatRing = (c, ri, ro, y) => part(root, new THREE.RingGeometry(ri, ro, 128).rotateX(-Math.PI / 2), { tone: 'lo', pal: 'board', pos: [c.x, y, c.z], name: 'Road' });
+  const flatRing = (c, ri, ro, y) => part(root, new THREE.RingGeometry(ri, ro, 128).rotateX(-Math.PI / 2), { tone: 'lo', pal: 'board', pos: [c.x, y, c.z], name: "道路" });
 
   // ---------- 1 · a ball whirled on a string over a smooth table ----------
   const X0 = STATIONS.whirl, TY = 0.04, BR = 0.07, BY = TY + BR;
   table(X0, 2.3, 2.3);
-  part(root, cyl(0.022, 0.16, 16), { tone: 'hi', pal: 'ink', pos: [X0, TY + 0.08, 0], name: 'Pin' });
+  part(root, cyl(0.022, 0.16, 16), { tone: 'hi', pal: 'ink', pos: [X0, TY + 0.08, 0], name: "销" });
   circle(V(X0, TY + 0.003, 0), M.BALL.r, { dash: 0.05, color: '#a0a0a6' });
-  const gW = asm('whirl', root, { title: 'A ball on a string', sub: 'speed constant, direction always changing' });
+  const gW = asm('whirl', root, { title: "一根绳子上的球", sub: "速度恒定，方向不断变化" });
   const bW = ball(gW, BR), sW = thin(gW);
   const vW = vec(gW, 'blue'), aW = vec(gW, 'red');
   const ghostsW = Array.from({ length: 7 }, () => { const m = new THREE.Mesh(new THREE.SphereGeometry(BR, 24, 14), ghostMat); m.userData = { tone: 0.2 }; root.add(m); return m; });
@@ -102,12 +102,12 @@ export function buildWorld(E) {
   // ---------- 2 · the same string, twice the speed ----------
   const X1 = STATIONS.double, DX = 1.05;
   table(X1, 4.3, 2.1);
-  const gD = asm('double', root, { title: 'Twice the speed', sub: 'four times the pull' });
+  const gD = asm('double', root, { title: "速度提高一倍", sub: "四倍拉力" });
   const D = [M.V1, M.V2].map((v, k) => {
     const c = V(X1 + (k ? DX : -DX), BY, 0);
-    part(root, cyl(0.022, 0.16, 16), { tone: 'hi', pal: 'ink', pos: [c.x, TY + 0.08, 0], name: 'Pin' });
+    part(root, cyl(0.022, 0.16, 16), { tone: 'hi', pal: 'ink', pos: [c.x, TY + 0.08, 0], name: "销" });
     circle(V(c.x, TY + 0.003, 0), M.BALL.r, { dash: 0.05, color: '#a0a0a6' });
-    const o = { v, c, b: ball(gD, BR, k ? 'Fast ball' : 'Slow ball'), s: thin(gD), vA: vec(gD, 'blue'), T: vec(gD), N: vec(gD), W: vec(gD), net: vec(gD, 'red') };
+    const o = { v, c, b: ball(gD, BR, k ? "快球" : "慢球"), s: thin(gD), vA: vec(gD, 'blue'), T: vec(gD), N: vec(gD), W: vec(gD), net: vec(gD, 'red') };
     label('vec blue', 'v', () => tip(o.vA)); label('vec', 'T', () => tip(o.T)); label('vec red', 'ΣF', () => tip(o.net));
     label('vec', 'F<sub>N</sub>', () => tip(o.N)); label('vec', '<i>mg</i>', () => tip(o.W));
     label('tick', `${v.toFixed(1)} m/s`, () => V(c.x + 0.28, TY, M.BALL.r + 0.32));
@@ -118,8 +118,8 @@ export function buildWorld(E) {
   const X2 = STATIONS.flatcar, RC = M.CAR.r * ROAD.draw, C2 = V(X2, 0, 0);
   flatRing(C2, RC - 0.7, RC + 0.7, 0.012);
   circle(V(X2, 0.03, 0), RC, { dash: 0.18, color: '#9a9aa0' });
-  part(root, cyl(0.05, 0.02, 20), { tone: 'hi', pal: 'ink', pos: [X2, 0.01, 0], name: 'Centre' });
-  const gC = asm('flatcar', root, { title: 'Car on a flat curve', sub: 'static friction pulls it round' });
+  part(root, cyl(0.05, 0.02, 20), { tone: 'hi', pal: 'ink', pos: [X2, 0.01, 0], name: "中心" });
+  const gC = asm('flatcar', root, { title: "汽车在平坦的弯道上行驶", sub: "静摩擦力将其拉动" });
   const carC = car(gC), radC = seg(root, { dash: 0.1 }), tanC = seg(gC, { dash: 0.12, color: '#6e6e74' });
   const cW = vec(gC, 'ink', 'm'), cN = vec(gC, 'ink', 'm'), cF = vec(gC, 'ink', 'm'), cNet = vec(gC, 'red', 'm'), cV = vec(gC, 'blue', 'm');
   label('vec', 'F<sub>g</sub>', () => tip(cW)); label('vec', 'F<sub>N</sub>', () => tip(cN)); label('vec', 'f<sub>s</sub>', () => tip(cF)); label('vec red', 'ΣF', () => tip(cNet)); label('vec blue', 'v', () => tip(cV));
@@ -127,25 +127,25 @@ export function buildWorld(E) {
 
   // ---------- 4 · a ball on a string swept round a cone ----------
   const X3 = STATIONS.cone, CEIL = 2.0, P3 = V(X3, CEIL - 0.03, 0), YC = P3.y - M.CONE.L * Math.cos(M.CONE.th);
-  part(root, box(1.4, 0.06, 0.7, 0.02), { tone: 'mid', pal: 'board', pos: [X3, CEIL, 0], name: 'Ceiling' });
+  part(root, box(1.4, 0.06, 0.7, 0.02), { tone: 'mid', pal: 'board', pos: [X3, CEIL, 0], name: "天花板" });
   circle(V(X3, YC, 0), M.CONE.r, { dash: 0.04, color: '#a0a0a6' });
   const axis3 = seg(root, { dash: 0.04 }); axis3.set([P3, V(X3, YC - 0.05, 0)]);
-  const gK = asm('cone', root, { title: 'A ball swung in a cone', sub: 'the string’s pull, split in two' });
+  const gK = asm('cone', root, { title: "一个球在圆锥体内摆动", sub: "绳子的拉力，分成两部分" });
   const bK = ball(gK, 0.06), sK = thin(gK), radK = seg(gK, { dash: 0.035 });
   const kT = vec(gK), kW = vec(gK), kNet = vec(gK, 'red'), kV = vec(gK, 'blue'), kTx = vec(gK, 'dark'), kTy = vec(gK, 'dark');
   label('vec', 'T', () => tip(kT)); label('vec', '<i>mg</i>', () => tip(kW)); label('vec red', 'ΣF', () => tip(kNet)); label('vec blue', 'v', () => tip(kV));
-  label('vec', 'T sin θ', () => tip(kTx, 0.1)); label('vec', 'T cos θ', () => tip(kTy));
+  label('vec', "T sin θ", () => tip(kTx, 0.1)); label('vec', "T cos θ", () => tip(kTy));
   let kAt = V();
   label('axis', 'θ', () => P3.clone().add(kAt.clone().sub(P3).normalize().add(V(0, -1, 0)).normalize().multiplyScalar(0.3)));
 
   // ---------- 5 · a coaster cart in a vertical loop ----------
   const X4 = STATIONS.loop, RL = M.LOOP.r * COASTER.draw, RAIL = 0.022, C4 = V(X4, 0.05 + RAIL + RL, 0), CH = 0.14;
   for (const z of [-0.09, 0.09]) {
-    part(root, new THREE.TorusGeometry(RL + RAIL, RAIL, 10, 160), { tone: 'mid', pal: 'dark', pos: [X4, C4.y, z], name: 'Track' });
-    part(root, cyl(RAIL, 5.4, 10).rotateZ(Math.PI / 2), { tone: 'mid', pal: 'dark', pos: [X4, 0.05, z * 1.0 + (z > 0 ? 0.24 : -0.24)], name: 'Track' });
+    part(root, new THREE.TorusGeometry(RL + RAIL, RAIL, 10, 160), { tone: 'mid', pal: 'dark', pos: [X4, C4.y, z], name: "轨道" });
+    part(root, cyl(RAIL, 5.4, 10).rotateZ(Math.PI / 2), { tone: 'mid', pal: 'dark', pos: [X4, 0.05, z * 1.0 + (z > 0 ? 0.24 : -0.24)], name: "轨道" });
   }
-  const gL = asm('loop', root, { title: 'Coaster in a loop', sub: 'the track pushes hardest at the bottom' });
-  const cart = part(gL, box(0.36, CH, 0.24, 0.04), { tone: 'hi', name: 'Cart' });
+  const gL = asm('loop', root, { title: "循环过山车", sub: "轨道在底部推力最大" });
+  const cart = part(gL, box(0.36, CH, 0.24, 0.04), { tone: 'hi', name: "购物车" });
   const lN = vec(gL, 'ink', 'm'), lW = vec(gL, 'ink', 'm'), lNet = vec(gL, 'red', 'm'), lV = vec(gL, 'blue', 'm');
   label('vec', 'F<sub>N</sub>', () => tip(lN)); label('vec', '<i>mg</i>', () => tip(lW)); label('vec red', 'ΣF', () => tip(lNet)); label('vec blue', 'v', () => tip(lV));
   // opened: free-body diagrams at the top and the bottom, beside the loop
@@ -155,33 +155,33 @@ export function buildWorld(E) {
     const o = { phi, at, dot, N: vec(gL, 'ink', 'm'), W: vec(gL, 'ink', 'm'), net: vec(gL, 'red', 'm') };
     const sh = (a, dx) => () => o.N.visible ? tip(a).add(V(phi ? dx : 0, 0, 0)) : null;
     label('vec', 'F<sub>N</sub>', sh(o.N, -0.1)); label('vec', '<i>mg</i>', sh(o.W, 0.1)); label('vec red', 'ΣF', () => tip(o.net));
-    label('board', phi ? 'top' : 'bottom', () => dot.visible ? at.clone().add(phi ? V(-0.1, 0.22, 0) : V(0.25, 0, 0)) : null);
+    label('board', phi ? "顶部" : "底部", () => dot.visible ? at.clone().add(phi ? V(-0.1, 0.22, 0) : V(0.25, 0, 0)) : null);
     return o;
   });
 
   // ---------- 6 · a car on a banked curve, no friction ----------
   const X5 = STATIONS.bank, RB = M.BANK.r * ROAD.draw, TH = M.BANK.th, RI = RB - 0.7, RO = RB + 0.7, H0 = 0.03;
   const yAt = r => H0 + (r - RI) * Math.tan(TH);
-  part(root, new THREE.LatheGeometry([new THREE.Vector2(RO, yAt(RO)), new THREE.Vector2(RI, H0)], 160), { tone: 'lo', pal: 'board', pos: [X5, 0, 0], name: 'Road' });
-  part(root, new THREE.CylinderGeometry(RO, RO, yAt(RO), 160, 1, true), { tone: 'lo', pal: 'board', pos: [X5, yAt(RO) / 2, 0], name: 'Road' });
+  part(root, new THREE.LatheGeometry([new THREE.Vector2(RO, yAt(RO)), new THREE.Vector2(RI, H0)], 160), { tone: 'lo', pal: 'board', pos: [X5, 0, 0], name: "道路" });
+  part(root, new THREE.CylinderGeometry(RO, RO, yAt(RO), 160, 1, true), { tone: 'lo', pal: 'board', pos: [X5, yAt(RO) / 2, 0], name: "道路" });
   circle(V(X5, yAt(RB) + 0.004, 0), RB, { dash: 0.18, color: '#9a9aa0' });
-  part(root, cyl(0.05, 0.02, 20), { tone: 'hi', pal: 'ink', pos: [X5, 0.01, 0], name: 'Centre' });
+  part(root, cyl(0.05, 0.02, 20), { tone: 'hi', pal: 'ink', pos: [X5, 0.01, 0], name: "中心" });
   const axis5 = seg(root, { dash: 0.1 }); axis5.set([V(X5, 0, 0), V(X5, yAt(RB), 0)]);
-  const gB = asm('bank', root, { title: 'Car on a banked curve', sub: 'the road’s push, tilted inward' });
+  const gB = asm('bank', root, { title: "汽车在倾斜的弯道上", sub: "道路的推力，向内倾斜" });
   const carB = car(gB), radB = seg(root, { dash: 0.1 });
   const qW = vec(gB, 'ink', 'm'), qN = vec(gB, 'ink', 'm'), qNet = vec(gB, 'red', 'm'), qV = vec(gB, 'blue', 'm'), qNx = vec(gB, 'dark', 'm'), qNy = vec(gB, 'dark', 'm');
   label('vec', 'F<sub>g</sub>', () => tip(qW)); label('vec', 'F<sub>N</sub>', () => tip(qN)); label('vec red', 'ΣF', () => tip(qNet)); label('vec blue', 'v', () => tip(qV));
-  label('vec', 'F<sub>N</sub> sin θ', () => tip(qNx, 0.14)); label('vec', 'F<sub>N</sub> cos θ', () => tip(qNy));
+  label('vec', "F<sub>N</sub> sin θ", () => tip(qNx, 0.14)); label('vec', "F<sub>N</sub> cos θ", () => tip(qNy));
 
   // ---------- 7 · a spinning disc ----------
   const X6 = STATIONS.disc, DT = 0.06;
-  const gS = asm('disc', root, { title: 'A spinning disc', sub: 'one ω, many speeds' });
+  const gS = asm('disc', root, { title: "一个旋转的圆盘", sub: "一个 ω，多种速度" });
   const disc = new THREE.Group(); disc.position.set(X6, 0, 0); gS.add(disc);
-  part(disc, cyl(M.DISC.R, DT, 96), { tone: 'mid', pal: 'board', pos: [0, DT / 2 + 0.005, 0], name: 'Disc' });
-  part(disc, box(M.DISC.R - 0.04, 0.006, 0.025, 0.002), { tone: 'hi', pal: 'ink', pos: [(M.DISC.R - 0.04) / 2, DT + 0.008, 0], name: 'Marked radius' });
-  part(disc, cyl(0.035, 0.05, 20), { tone: 'hi', pal: 'ink', pos: [0, DT + 0.025, 0], name: 'Axle' });
+  part(disc, cyl(M.DISC.R, DT, 96), { tone: 'mid', pal: 'board', pos: [0, DT / 2 + 0.005, 0], name: "光盘" });
+  part(disc, box(M.DISC.R - 0.04, 0.006, 0.025, 0.002), { tone: 'hi', pal: 'ink', pos: [(M.DISC.R - 0.04) / 2, DT + 0.008, 0], name: "标记半径" });
+  part(disc, cyl(0.035, 0.05, 20), { tone: 'hi', pal: 'ink', pos: [0, DT + 0.025, 0], name: "车轴" });
   const BS = 0.11;
-  const blk = [M.DISC.r1, M.DISC.r2].map(r => part(disc, box(BS, BS, BS, 0.015), { tone: 'hi', pos: [r, DT + BS / 2 + 0.006, 0], name: 'Blocks' }));
+  const blk = [M.DISC.r1, M.DISC.r2].map(r => part(disc, box(BS, BS, BS, 0.015), { tone: 'hi', pos: [r, DT + BS / 2 + 0.006, 0], name: "积木" }));
   for (const r of [M.DISC.r1, M.DISC.r2]) circle(V(X6, DT + 0.012, 0), r, { dash: 0.04, color: '#a0a0a6' });
   const sV = [vec(gS, 'blue'), vec(gS, 'blue')];
   const arcs = [dyn(gS, 48, { color: '#26262a' }), dyn(gS, 48, { color: '#26262a' })], back = seg(gS, { dash: 0.04, color: '#6e6e74' });
@@ -189,11 +189,11 @@ export function buildWorld(E) {
   let dPhi = 0;
   const arcMid = (r, k) => () => arcs[k].visible ? V(X6 + (r + 0.12) * Math.cos(dPhi - 0.5), DT + 0.02, -(r + 0.12) * Math.sin(dPhi - 0.5)) : null;
   label('vec', 's<sub>1</sub>', arcMid(M.DISC.r1, 0)); label('vec', 's<sub>2</sub>', arcMid(M.DISC.r2, 1));
-  label('tick', '1 rad', () => arcs[0].visible ? V(X6 + 0.3 * Math.cos(dPhi - 0.5), DT + 0.02, -0.3 * Math.sin(dPhi - 0.5)) : null);
+  label('tick', "1 rad", () => arcs[0].visible ? V(X6 + 0.3 * Math.cos(dPhi - 0.5), DT + 0.02, -0.3 * Math.sin(dPhi - 0.5)) : null);
 
   // ---------- 8 · two spheres pulling on each other ----------
   const X7 = STATIONS.gravity, GY = 0.9, R1 = M.radiusOf(M.SPHERES.m1), R2 = M.radiusOf(M.SPHERES.m2);
-  const gG = asm('gravity', root, { title: 'Two iron spheres', sub: 'every mass pulls on every other' });
+  const gG = asm('gravity', root, { title: "两个铁球", sub: "每个质量都相互吸引" });
   const s1 = ball(gG, R1, 'm₁ · 1000 kg'), s2 = ball(gG, R2, 'm₂ · 2000 kg');
   const F12 = vec(gG, 'ink', 'm'), F21 = vec(gG, 'ink', 'm'), A1 = vec(gG, 'red', 'm'), A2 = vec(gG, 'red', 'm'), rG = seg(root, { dash: 0.06 });
   label('vec', 'F<sub>12</sub>', () => F12.visible ? tip(F12, 0).add(V(-0.16, 0.14, 0)) : null); label('vec', 'F<sub>21</sub>', () => F21.visible ? tip(F21, 0).add(V(0.16, 0.14, 0)) : null);
@@ -204,7 +204,7 @@ export function buildWorld(E) {
 
   // ---------- 9 · satellites in circular orbits ----------
   const X8 = STATIONS.orbit, OY = 1.8, RE = M.EARTH.R * ORBIT.draw, C8 = V(X8, OY, 0);
-  const gO = asm('orbit', root, { title: 'Two satellites', sub: 'gravity is the centripetal force' });
+  const gO = asm('orbit', root, { title: "两颗卫星", sub: "重力是向心力" });
   const earth = ball(gO, RE, 'Earth'); earth.position.copy(C8); earth.geometry = new THREE.SphereGeometry(RE, 64, 40);
   const eq = []; for (const lat of [-50, -25, 0, 25, 50]) { const y = RE * Math.sin(lat * Math.PI / 180), r = RE * Math.cos(lat * Math.PI / 180) * 1.002; for (let i = 0; i < 96; i++) { const a = i / 96 * 2 * Math.PI, b = (i + 1) / 96 * 2 * Math.PI; eq.push(r * Math.cos(a), y, r * Math.sin(a), r * Math.cos(b), y, r * Math.sin(b)); } }
   const grat = lines(gO, eq, '#c8c8cc'); grat.position.copy(C8);
@@ -212,8 +212,8 @@ export function buildWorld(E) {
   for (const r of RS) circle(C8, r, { dash: 0.12, color: '#a0a0a6' });
   const sat = RS.map((r, k) => {
     const g = new THREE.Group(); gO.add(g);
-    part(g, box(0.16, 0.16, 0.16, 0.02), { tone: 'hi', name: 'Satellites' });
-    part(g, box(0.06, 0.012, 0.62, 0.004), { tone: 'mid', pal: 'dark', name: 'Satellites' });
+    part(g, box(0.16, 0.16, 0.16, 0.02), { tone: 'hi', name: "卫星" });
+    part(g, box(0.06, 0.012, 0.62, 0.004), { tone: 'mid', pal: 'dark', name: "卫星" });
     return { g, r, R: [M.SAT.r1, M.SAT.r2][k], v: vec(gO, 'blue', 'l'), a: vec(gO, 'red', 'l'), arc: dyn(gO, 64, { color: '#26262a' }), r0: seg(gO, { dash: 0.1 }), r1: seg(gO, { dash: 0.1 }) };
   });
   sat.forEach((s, k) => { label('vec blue', `v<sub>${k + 1}</sub>`, () => tip(s.v, 0.12)); label('vec red', `a<sub>${k + 1}</sub>`, () => tip(s.a, 0.12)); });
@@ -229,8 +229,8 @@ export function buildWorld(E) {
   };
   const satBody = (g, s = 1) => {
     const b = new THREE.Group(); g.add(b);
-    part(b, box(0.16 * s, 0.16 * s, 0.16 * s, 0.02), { tone: 'hi', name: 'Satellite' });
-    part(b, box(0.06 * s, 0.012 * s, 0.62 * s, 0.004), { tone: 'mid', pal: 'dark', name: 'Satellite' });
+    part(b, box(0.16 * s, 0.16 * s, 0.16 * s, 0.02), { tone: 'hi', name: "卫星" });
+    part(b, box(0.06 * s, 0.012 * s, 0.62 * s, 0.004), { tone: 'mid', pal: 'dark', name: "卫星" });
     return b;
   };
   const W = (c, p) => V(c.x + p.x * DO, c.y, c.z - p.y * DO);              // a model point (x, y) in the plane
@@ -253,7 +253,7 @@ export function buildWorld(E) {
 
   // ---------- 10 · an elliptical orbit: equal areas in equal times ----------
   const X9 = STATIONS.kepler, OY9 = 1.8, cE = M.ELL.a * M.ELL.e * DO, F9 = V(X9 + cE, OY9, 0);
-  const gE = asm('kepler', root, { title: 'An elliptical orbit', sub: 'equal areas in equal times' });
+  const gE = asm('kepler', root, { title: "椭圆轨道", sub: "相同时间相同面积" });
   gE.userData.focus = () => ({ target: [X9, OY9, 0], radius: 6.6 });
   globe(gE, F9);
   dyn(root, 400, { dash: 0.12, color: '#a0a0a6' }).set(pathOf(F9, M.ELL.track));
@@ -263,11 +263,11 @@ export function buildWorld(E) {
   const WP = wedgePts(F9, -M.SWEEP / 2, M.SWEEP / 2, 48), WA = wedgePts(F9, M.ELL.T / 2 - M.SWEEP / 2, M.ELL.T / 2 + M.SWEEP / 2, 48);
   fan(root, 48, '#86868c', 0.16).set(F9, WP); fan(root, 48, '#86868c', 0.16).set(F9, WA);
   label('tick', '1 h', () => centroid([F9, ...WP]).add(V(0.25, 0, 0))); label('tick', '1 h', () => centroid([F9, ...WA]).add(V(-0.3, 0, 0.0)));
-  label('board', 'perigee', () => V(X9 + M.ELL.a * DO + 0.2, OY9, 1.0)); label('board', 'apogee', () => V(X9 - M.ELL.a * DO - 0.2, OY9, -1.0));
+  label('board', "近地点", () => V(X9 + M.ELL.a * DO + 0.2, OY9, 1.0)); label('board', "远地点", () => V(X9 - M.ELL.a * DO - 0.2, OY9, -1.0));
   label('vec blue', 'v', () => tip(vE, 0.15));
   // opened: the satellite at perigee and at apogee, r and v at each
   const kp = [0, M.ELL.T / 2].map((t, k) => {
-    const p = M.ELL.track.at(t), at = W(F9, p), o = { at, p, dot: ball(gE, 0.09, k ? 'At apogee' : 'At perigee', 'ink'), v: vec(gE, 'blue', 'l'), r: seg(gE, { color: '#26262a' }) };
+    const p = M.ELL.track.at(t), at = W(F9, p), o = { at, p, dot: ball(gE, 0.09, k ? "在最高点" : "在近地点", 'ink'), v: vec(gE, 'blue', 'l'), r: seg(gE, { color: '#26262a' }) };
     o.dot.position.copy(at); o.r.set([F9, at]);
     label('vec blue', `v<sub>${k ? 'a' : 'p'}</sub>`, () => tip(o.v, 0.15));
     label('vec', `r<sub>${k ? 'a' : 'p'}</sub>`, () => o.dot.visible ? F9.clone().lerp(at, k ? 0.62 : 0.72).add(V(0, 0, 0.35)) : null);
@@ -276,7 +276,7 @@ export function buildWorld(E) {
 
   // ---------- 11 · the same orbit: kinetic and potential energy trade ----------
   const X10 = STATIONS.orbitE, OY10 = 2.6, F10 = V(X10 + cE, OY10, 0);
-  const gN = asm('orbitE', root, { title: 'Energy round the orbit', sub: 'kinetic and potential trade' });
+  const gN = asm('orbitE', root, { title: "绕轨道运行的能量", sub: "动力贸易和潜在贸易" });
   // opened: frame the satellite (its split force) together with the bars
   gN.userData.focus = () => { const b = V(X10 - 2.3, OY10 - 0.6, 0), c = satN.position.clone().lerp(b, 0.5); return { target: c.toArray(), radius: Math.max(3, c.distanceTo(b) + 1.6) }; };
   globe(gN, F10);
@@ -288,7 +288,7 @@ export function buildWorld(E) {
   const BW = 0.5, BG = 1.1, BX = X10 - 3.4, BZ = 0;   // inside the ellipse, between the Earth and apogee
   lines(root, [BX - BW, OY10, BZ, BX + 2 * BG + BW, OY10, BZ], '#6e6e74');
   const barsN = [['blue', 'K'], ['amber', 'U'], ['paper', 'E']].map(([pal, html], i) => {
-    const bx = BX + i * BG, m = part(gN, new THREE.BoxGeometry(BW, 1, BW), { tone: 'hi', pal, name: 'Energy bars' });
+    const bx = BX + i * BG, m = part(gN, new THREE.BoxGeometry(BW, 1, BW), { tone: 'hi', pal, name: "能量棒" });
     const o = { m, bx, val: 0 };
     label('vec', html, () => V(bx, OY10 + o.val * ORBIT.GJ / 1e9 + (o.val > 0 ? 0.4 : -0.5), BZ), () => `${html} <span style="font-size:14px">${f1(o.val / 1e9)} GJ</span>`);
     return o;
@@ -297,7 +297,7 @@ export function buildWorld(E) {
 
   // ---------- 12 · U(r) = −GMm/r, drawn as a graph hanging below the r axis ----------
   const X11 = STATIONS.well, OY11 = 3.4, C11 = V(X11, OY11, 0), RMAX = 5.6 * M.EARTH.R;
-  const gU = asm('well', root, { title: 'The potential well', sub: 'U = −GMm/r, zero at infinity' });
+  const gU = asm('well', root, { title: "势阱", sub: "U = −GMm/r，无穷远为零" });
   gU.userData.focus = () => ({ target: [X11 + 4.4, OY11 - 2.6, 0], radius: 5.2 });
   globe(gU, C11);
   const uy = U => OY11 + U / 1e9 * WELLS.GJ, ux = r => X11 + r * DO;
@@ -307,27 +307,27 @@ export function buildWorld(E) {
   label('axis', 'r →∞', () => V(ux(RMAX) + 0.55, OY11, 0)); label('axis', 'U', () => V(X11 - 0.3, uy(M.Ugrav(M.EARTH.R)) - 0.5, 0));
   const uPts = Array.from({ length: 160 }, (_, i) => { const r = M.EARTH.R * Math.pow(RMAX / M.EARTH.R, i / 159); return V(ux(r), uy(M.Ugrav(r)), 0); });
   part(gU, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(uPts), 300, 0.035, 8), { tone: 'hi', pal: 'ink', name: 'U(r)' });
-  label('vec', '<i>U</i> = −<i>GMm</i>/<i>r</i>', () => uPts[110].clone().add(V(0.4, -0.45, 0)));
+  label('vec', "<i>U</i> = −<i>GMm</i>/<i>r</i>", () => uPts[110].clone().add(V(0.4, -0.45, 0)));
   const bU = ball(gU, 0.16, 'Satellite'), dotU = ball(gU, 0.07, 'U at r', 'ink'), dropU = seg(gU, { dash: 0.08 }), fU = vec(gU, 'red', 'm');
   label('vec red', 'F<sub>g</sub>', () => tip(fU, 0.12));
   let rU = M.EARTH.R;
   label('tick', '', () => dotU.position.clone().add(V(0.75, -0.25, 0)), () => `U ${f1(M.Ugrav(rU) / 1e9)} GJ`);
   // opened: the tangent at the surface, U(R) + mgh; it only follows the curve close to the ground
-  const tanU = part(gU, cyl(0.025, 1, 10), { tone: 'hi', pal: 'red', name: 'mgh line' });
+  const tanU = part(gU, cyl(0.025, 1, 10), { tone: 'hi', pal: 'red', name: "米格线" });
   { const a = V(ux(M.EARTH.R), uy(M.Ugrav(M.EARTH.R)), 0), h = 1.25 * M.EARTH.R, b = V(ux(M.EARTH.R + h), uy(M.Ugrav(M.EARTH.R) + M.SAT_M * M.EARTH.g * h), 0); stringTo(tanU, a, b); tanU.userData.end = b; }
-  label('vec red', '<i>U</i>(<i>R</i>) + <i>mgh</i>', () => tanU.visible ? tanU.userData.end.clone().add(V(0.9, -0.1, 0)) : null);
+  label('vec red', "<i>U</i>(<i>R</i>) + <i>mgh</i>", () => tanU.visible ? tanU.userData.end.clone().add(V(0.9, -0.1, 0)) : null);
 
   // ---------- 13 · launches from 2 R_E: circle, below, at and above escape speed ----------
   const X12 = STATIONS.escape, OY12 = 1.8, C12 = V(X12, OY12, 0), L12 = V(X12 + M.LAUNCH.r0 * DO, OY12, 0);
-  const gX = asm('escape', root, { title: 'Four launches', sub: 'bound or gone: the sign of E' });
+  const gX = asm('escape', root, { title: "四次发射", sub: "束缚或消失：E 的标志" });
   gX.userData.focus = () => ({ target: [L12.x + 0.9, OY12, -1.9], radius: 2.6 });
   globe(gX, C12);
-  part(root, cyl(0.06, 0.02, 16), { tone: 'hi', pal: 'ink', pos: [L12.x, OY12 - 0.02, 0], name: 'Launch point' });
+  part(root, cyl(0.06, 0.02, 16), { tone: 'hi', pal: 'ink', pos: [L12.x, OY12 - 0.02, 0], name: "发射点" });
   const NAMES = ['v<sub>c</sub>', '0.8 v<sub>esc</sub>', 'v<sub>esc</sub>', '1.2 v<sub>esc</sub>'], ESIGN = ['E < 0', 'E < 0', 'E = 0', 'E > 0'];
   const LX = M.LAUNCH.list.map((o, k) => {
     const pts = pathOf(C12, o.track, 300);
     dyn(root, 300, { dash: 0.12, color: k === 2 ? '#6e6e74' : '#a0a0a6' }).set(pts);
-    const q = { o, b: ball(gX, 0.2, 'Launched balls'), v: vec(gX, 'blue', 'l'), v0: vec(gX, 'blue', 'l') };
+    const q = { o, b: ball(gX, 0.2, "发射球"), v: vec(gX, 'blue', 'l'), v0: vec(gX, 'blue', 'l') };
     // name each path where it is clear of the others
     const end = [W(C12, { x: 0, y: -M.LAUNCH.r0 }).add(V(0, 0, 0.45)), W(C12, o.track.at(o.track.T / 2)).add(V(-0.9, 0, 0)), pts.at(-1).clone().add(V(-0.9, 0, -0.2)), pts.at(-1).clone().add(V(0.9, 0, -0.2))][k];
     label('vec blue', NAMES[k], () => ex(gX) < 0.3 ? end : null);

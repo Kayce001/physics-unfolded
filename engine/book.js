@@ -9,8 +9,8 @@ const smooth = (a, b, x) => { const u = clamp01((x - a) / (b - a)); return u * u
 const ease = u => (u = clamp01(u), u < 0.5 ? 4 * u ** 3 : 1 - (-2 * u + 2) ** 3 / 2);
 const lerp = (a, b, u) => a + (b - a) * u;
 const touch = matchMedia('(pointer: coarse)').matches;
-const CLOSE_HINT = touch ? 'Tap empty space to close' : 'Click empty space or press Esc to close';
-const DEFAULT_HINT = touch ? 'Drag sideways to turn · tap to break it down' : 'Drag to turn · shift-drag to pan · click to break it down';
+const CLOSE_HINT = touch ? "点击空白区域即可关闭" : "单击空白处或按 Esc 关闭";
+const DEFAULT_HINT = touch ? "向侧面拖动即可转动 · 点击即可将其分解" : "拖动转动 · 按住 Shift 键拖动平移 · 单击将其分解";
 // this chapter's directory, as cross-references and deep links name it: kinematics/#3
 const DIR = location.pathname.split('/').filter(s => s && s !== 'index.html').pop();
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -37,21 +37,21 @@ export function startBook(chapter) {
   const practiceHtml = i => {
     const qs = PRACTICE[i] || [];
     if (!qs.length) return '';
-    return `<section class="practice"><div class="kicker">Practice</div>${qs.map((q, n) => `<div class="q" data-q="${n}">
+    return `<section class="practice"><div class="kicker">练习</div>${qs.map((q, n) => `<div class="q" data-q="${n}">
       <p class="qtext"><span class="qn">${n + 1}</span>${q.q}</p>
       ${q.choices ? `<ol class="choices">${q.choices.map((c, k) => `<li><button type="button" data-c="${k}"><span class="letter">${'ABCDE'[k]}</span><span>${c}</span></button></li>`).join('')}</ol>`
-        : '<button type="button" class="reveal">Show the solution</button>'}
+        : '<button type="button" class="reveal">查看解答</button>'}
       <div class="why" hidden>${q.why || q.solution}</div></div>`).join('')}</section>`;
   };
   const xrefHtml = i => {
     const here = `${DIR}/${i}`, links = XREFS.flatMap(([a, al, b, bl, note]) => a === here ? [[b, bl, note]] : b === here ? [[a, al, note]] : []);
     if (!links.length) return '';
-    return `<aside class="xref"><div class="kicker">Compare</div>${links.map(([to, label, note]) => {
+    return `<aside class="xref"><div class="kicker">对照理解</div>${links.map(([to, label, note]) => {
       const [d, k] = to.split('/');
       return `<p><a href="${d === DIR ? '' : `../${d}/`}#${k}">${label} →</a> ${note}</p>`; }).join('')}</aside>`;
   };
   // small screens: the page ends with a way on to the next (book.css shows it there)
-  const turnHtml = i => i < N - 1 ? `<button type="button" class="turn" data-turn="${i + 1}"><span class="kicker">Next page</span>${PAGES[i + 1].title} →</button>` : '';
+  const turnHtml = i => i < N - 1 ? `<button type="button" class="turn" data-turn="${i + 1}"><span class="kicker">下一页</span>${PAGES[i + 1].title} →</button>` : '';
   const sheetHtml = i => { const p = PAGES[i]; return `<div class="kicker">${p.kicker}</div><h1>${p.title}</h1><div class="sub">${p.sub}</div>${p.body}${xrefHtml(i)}${practiceHtml(i)}${turnHtml(i)}`; };
   // answering: click a choice to mark it and show the worked solution
   $('sheet').addEventListener('click', e => {
@@ -80,7 +80,7 @@ export function startBook(chapter) {
     // the address names the page, so it can be bookmarked or linked: kinematics/#3
     history.replaceState(null, '', i ? `#${i}` : location.pathname);
     $('folio').textContent = i + 1;
-    $('figno').textContent = `Fig. ${chapter.no}${i ? '.' + i : ''}`;
+    $('figno').textContent = `图 ${chapter.no}${i ? '.' + i : ''}`;
     $('figtitle').textContent = PAGES[i].fig;
     [...$('dots').children].forEach((b, k) => b.setAttribute('aria-current', k === i));
   }
@@ -89,12 +89,12 @@ export function startBook(chapter) {
   history.scrollRestoration = 'manual';
   addEventListener('hashchange', () => { const k = fromHash(); if (k !== null) goto(k); });
   // a compact pager for small screens, where a row of dots would not fit
-  $('dots').insertAdjacentHTML('afterend', '<span class="pager"><button type="button" aria-label="Previous page">‹</button><span id="pagenum"></span><button type="button" aria-label="Next page">›</button></span><a class="eqlink" href="../equations/">Equations</a><a class="gh" href="https://github.com/nathanliow/atlas-of-physics" aria-label="Source on GitHub"><svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>');
+  $('dots').insertAdjacentHTML('afterend', '<span class="pager"><button type="button" aria-label="上一页">‹</button><span id="pagenum"></span><button type="button" aria-label="下一页">›</button></span><a class="eqlink" href="../equations/">公式表</a><a class="gh" href="https://github.com/Kayce001/physics-unfolded" aria-label="GitHub 源码"><svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>');
   const [prevB, nextB] = document.querySelectorAll('.pager button');
   prevB.onclick = () => goto(Math.round(scrollY / pageH) - 1); nextB.onclick = () => goto(Math.round(scrollY / pageH) + 1);
   PAGES.forEach((p, i) => {
     const b = document.createElement('button');
-    b.setAttribute('aria-label', `Page ${i + 1}: ${p.title}`);
+    b.setAttribute('aria-label', `第 ${i + 1} 页：${p.title}`);
     b.onclick = () => goto(i);
     $('dots').appendChild(b);
   });
@@ -145,7 +145,7 @@ export function startBook(chapter) {
       hovered = k; relight();
       if (k) timeRate = 0;                       // stop at once, so it stays where it was caught
       $('gl').classList.toggle('pointing', !!k);
-      $('hint').textContent = k ? `${E.ASM[k].userData.title} — click to break it down` : selected ? CLOSE_HINT : DEFAULT_HINT;
+      $('hint').textContent = k ? `${E.ASM[k].userData.title} — 单击以分解它` : selected ? CLOSE_HINT : DEFAULT_HINT;
     }
   }
   // drag turns the camera around the subject; shift- or right-drag pans; a still click selects
@@ -209,8 +209,8 @@ export function startBook(chapter) {
     if (!k) { plate.hidden = true; $('hint').textContent = DEFAULT_HINT; return; }
     const u = E.ASM[k].userData;
     plate.innerHTML = `
-      <button class="close" type="button">${touch ? 'Close' : 'Close · Esc'}</button>
-      <div class="kicker">Breakdown</div>
+      <button class="close" type="button">${touch ? '关闭' : "关闭 · Esc"}</button>
+      <div class="kicker">图示拆解</div>
       <h1>${u.title}</h1>
       <div class="sub">${u.sub}</div>
       <p>${PLATES[k].text}</p>

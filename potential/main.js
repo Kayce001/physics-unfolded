@@ -19,15 +19,15 @@ startBook({
   },
   readout(s, page) {
     switch (page.scene) {
-      case 'pair': { const a = M.pair(s.pair.t, 1), b = M.pair(s.pair.t, -1); return `r ${f(a.r * 100, 1)} cm\nlike U ${f(a.U * 1e6, 3)} μJ   unlike U ${f(b.U * 1e6, 3)} μJ`; }
-      case 'square': { const st = M.square(s.square.t); return `charges placed ${st.n} of 4\nU ${f(st.U * 1e6, 3)} μJ`; }
-      case 'uniform': { const r = M.uniPath(s.uniform.t); return `x ${f(r.p[0] * 100, 1)} cm along E\nV ${f(r.V)} V   U = qV ${f(r.U * 1e9)} nJ`; }
+      case 'pair': { const a = M.pair(s.pair.t, 1), b = M.pair(s.pair.t, -1); return `r ${f(a.r * 100, 1)} cm\n同号 U ${f(a.U * 1e6, 3)} μJ   异号 U ${f(b.U * 1e6, 3)} μJ`; }
+      case 'square': { const st = M.square(s.square.t); return `放置的电荷 ${st.n} 为 4\nU ${f(st.U * 1e6, 3)} μJ`; }
+      case 'uniform': { const r = M.uniPath(s.uniform.t); return `x ${f(r.p[0] * 100, 1)} cm 沿 E\nV ${f(r.V)} V U = qV ${f(r.U * 1e9)} nJ`; }
       case 'hill': { const r = M.hillProbe(s.clock); return `r ${f(r * 100, 1)} cm   V ${f(M.Vpoint(M.HILL.Q, r), 1)} V\nE = −dV/dr ${f(M.Epoint(M.HILL.Q, r), 0)} N/C`; }
-      case 'dipole': return `P (axis, ${M.DIP.axisX * 100} cm): V ${f(M.VdipAxis(M.DIP.axisX), 1)} V\nP′ (bisector): V 0.0 V`;
+      case 'dipole': return `P（轴，${M.DIP.axisX * 100} cm）：V ${f(M.VdipAxis(M.DIP.axisX), 1)} V\nP′（平分线）：V 0.0 V`;
       case 'rod': { const a = M.rodProbe(s.clock); return `a ${f(a * 100, 1)} cm   V(P) ${f(M.VrodAxis(a), 1)} V\nV(P′) ${f(M.VrodBis(M.ROD.bisA), 1)} V`; }
-      case 'ring': { const z = M.axisProbe(s.clock); return `z ${f(z * 100, 1)} cm   ring ${f(M.Vring(z), 1)} V   disc ${f(M.Vdisc(z), 1)} V\narc, at its centre: ${f(M.Varc0, 1)} V`; }
-      case 'spheres': { const r = M.sphProbe(s.spheres.t); return `r ${f(r * 100, 1)} cm\nconductor V ${f(M.Vcond(r), 1)} V   insulator V ${f(M.Vins(r), 1)} V`; }
-      case 'accel': { const u = s.accel.t / M.ACC.run, p = M.accel(u, 'p'), e = M.accel(u, 'e'); return `proton  ${f(M.eV(p.K))} eV   ${f(p.v / 1000, 1)} km/s\nelectron ${f(M.eV(e.K))} eV   ${f(e.v / 1e6, 3)} × 10⁶ m/s`; }
+      case 'ring': { const z = M.axisProbe(s.clock); return `z ${f(z * 100, 1)} cm 环 ${f(M.Vring(z), 1)} V 圆盘 ${f(M.Vdisc(z), 1)} V\n圆弧，在其中心：${f(M.Varc0, 1)} V`; }
+      case 'spheres': { const r = M.sphProbe(s.spheres.t); return `r ${f(r * 100, 1)} cm\n导体 V ${f(M.Vcond(r), 1)} V   绝缘体 V ${f(M.Vins(r), 1)} V`; }
+      case 'accel': { const u = s.accel.t / M.ACC.run, p = M.accel(u, 'p'), e = M.accel(u, 'e'); return `质子 ${f(M.eV(p.K))} eV ${f(p.v / 1000, 1)} km/s\n电子 ${f(M.eV(e.K))} eV ${f(e.v / 1e6, 3)} × 10⁶ m/s`; }
     }
     return '';
   },
@@ -43,7 +43,7 @@ startBook({
       put('hill', H, r, v);
       const X = x => CH.sx(x, H.x0, H.x1), Y = y => CH.sy(Math.max(Math.min(y, H.y1), H.y0), H.y0, H.y1);
       q('path[data-tangent="hill"]').forEach(p => p.setAttribute('d', `M${X(r - w)},${Y(v + e * w)}L${X(r + w)},${Y(v - e * w)}`));
-      q('#hilllive').forEach(el => { el.textContent = `at r = ${f(r * 100, 1)} cm the slope is ${f(-e, 0)} V/m, so E = ${f(e, 0)} N/C outward`; }); }
+      q('#hilllive').forEach(el => { el.textContent = `在 r = ${f(r * 100, 1)} cm 处，斜率为 ${f(-e, 0)} V/m，因此 E = ${f(e, 0)} N/C 向外`; }); }
     const rr = M.rodProbe(s.clock); put('rod', R.rod, rr, M.VrodAxis(rr));
     const z = M.axisProbe(s.clock); put('ring', R.ring, z, M.Vring(z)); put('disc', R.ring, z, M.Vdisc(z));
     const r = M.sphProbe(s.spheres.t);

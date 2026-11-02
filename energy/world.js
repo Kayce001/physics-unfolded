@@ -41,7 +41,7 @@ export function buildWorld(E) {
   for (let z = -3; z <= 3; z++) grid.push(-4, 0.001, z, 160, 0.001, z);
   lines(root, grid, '#e6e6e2');
 
-  const smooth = (x0, x1, z0 = -0.9, z1 = 0.9) => part(root, box(x1 - x0, 0.02, z1 - z0, 0.005), { tone: 'lo', pal: 'board', pos: [(x0 + x1) / 2, 0.01, (z0 + z1) / 2], name: 'Surface' });
+  const smooth = (x0, x1, z0 = -0.9, z1 = 0.9) => part(root, box(x1 - x0, 0.02, z1 - z0, 0.005), { tone: 'lo', pal: 'board', pos: [(x0 + x1) / 2, 0.01, (z0 + z1) / 2], name: "表面" });
   const rough = (x0, x1, z0 = -0.9, z1 = 0.9) => {
     smooth(x0, x1, z0, z1);
     const h = [];
@@ -50,7 +50,7 @@ export function buildWorld(E) {
   };
   const block = (parent, s, name = 'Block') => part(parent, box(s, s, s, 0.03), { tone: 'hi', name });
   const ball = (parent, r, name = 'Ball') => part(parent, new THREE.SphereGeometry(r, 40, 24), { tone: 'hi', name });
-  const force = (parent, red = false) => arrow(parent, red ? 'red' : 'ink', { r: 0.022, head: 0.12, headR: 0.06, name: 'Forces' });
+  const force = (parent, red = false) => arrow(parent, red ? 'red' : 'ink', { r: 0.022, head: 0.12, headR: 0.06, name: "部队" });
   const thinArrow = (parent, name = 'Components') => arrow(parent, 'dark', { r: 0.016, head: 0.1, headR: 0.05, name, tone: 'mid' });
   const tip = a => a.visible ? a.localToWorld(V(0, a.userData.arrow.shaft.scale.y + 0.16, 0)) : null;
   const ghostBox = s => { const l = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(s, s, s)), new THREE.LineBasicMaterial({ color: '#bdbdc2' })); l.userData = { noEdge: true }; root.add(l); return l; };
@@ -64,7 +64,7 @@ export function buildWorld(E) {
     const w = 0.26, gap = 0.16;
     const ms = items.map(([pal, html], i) => {
       const bx = x0 + i * (w + gap);
-      const m = part(parent, new THREE.BoxGeometry(w, 1, w), { tone: 'hi', pal, name: 'Energy bars' });
+      const m = part(parent, new THREE.BoxGeometry(w, 1, w), { tone: 'hi', pal, name: "能量棒" });
       label('vec', small(html), () => V(bx, labelY, z + w / 2));
       return { m, bx };
     });
@@ -96,8 +96,8 @@ export function buildWorld(E) {
   // ---------- 1 · work: a box pulled by a rope at 30° ----------
   const XA = STATIONS.pull, SA = 0.6, xA0 = XA - 1.2;
   smooth(XA - 2.0, XA + 2.8);
-  const gA = asm('pull', root, { title: 'Box pulled by a rope', sub: 'only the part of F along Δx does work' });
-  const bA = block(gA, SA, '4.0 kg box');
+  const gA = asm('pull', root, { title: "箱子被绳子拉着", sub: "只有 F 沿 Δx 的部分起作用" });
+  const bA = block(gA, SA, "4.0公斤盒装");
   const ropeA = rod(gA, 0.012, 'ink', 'Rope');
   const FA = force(gA), fgA = force(gA), fnA = force(gA), fxA = thinArrow(gA), fyA = thinArrow(gA), dxA = thinArrow(gA, 'Displacement');
   const ghostA = ghostBox(SA); ghostA.position.set(xA0, 0.02 + SA / 2, 0);
@@ -107,40 +107,40 @@ export function buildWorld(E) {
 
   // ---------- 2 · the sign of work: a ball thrown up ----------
   const XB = STATIONS.toss, RB = 0.15;
-  const gB = asm('toss', root, { title: 'Ball thrown up', sub: 'gravity takes energy, then gives it back' });
-  const bB = ball(gB, RB, '0.50 kg ball');
+  const gB = asm('toss', root, { title: "球抛起", sub: "重力获取能量，然后将其返回" });
+  const bB = ball(gB, RB, "0.50公斤球");
   const vB = force(gB), fgB = force(gB), dyB = thinArrow(gB, 'Displacement');
   label('vec', '<b>v</b>', () => tip(vB)); label('vec', 'F<sub>g</sub>', () => tip(fgB)); label('vec', 'Δ<i>y</i>', () => tip(dyB));
   { const ring = []; for (let i = 0; i < 48; i++) { const a = i / 48 * Math.PI * 2, b = (i + 1) / 48 * Math.PI * 2; ring.push(XB + Math.cos(a) * 0.24, 0.003, Math.sin(a) * 0.24, XB + Math.cos(b) * 0.24, 0.003, Math.sin(b) * 0.24); } lines(root, ring, '#6e6e74'); }
   const barsB = bars(gB, XB + 1.5, 0, 1.45, [['dark', 'K<sub>0</sub>'], ['ink', 'W<sub>g</sub>'], ['blue', 'K']], SC.toss.E, 1.45 - M.toss(0).K * SC.toss.E - 0.2);
   let tossState = M.toss(0);
-  label('board', small('gravity: <b>negative</b> work', 16), () => tossState.v > 0.05 ? bB.position.clone().add(V(0.35, 0.05, 0)) : null);
-  label('board', small('gravity: <b>positive</b> work', 16), () => tossState.v < -0.05 ? bB.position.clone().add(V(0.35, 0.05, 0)) : null);
+  label('board', small("重力：<b>负</b>工作", 16), () => tossState.v > 0.05 ? bB.position.clone().add(V(0.35, 0.05, 0)) : null);
+  label('board', small("重力：<b>正</b>工作", 16), () => tossState.v < -0.05 ? bB.position.clone().add(V(0.35, 0.05, 0)) : null);
 
   // ---------- 3 · no work: a ball whirled on a string over a smooth table ----------
   const XC = STATIONS.whirl, RC = 0.15, R0 = M.WHIRL.r;
   smooth(XC - 1.45, XC + 1.45, -1.45, 1.45);
-  const gC = asm('whirl', root, { title: 'Ball on a string', sub: 'the pull is always sideways to the motion' });
-  part(gC, cyl(0.05, 0.22, 20), { tone: 'hi', pal: 'dark', pos: [XC, 0.13, 0], name: 'Peg' });
-  const bC = ball(gC, RC, '0.50 kg ball'), strC = rod(gC);
+  const gC = asm('whirl', root, { title: "绳子上的球", sub: "拉力总是横向于运动" });
+  part(gC, cyl(0.05, 0.22, 20), { tone: 'hi', pal: 'dark', pos: [XC, 0.13, 0], name: "钉子" });
+  const bC = ball(gC, RC, "0.50公斤球"), strC = rod(gC);
   const vC = force(gC), tC = force(gC);
   const circ = []; for (let i = 0; i < 64; i += 1) { const a = i / 64 * 2 * Math.PI, b = (i + 0.5) / 64 * 2 * Math.PI; circ.push(XC + R0 * Math.cos(a), 0.025, R0 * Math.sin(a), XC + R0 * Math.cos(b), 0.025, R0 * Math.sin(b)); }
   lines(root, circ, '#a8a8ae');
   const corner = lines(gC, new Array(12).fill(0), '#2c2c30');
-  const strobeC = Array.from({ length: 3 }, () => [thinArrow(gC, 'Strobe'), thinArrow(gC, 'Strobe'), part(gC, new THREE.SphereGeometry(RC, 28, 16), { tone: 'lo', name: 'Strobe', mat: shadeMat('paper', { opacity: 0.45 }) })]);
+  const strobeC = Array.from({ length: 3 }, () => [thinArrow(gC, 'Strobe'), thinArrow(gC, 'Strobe'), part(gC, new THREE.SphereGeometry(RC, 28, 16), { tone: 'lo', name: "频闪", mat: shadeMat('paper', { opacity: 0.45 }) })]);
   label('vec', '<b>v</b>', () => tip(vC)); label('vec', 'T', () => tip(tC));
 
   // ---------- 4 · work–energy theorem: a car speeding up ----------
   const XD = STATIONS.car;
-  part(root, box(16, 0.03, 3.4, 0.01), { tone: 'lo', pal: 'board', pos: [XD + 5, 0.015, 0], name: 'Road' });
+  part(root, box(16, 0.03, 3.4, 0.01), { tone: 'lo', pal: 'board', pos: [XD + 5, 0.015, 0], name: "道路" });
   { const dashes = []; for (let x = XD - 3; x < XD + 13; x += 2) dashes.push(x, 0.035, 0, x + 1, 0.035, 0); lines(root, dashes, '#9a9aa0'); }
-  const gD = asm('car', root, { title: 'Car speeding up', sub: 'net work in, kinetic energy out' });
+  const gD = asm('car', root, { title: "汽车加速", sub: "净功输入，动能输出" });
   const carD = new THREE.Group(); gD.add(carD);
-  part(carD, box(4.2, 0.7, 1.8, 0.18), { tone: 'hi', pos: [0, 0.75, 0], name: 'Body' });
-  part(carD, box(2.2, 0.6, 1.6, 0.2), { tone: 'hi', pos: [-0.3, 1.38, 0], name: 'Cabin' });
+  part(carD, box(4.2, 0.7, 1.8, 0.18), { tone: 'hi', pos: [0, 0.75, 0], name: "身体" });
+  part(carD, box(2.2, 0.6, 1.6, 0.2), { tone: 'hi', pos: [-0.3, 1.38, 0], name: "客舱" });
   for (const [x, z] of [[1.35, 0.85], [1.35, -0.85], [-1.35, 0.85], [-1.35, -0.85]]) {
-    part(carD, zAxis(new THREE.CylinderGeometry(0.36, 0.36, 0.26, 28)), { tone: 'mid', pal: 'dark', pos: [x, 0.36, z], name: 'Wheels' });
-    part(carD, zAxis(new THREE.CylinderGeometry(0.17, 0.17, 0.28, 20)), { tone: 'mid', pos: [x, 0.36, z], name: 'Wheels' });
+    part(carD, zAxis(new THREE.CylinderGeometry(0.36, 0.36, 0.26, 28)), { tone: 'mid', pal: 'dark', pos: [x, 0.36, z], name: "轮子" });
+    part(carD, zAxis(new THREE.CylinderGeometry(0.17, 0.17, 0.28, 20)), { tone: 'mid', pos: [x, 0.36, z], name: "轮子" });
   }
   const fD = force(gD), wD = force(gD), nD = force(gD), netD = force(gD, true), dxD = thinArrow(gD, 'Displacement');
   label('vec', 'F', () => tip(fD)); label('vec', 'F<sub>g</sub>', () => tip(wD)); label('vec', 'F<sub>N</sub>', () => tip(nD)); label('vec red', 'ΣF', () => tip(netD)); label('vec', 'Δ<i>x</i>', () => tip(dxD));
@@ -148,8 +148,8 @@ export function buildWorld(E) {
 
   // ---------- 5 · gravitational PE: a ball dropped from 3.0 m ----------
   const XE = STATIONS.drop, RE = 0.15;
-  const gE = asm('drop', root, { title: 'Dropped ball', sub: 'height turns into speed' });
-  const bE = ball(gE, RE, '0.50 kg ball');
+  const gE = asm('drop', root, { title: "掉球", sub: "高度转化为速度" });
+  const bE = ball(gE, RE, "0.50公斤球");
   const fgE = force(gE), vE = force(gE);
   label('vec', 'F<sub>g</sub>', () => tip(fgE)); label('vec', '<b>v</b>', () => tip(vE));
   { const ax = XE - 0.65, t = [ax, 0, 0, ax, M.DROP.h + 0.2, 0];
@@ -160,19 +160,19 @@ export function buildWorld(E) {
   label('board', small('<i>U</i><sub>g</sub> = 0', 16), () => V(XE + 2.15, 0.006, 0.4));
   const ref2 = new THREE.Group(); root.add(ref2);
   { const p = []; const a = V(XE - 1.2, M.DROP.ref2, 0), b = V(XE + 0.6, M.DROP.ref2, 0); for (let i = 0; i < 18; i++) p.push(...a.clone().lerp(b, i / 18).toArray(), ...a.clone().lerp(b, (i + 0.5) / 18).toArray()); lines(ref2, p, '#2c2c30'); }
-  label('board', small('or <i>U</i><sub>g</sub> = 0 here', 16), () => ref2.visible ? V(XE - 0.5, M.DROP.ref2 + 0.13, 0) : null);
+  label('board', small("或此处 <i>U</i><sub>g</sub> = 0", 16), () => ref2.visible ? V(XE - 0.5, M.DROP.ref2 + 0.13, 0) : null);
   const barsE = bars(gE, XE + 1.0, 0, 0.02, [['amber', 'U<sub>g</sub>'], ['blue', 'K'], ['paper', 'E']], SC.drop.E);
 
   // ---------- 6 · spring PE: a block slides into a spring ----------
   const XF = STATIONS.spring, SF = 0.5, wallX = XF + 1.4, Lfree = 1.0, endX = wallX - Lfree;
   smooth(XF - 2.4, wallX);
-  part(root, box(0.16, 1.0, 1.4, 0.02), { tone: 'mid', pal: 'board', pos: [wallX + 0.08, 0.5, 0], name: 'Wall' });
-  const gF = asm('spring', root, { title: 'Block and spring', sub: 'kinetic energy stored, then given back' });
-  const bF = block(gF, SF, '2.0 kg block');
+  part(root, box(0.16, 1.0, 1.4, 0.02), { tone: 'mid', pal: 'board', pos: [wallX + 0.08, 0.5, 0], name: "墙" });
+  const gF = asm('spring', root, { title: "块和弹簧", sub: "储存动能，然后返回" });
+  const bF = block(gF, SF, "2.0公斤块");
   const coil = (() => { const pts = []; const turns = 9, n = 400; for (let i = 0; i <= n; i++) { const u = i / n, a = u * turns * 2 * Math.PI; pts.push(V(u, 0.11 * Math.sin(a), 0.11 * Math.cos(a))); }
     return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 600, 0.016, 8, false); })();
-  const springF = part(gF, coil, { tone: 'hi', pal: 'dark', name: 'Spring' });
-  const capF = part(gF, xAxis(cyl(0.14, 0.03, 28)), { tone: 'hi', pal: 'dark', name: 'Spring' });
+  const springF = part(gF, coil, { tone: 'hi', pal: 'dark', name: "春天" });
+  const capF = part(gF, xAxis(cyl(0.14, 0.03, 28)), { tone: 'hi', pal: 'dark', name: "春天" });
   const fsF = force(gF), dxF = thinArrow(gF, 'Compression');
   label('vec', 'F<sub>s</sub>', () => tip(fsF)); label('vec', 'Δ<i>x</i>', () => tip(dxF));
   dashLine(V(endX, 0.03, -0.75), V(endX, 0.03, 0.75), 10);
@@ -185,7 +185,7 @@ export function buildWorld(E) {
   // up to the crate is the work done so far.
   const XP = STATIONS.push, SP = 0.6, xP0 = XP - 2.2, GB = 0.85, zP = -0.8, Lp = M.PUSH.L, FP = SC.push.F;
   smooth(xP0 - 0.6, xP0 + Lp + M.PUSH.coast + 0.5);
-  part(root, box(Lp + 0.75, 1.4, 0.03, 0.01), { tone: 'lo', pal: 'board', pos: [xP0 + Lp / 2 + 0.12, GB + 0.55, zP - 0.03], name: 'Graph board' });
+  part(root, box(Lp + 0.75, 1.4, 0.03, 0.01), { tone: 'lo', pal: 'board', pos: [xP0 + Lp / 2 + 0.12, GB + 0.55, zP - 0.03], name: "图板" });
   { const t = [xP0, GB, zP, xP0 + Lp + 0.35, GB, zP, xP0, GB, zP, xP0, GB + 1.08, zP];
     for (let i = 1; i <= 3; i++) t.push(xP0 + i, GB, zP, xP0 + i, GB - 0.06, zP);
     for (const F of [10, 20]) t.push(xP0, GB + F * FP, zP, xP0 - 0.06, GB + F * FP, zP);
@@ -193,19 +193,19 @@ export function buildWorld(E) {
     for (const i of [0, 1, 2, 3]) label('tick', small(i ? `${i} m` : '0', 13), () => V(xP0 + i + 0.06, GB - 0.12, zP));
     for (const F of [10, 20]) label('tick', small(`${F} N`, 13), () => V(xP0 - 0.08, GB + F * FP, zP)); }
   label('board', small('<i>F</i>(<i>x</i>)', 18), () => V(xP0 + 0.08, GB + 1.08, zP));
-  part(root, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(samplesV(80, x => V(xP0 + x, GB + M.pushF(x) * FP, zP + 0.01), 0, Lp)), 160, 0.014, 8, false), { tone: 'hi', pal: 'ink', name: 'F(x) curve' });
+  part(root, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(samplesV(80, x => V(xP0 + x, GB + M.pushF(x) * FP, zP + 0.01), 0, Lp)), 160, 0.014, 8, false), { tone: 'hi', pal: 'ink', name: "F(x) 曲线" });
   const fillP = areaMesh(150, x => [xP0 + x, GB, GB + M.pushF(x) * FP], 0, Lp, zP + 0.005);
-  const gP = asm('push', root, { title: 'Crate pushed by a changing force', sub: 'the work is the area under F(x)' });
+  const gP = asm('push', root, { title: "板条箱被不断变化的力量推动", sub: "功是 F(x) 下的面积" });
   gP.userData.focus = () => ({ target: [xP0 + Lp / 2 + 0.55, 0.9, 0], radius: 2.7 });
-  const bP = block(gP, SP, '5.0 kg crate');
-  const fP = force(gP), dotP = part(gP, new THREE.SphereGeometry(0.045, 16, 10), { tone: 'hi', pal: 'ink', name: 'F(x) curve' });
+  const bP = block(gP, SP, "5.0公斤板条箱");
+  const fP = force(gP), dotP = part(gP, new THREE.SphereGeometry(0.045, 16, 10), { tone: 'hi', pal: 'ink', name: "F(x) 曲线" });
   const dropP = liveDash(gP, 10);
   label('vec', '<i>F</i>(<i>x</i>)', () => fP.visible ? fP.position.clone().add(V(0.25, 0.2, 0)) : null);
   label('board', small('area = <i>W</i>', 17), () => pushState.x > 0.9 ? V(xP0 + 0.3, GB + 0.32, zP) : null);
   const NS = 6, stripsP = Array.from({ length: NS }, (_, i) => { const dx = Lp / NS, xm = (i + 0.5) * dx, hgt = M.pushF(xm) * FP;
-    return part(gP, box(dx * 0.92, hgt, 0.04, 0.005), { tone: 'mid', pal: 'dark', pos: [xP0 + xm, GB + hgt / 2, zP + 0.04], ex: [0, 0, 0.55], name: 'Strips' }); });
+    return part(gP, box(dx * 0.92, hgt, 0.04, 0.005), { tone: 'mid', pal: 'dark', pos: [xP0 + xm, GB + hgt / 2, zP + 0.04], ex: [0, 0, 0.55], name: "条状" }); });
   label('board', small('<i>F</i>(<i>x</i><sub>i</sub>) Δ<i>x</i>', 16), () => opened(gP) > 0.3 ? stripsP[1].position.clone().add(V(-0.2, M.pushF(1.5 * Lp / NS) * FP / 2 + 0.14, 0)) : null);
-  label('board', small(`sum of ${NS} strips ≈ ${M.pushStrips(NS).toFixed(1)} J`, 15), () => opened(gP) > 0.3 ? stripsP[4].position.clone().add(V(-0.3, M.pushF(4.5 * Lp / NS) * FP / 2 + 0.55, 0)) : null);
+  label('board', small(`${NS} 条带之和 ≈ ${M.pushStrips(NS).toFixed(1)} J`, 15), () => opened(gP) > 0.3 ? stripsP[4].position.clone().add(V(-0.3, M.pushF(4.5 * Lp / NS) * FP / 2 + 0.55, 0)) : null);
   const barsP = bars(gP, xP0 + Lp + M.PUSH.coast + 0.8, 0, 0.02, [['ink', 'W'], ['blue', 'K']], SC.push.E);
   let pushState = M.push(0);
 
@@ -213,24 +213,24 @@ export function buildWorld(E) {
   const XQ = STATIONS.bead, xQ0 = XQ - M.BEAD.span / 2, RQ = 0.085;
   const wp = x => { const [a, b] = M.wirePoint(x); return V(xQ0 + a, b, 0); };
   const tanQ = x => { const s = M.beadH1(x); return V(Math.sqrt(1 - s * s), s, 0); };
-  part(root, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(samplesV(240, wp, 0, M.BEAD.len)), 480, 0.014, 8, false), { tone: 'hi', pal: 'dark', name: 'Wire' });
-  for (const x of [0, M.BEAD.len]) { const p = wp(x); part(root, cyl(0.025, p.y, 12), { tone: 'mid', pal: 'dark', pos: [p.x, p.y / 2, 0], name: 'Post' }); }
+  part(root, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(samplesV(240, wp, 0, M.BEAD.len)), 480, 0.014, 8, false), { tone: 'hi', pal: 'dark', name: "电线" });
+  for (const x of [0, M.BEAD.len]) { const p = wp(x); part(root, cyl(0.025, p.y, 12), { tone: 'mid', pal: 'dark', pos: [p.x, p.y / 2, 0], name: "邮政" }); }
   dashLine(V(xQ0 - 0.3, 0.006, 0.5), V(xQ0 + M.BEAD.span + 0.3, 0.006, 0.5), 30);
-  label('board', small('<i>U</i> = 0 at the floor', 15), () => V(xQ0 + M.BEAD.span + 0.35, 0.006, 0.5));
+  label('board', small("<i>U</i> = 0 在地板上", 15), () => V(xQ0 + M.BEAD.span + 0.35, 0.006, 0.5));
   for (const [x, txt, dy, dx] of [[M.BEAD.stable, 'stable', -0.22, -0.2], [M.BEAD.unstable, 'unstable', 0.22, -0.35], [M.BEAD.neutral, 'neutral', 0.22, -0.3]]) {
-    const p = wp(x); part(root, new THREE.SphereGeometry(0.03, 12, 8), { tone: 'hi', pal: 'ink', pos: p.toArray(), name: 'Equilibrium' });
+    const p = wp(x); part(root, new THREE.SphereGeometry(0.03, 12, 8), { tone: 'hi', pal: 'ink', pos: p.toArray(), name: "平衡" });
     label('board', small(txt, 15), () => p.clone().add(V(dx, dy, 0)));
   }
-  const gQ = asm('bead', root, { title: 'Bead on a wavy wire', sub: 'the force is minus the slope of U' });
+  const gQ = asm('bead', root, { title: "波浪线上的珠子", sub: "力减去 U 的斜率" });
   gQ.userData.focus = () => { const p = wp(beadState.x); return { target: [p.x, p.y - 0.1, 0], radius: 1.1 }; };
   gQ.userData.minDist = 4;
-  const bQ = ball(gQ, RQ, '0.20 kg bead');
-  const fgQ = force(gQ), alQ = thinArrow(gQ, 'Along the wire'), acQ = thinArrow(gQ, 'Across the wire');
+  const bQ = ball(gQ, RQ, "0.20公斤珠子");
+  const fgQ = force(gQ), alQ = thinArrow(gQ, "沿着电线"), acQ = thinArrow(gQ, "越过电线");
   const tangentQ = liveDash(gQ, 18, '#b8343a');
   label('vec', 'F<sub>g</sub>', () => tip(fgQ));
   label('vec', small('<i>F</i> = −d<i>U</i>/d<i>x</i>', 18), () => { if (!alQ.visible) return null; const t = tanQ(beadState.x); return wp(beadState.x).addScaledVector(t, beadState.F * SC.bead.F / 2).add(V(-t.y, t.x, 0).multiplyScalar(0.24)); });
   label('vec grey', small('across', 15), () => acQ.visible ? tip(acQ).add(V(0, -0.1, 0)) : null);
-  label('board', small('tangent: slope of <i>U</i>', 15), () => opened(gQ) > 0.3 ? wp(beadState.x).add(tanQ(beadState.x).multiplyScalar(0.75)).add(V(0.05, 0.08, 0)) : null);
+  label('board', small("切线：<i>U</i> 的斜率", 15), () => opened(gQ) > 0.3 ? wp(beadState.x).add(tanQ(beadState.x).multiplyScalar(0.75)).add(V(0.05, 0.08, 0)) : null);
   let beadState = M.bead(0);
 
   // ---------- 7c · energy curves and equilibrium: two atoms held by a bond ----------
@@ -239,8 +239,8 @@ export function buildWorld(E) {
   const XN = STATIONS.bond, xN0 = XN - 2.0, DS = SC.bond.r, yZ = 2.05, UY = SC.bond.U, zN = -0.35, BD = M.BOND;
   const rx = r => xN0 + r * DS, uy = U => yZ + U / M.EV * UY, yE = uy(BD.E);
   const rLo = 0.125e-9, rHi = 0.34e-9, rClip = BD.r0 / Math.pow(1 + Math.sqrt(1 + 0.4), 1 / 6), yBot = uy(-1.18 * BD.eps);
-  part(root, box(rx(rHi) - rx(rLo) + 0.15, uy(0.45 * BD.eps) - yBot + 0.1, 0.03, 0.01), { tone: 'lo', pal: 'board', pos: [(rx(rLo) + rx(rHi)) / 2 + 0.05, (uy(0.45 * BD.eps) + yBot) / 2, zN - 0.03], name: 'Graph board' });
-  part(root, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(samplesV(160, r => V(rx(r), uy(M.bondU(r)), zN + 0.01), rClip, rHi)), 320, 0.014, 8, false), { tone: 'hi', pal: 'ink', name: 'U(r) curve' });
+  part(root, box(rx(rHi) - rx(rLo) + 0.15, uy(0.45 * BD.eps) - yBot + 0.1, 0.03, 0.01), { tone: 'lo', pal: 'board', pos: [(rx(rLo) + rx(rHi)) / 2 + 0.05, (uy(0.45 * BD.eps) + yBot) / 2, zN - 0.03], name: "图板" });
+  part(root, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(samplesV(160, r => V(rx(r), uy(M.bondU(r)), zN + 0.01), rClip, rHi)), 320, 0.014, 8, false), { tone: 'hi', pal: 'ink', name: "U(r)曲线" });
   { const t = [rx(rLo), yBot, zN, rx(rHi), yBot, zN, rx(rLo), yBot, zN, rx(rLo), uy(0.45 * BD.eps), zN];
     for (const r of [0.15, 0.2, 0.25, 0.3]) t.push(rx(r * 1e-9), yBot, zN, rx(r * 1e-9), yBot - 0.06, zN);
     for (const U of [0, -1]) t.push(rx(rLo), uy(U * BD.eps), zN, rx(rLo) - 0.06, uy(U * BD.eps), zN);
@@ -255,24 +255,24 @@ export function buildWorld(E) {
   // E line beyond the turning points is dashed: the atom can't go there (K would be negative)
   dashLine(V(rx(BD.r2), yE, zN + 0.01), V(rx(rHi), yE, zN + 0.01), 12);
   for (const r of [BD.r1, BD.r2]) {
-    part(root, new THREE.SphereGeometry(0.035, 12, 8), { tone: 'hi', pal: 'ink', pos: [rx(r), yE, zN + 0.01], name: 'Turning point' });
+    part(root, new THREE.SphereGeometry(0.035, 12, 8), { tone: 'hi', pal: 'ink', pos: [rx(r), yE, zN + 0.01], name: "转折点" });
     dashLine(V(rx(r), yE, zN), V(rx(r), yBot, zN), 10);
   }
-  label('board', small('turning points', 14), () => V(rx(BD.r2) + 0.1, yE + 0.15, zN));
+  label('board', small("转折点", 14), () => V(rx(BD.r2) + 0.1, yE + 0.15, zN));
   // the atoms sit below the board, lined up with its r axis: separation r is read straight up
   const yA = 0.32, zA = 0;
-  const gN = asm('bond', root, { title: 'Two atoms and their bond', sub: 'a particle in a potential well' });
+  const gN = asm('bond', root, { title: "两个原子及其键", sub: "势阱中的粒子" });
   gN.userData.focus = () => ({ target: [(rx(rLo) + rx(rHi)) / 2 - 0.5, 1.4, 0], radius: 1.9 });
-  part(gN, new THREE.SphereGeometry(0.3, 36, 22), { tone: 'hi', pal: 'dark', pos: [xN0, yA, zA], name: 'Heavy atom (held)' });
-  const aN = ball(gN, 0.15, 'Light atom, 1 u');
-  const fN = force(gN, true), dotN = part(gN, new THREE.SphereGeometry(0.045, 16, 10), { tone: 'hi', pal: 'ink', name: 'U(r) curve' });
-  const eDotN = part(gN, new THREE.SphereGeometry(0.04, 16, 10), { tone: 'hi', pal: 'blue', name: 'Kinetic energy' });
-  const kN = rod(gN, 0.016, 'blue', 'Kinetic energy'), guideN = liveDash(gN, 14);
+  part(gN, new THREE.SphereGeometry(0.3, 36, 22), { tone: 'hi', pal: 'dark', pos: [xN0, yA, zA], name: "重原子（持有）" });
+  const aN = ball(gN, 0.15, "轻原子，1 u");
+  const fN = force(gN, true), dotN = part(gN, new THREE.SphereGeometry(0.045, 16, 10), { tone: 'hi', pal: 'ink', name: "U(r)曲线" });
+  const eDotN = part(gN, new THREE.SphereGeometry(0.04, 16, 10), { tone: 'hi', pal: 'blue', name: "动能" });
+  const kN = rod(gN, 0.016, 'blue', "动能"), guideN = liveDash(gN, 14);
   label('vec red', '<i>F</i>', () => tip(fN)); label('vec blue', small('<i>K</i>', 19), () => kN.visible ? kN.position.clone().add(V(0.13, 0, 0)) : null);
-  label('tick', small('heavy atom', 13), () => V(xN0 + 0.35, yA - 0.42, zA));
-  label('tick', small('light atom', 13), () => opened(gN) < 0.05 ? aN.position.clone().add(V(0.3, -0.3, 0)) : null);
+  label('tick', small("重原子", 13), () => V(xN0 + 0.35, yA - 0.42, zA));
+  label('tick', small("轻原子", 13), () => opened(gN) < 0.05 ? aN.position.clone().add(V(0.3, -0.3, 0)) : null);
   // opened: the turns as ghosts, the stable point r0, and the parabola that fits the bottom of the well
-  const ghostsN = [BD.r1, BD.r2].map(r => part(gN, new THREE.SphereGeometry(0.15, 28, 16), { tone: 'lo', name: 'Turning point', pos: [rx(r), yA, zA], mat: shadeMat('paper', { opacity: 0.45 }) }));
+  const ghostsN = [BD.r1, BD.r2].map(r => part(gN, new THREE.SphereGeometry(0.15, 28, 16), { tone: 'lo', name: "转折点", pos: [rx(r), yA, zA], mat: shadeMat('paper', { opacity: 0.45 }) }));
   ghostsN.forEach((g, i) => label('vec grey', small('<i>v</i> = 0', 16), () => g.visible ? g.position.clone().add(V(i ? 0.1 : -0.1, -0.27, 0)) : null));
   const parabN = new THREE.Group(); gN.add(parabN);
   { const p = []; const half = Math.sqrt(2 * 1.05 * BD.eps / BD.k), n = 40; for (let i = 0; i < n; i++) { const r = BD.r0 - half + 2 * half * i / n, r2 = BD.r0 - half + 2 * half * (i + 0.5) / n; p.push(rx(r), uy(-BD.eps + 0.5 * BD.k * (r - BD.r0) ** 2), zN + 0.02, rx(r2), uy(-BD.eps + 0.5 * BD.k * (r2 - BD.r0) ** 2), zN + 0.02); }
@@ -284,12 +284,12 @@ export function buildWorld(E) {
 
   // ---------- 7 · conservation: a pendulum ----------
   const XG = STATIONS.pendulum, PY = 3.3, RG = 0.15;
-  part(root, box(1.0, 0.08, 0.4, 0.02), { tone: 'mid', pal: 'board', pos: [XG, PY + 0.04, 0], name: 'Ceiling' });
-  const gG = asm('pendulum', root, { title: 'Pendulum', sub: 'K and U trade; their sum stays put' });
-  const bG = ball(gG, RG, '1.0 kg bob'), strG = rod(gG);
+  part(root, box(1.0, 0.08, 0.4, 0.02), { tone: 'mid', pal: 'board', pos: [XG, PY + 0.04, 0], name: "天花板" });
+  const gG = asm('pendulum', root, { title: "钟摆", sub: "K 和 U 贸易；他们的总和保持不变" });
+  const bG = ball(gG, RG, "1.0公斤鲍勃"), strG = rod(gG);
   const tG = force(gG), fgG = force(gG), vG = force(gG), tanG = thinArrow(gG), radG = thinArrow(gG);
   label('vec', 'T', () => tip(tG)); label('vec', 'F<sub>g</sub>', () => tip(fgG)?.add(V(-0.14, 0, 0))); label('vec', '<b>v</b>', () => tip(vG));
-  label('vec', small('mg sin θ', 18), () => tanG.visible ? tip(tanG).add(V(Math.sign(-pendTh) * 0.35, 0, 0)) : null); label('vec', small('mg cos θ', 18), () => radG.visible ? tip(radG).add(V(Math.sign(pendTh || 1) * 0.42, -0.05, 0)) : null);
+  label('vec', small("mg sin θ", 18), () => tanG.visible ? tip(tanG).add(V(Math.sign(-pendTh) * 0.35, 0, 0)) : null); label('vec', small("mg cos θ", 18), () => radG.visible ? tip(radG).add(V(Math.sign(pendTh || 1) * 0.42, -0.05, 0)) : null);
   let pendTh = 0;
   { const p = []; for (let i = -40; i < 40; i++) { const a = i / 40 * M.PEND.th0, b = (i + 0.5) / 40 * M.PEND.th0; p.push(XG + M.PEND.L * Math.sin(a), PY - M.PEND.L * Math.cos(a), 0, XG + M.PEND.L * Math.sin(b), PY - M.PEND.L * Math.cos(b), 0); } lines(root, p, '#a8a8ae'); }
   dashLine(V(XG, PY, 0), V(XG, PY - M.PEND.L - 0.35, 0), 16);
@@ -300,8 +300,8 @@ export function buildWorld(E) {
   // ---------- 8 · non-conservative work: a block sliding to a stop ----------
   const XH = STATIONS.slide, SH = 0.5, xH0 = XH - 1.2;
   rough(XH - 1.6, XH + 1.3);
-  const gH = asm('slide', root, { title: 'Block sliding to a stop', sub: 'friction turns K into heat' });
-  const bH = block(gH, SH, '2.0 kg block');
+  const gH = asm('slide', root, { title: "块滑动至停止", sub: "摩擦力将 K 转化为热量" });
+  const bH = block(gH, SH, "2.0公斤块");
   const fH = force(gH), fgH = force(gH), fnH = force(gH), netH = force(gH, true), dxH = thinArrow(gH, 'Displacement');
   label('vec', 'f', () => tip(fH)); label('vec', 'F<sub>g</sub>', () => tip(fgH)); label('vec', 'F<sub>N</sub>', () => tip(fnH)); label('vec red', 'ΣF', () => tip(netH)); label('vec', 'Δ<i>x</i>', () => tip(dxH));
   const ghostH = ghostBox(SH); ghostH.position.set(xH0, 0.02 + SH / 2, 0);
@@ -309,9 +309,9 @@ export function buildWorld(E) {
 
   // ---------- 9 · power: the same crate lifted fast and slow ----------
   const XI = STATIONS.lift, SI = 0.55, CEIL = 3.4, xs = [XI - 0.85, XI + 0.85];
-  part(root, box(3.0, 0.08, 0.5, 0.02), { tone: 'mid', pal: 'board', pos: [XI, CEIL + 0.04, 0], name: 'Ceiling' });
-  const gI = asm('lift', root, { title: 'Lifting a crate', sub: 'same work, different power' });
-  const crates = xs.map(x => block(gI, SI, '10 kg crate'));
+  part(root, box(3.0, 0.08, 0.5, 0.02), { tone: 'mid', pal: 'board', pos: [XI, CEIL + 0.04, 0], name: "天花板" });
+  const gI = asm('lift', root, { title: "举起板条箱", sub: "同样的工作，不同的力量" });
+  const crates = xs.map(x => block(gI, SI, "10公斤板条箱"));
   const ropesI = xs.map(() => rod(gI, 0.012, 'ink', 'Rope'));
   const tI = xs.map(() => force(gI)), wI = xs.map(() => force(gI)), dyI = xs.map(() => thinArrow(gI, 'Displacement'));
   tI.forEach(a => label('vec', 'T', () => tip(a))); wI.forEach(a => label('vec', 'F<sub>g</sub>', () => tip(a)));

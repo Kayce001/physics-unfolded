@@ -29,7 +29,7 @@ export function buildWorld(E) {
   for (let z = -3; z <= 4; z++) grid.push(-4, 0.001, z, 166, 0.001, z);
   lines(root, grid, '#e6e6e2');
 
-  const force = (parent, pal = 'ink') => arrow(parent, pal, { r: 0.022, head: 0.12, headR: 0.06, name: pal === 'red' ? 'Net force' : 'Forces' });
+  const force = (parent, pal = 'ink') => arrow(parent, pal, { r: 0.022, head: 0.12, headR: 0.06, name: pal === 'red' ? "合力" : "部队" });
   const thinArrow = (parent, name) => arrow(parent, 'dark', { r: 0.016, head: 0.09, headR: 0.045, name, tone: 'mid' });
   const tip = (a, d = 0.16) => a.visible ? a.localToWorld(V(0, a.userData.arrow.shaft.scale.y + d, 0)) : null;
   const ghostMat = new THREE.LineBasicMaterial({ color: '#bdbdc2' });
@@ -38,7 +38,7 @@ export function buildWorld(E) {
   const block = (parent, s, name = 'Block') => part(parent, box(s, s, s, 0.03), { tone: 'hi', name });
 
   // a coil spring, reshaped in place whenever its length changes
-  function coil(parent, { coils = 14, R = 0.06, wire = 0.01, name = 'Spring' } = {}) {
+  function coil(parent, { coils = 14, R = 0.06, wire = 0.01, name = "春天" } = {}) {
     const n = coils * 16, geo = liveTube(n + 4, wire);
     const m = part(parent, geo, { tone: 'hi', pal: 'dark', name });
     let last = -1;
@@ -56,8 +56,8 @@ export function buildWorld(E) {
       m.quaternion.setFromUnitVectors(UP, b.clone().sub(a).normalize());
     };
   }
-  const floorStrip = (x0, x1, z0, z1) => part(root, box(x1 - x0, 0.02, z1 - z0, 0.005), { tone: 'lo', pal: 'board', pos: [(x0 + x1) / 2, 0.01, (z0 + z1) / 2], name: 'Surface' });
-  const wall = (x, z, d = 0.7) => part(root, box(0.08, 0.75, d, 0.01), { tone: 'mid', pal: 'board', pos: [x, 0.375 + 0.02, z], name: 'Wall' });
+  const floorStrip = (x0, x1, z0, z1) => part(root, box(x1 - x0, 0.02, z1 - z0, 0.005), { tone: 'lo', pal: 'board', pos: [(x0 + x1) / 2, 0.01, (z0 + z1) / 2], name: "表面" });
+  const wall = (x, z, d = 0.7) => part(root, box(0.08, 0.75, d, 0.01), { tone: 'mid', pal: 'board', pos: [x, 0.375 + 0.02, z], name: "墙" });
 
   // a block on a horizontal spring; x0 is the equilibrium position of the block's centre
   function oscillator(g, x0, z, { s = S, wallX = x0 - 1.35, floor = true } = {}) {
@@ -80,7 +80,7 @@ export function buildWorld(E) {
   // a pendulum: a group at the pivot that turns by θ; the bob hangs L below
   function pend(g, pivot, L, r, name = 'Bob') {
     const arm = new THREE.Group(); arm.position.copy(pivot); g.add(arm);
-    part(arm, cyl(0.007, L, 8).translate(0, -L / 2, 0), { tone: 'hi', pal: 'ink', name: 'String' });
+    part(arm, cyl(0.007, L, 8).translate(0, -L / 2, 0), { tone: 'hi', pal: 'ink', name: "字符串" });
     const bob = part(arm, new THREE.SphereGeometry(r, 40, 28), { tone: 'hi', name, pos: [0, -L, 0] });
     return { arm, bob, at: th => pivot.clone().add(V(L * Math.sin(th), -L * Math.cos(th), 0)), set(th) { arm.rotation.z = th; } };
   }
@@ -92,11 +92,11 @@ export function buildWorld(E) {
     lines(root, c, '#bdbdc2');
     for (const s of [-1, 1]) { const gb = ghostBall(root, r); gb.position.set(pivot.x + L * Math.sin(s * th0), pivot.y - L * Math.cos(s * th0), pivot.z); }
   }
-  const ceiling = (x, y, w, d = 0.5) => part(root, box(w, 0.08, d, 0.02), { tone: 'mid', pal: 'board', pos: [x, y + 0.04, 0], name: 'Ceiling' });
+  const ceiling = (x, y, w, d = 0.5) => part(root, box(w, 0.08, d, 0.02), { tone: 'mid', pal: 'board', pos: [x, y + 0.04, 0], name: "天花板" });
 
   // ---------- 1 · what SHM is: a block on a spring, strobed ----------
   const X0 = STATIONS.spring;
-  const g0 = asm('spring', root, { title: 'Block on a spring', sub: 'back and forth about equilibrium' });
+  const g0 = asm('spring', root, { title: "弹簧上的块", sub: "关于平衡的来回" });
   const o0 = oscillator(g0, X0, 0);
   marks(X0, -0.45, 0.45, M.A);
   // strobe outlines at equal time steps through half a cycle: bunched at the ends
@@ -107,7 +107,7 @@ export function buildWorld(E) {
 
   // ---------- 2 · Hooke's law ----------
   const X1 = STATIONS.hooke;
-  const g1 = asm('hooke', root, { title: 'Restoring force', sub: 'F = −kx, always toward x = 0' });
+  const g1 = asm('hooke', root, { title: "恢复力", sub: "F = −kx，始终朝向 x = 0" });
   const o1 = oscillator(g1, X1, 0);
   marks(X1, -0.45, 0.45, M.A, false);
   const fs1 = force(g1), fg1 = force(g1), fn1 = force(g1), a1 = force(g1, 'red'), dx1 = thinArrow(g1, 'Displacement');
@@ -117,31 +117,31 @@ export function buildWorld(E) {
 
   // ---------- 3 · x, v, a: the block draws its own graph on a moving paper strip ----------
   const X2 = STATIONS.trace, PZ = 0.42, PLEN = 2.9;
-  const g2 = asm('trace', root, { title: 'Its graph', sub: 'position drawn against time' });
+  const g2 = asm('trace', root, { title: "其图", sub: "相对于时间绘制的位置" });
   const o2 = oscillator(g2, X2, 0, { floor: false });
   floorStrip(X2 - 1.39, X2 + 1.25, -0.4, 0.4);
-  part(root, box(1.5, 0.012, PLEN, 0.004), { tone: 'lo', pal: 'base', pos: [X2, 0.008, PZ + PLEN / 2], name: 'Paper' });
+  part(root, box(1.5, 0.012, PLEN, 0.004), { tone: 'lo', pal: 'base', pos: [X2, 0.008, PZ + PLEN / 2], name: "纸" });
   { const c = []; for (const x of [-M.A, M.A]) c.push(X2 + x, 0.016, PZ, X2 + x, 0.016, PZ + PLEN);
     lines(root, c, '#d0d0cc'); lines(root, [X2, 0.016, PZ, X2, 0.016, PZ + PLEN], '#6e6e74'); }
-  const trace = part(g2, liveTube(180, 0.014), { tone: 'hi', pal: 'ink', name: 'Trace' });
-  const pen = part(g2, new THREE.SphereGeometry(0.035, 20, 14), { tone: 'hi', pal: 'ink', name: 'Trace' });
-  const slope2 = part(g2, box(1, 0.016, 0.016, 0.006), { tone: 'hi', pal: 'red', name: 'Slope' });
+  const trace = part(g2, liveTube(180, 0.014), { tone: 'hi', pal: 'ink', name: "踪迹" });
+  const pen = part(g2, new THREE.SphereGeometry(0.035, 20, 14), { tone: 'hi', pal: 'ink', name: "踪迹" });
+  const slope2 = part(g2, box(1, 0.016, 0.016, 0.006), { tone: 'hi', pal: 'red', name: "坡度" });
   const periodTicks = lines(root, new Array(6 * 6).fill(0), '#8a8a8f');
   periodTicks.geometry.attributes.position.setUsage(THREE.DynamicDrawUsage);
   const v2 = force(g2), a2 = force(g2, 'red');
   label('vec', '<i>v</i>', () => tip(v2)); label('vec red', '<i>a</i>', () => tip(a2));
-  label('axis', 'time ↓', () => V(X2 - 0.8, 0.02, PZ + PLEN - 0.2));
+  label('axis', "时间↓", () => V(X2 - 0.8, 0.02, PZ + PLEN - 0.2));
   label('axis', '−<i>A</i>', () => V(X2 - M.A - 0.03, 0.02, PZ + PLEN + 0.12)); label('axis', '+<i>A</i>', () => V(X2 + M.A + 0.18, 0.02, PZ + PLEN + 0.12));
 
   // ---------- 4 · energy: kinetic and spring potential, as bars ----------
   const X3 = STATIONS.energy, BZ = 0;
-  const g3 = asm('energy', root, { title: 'Energy in the spring', sub: 'K + U = ½kA², always' });
+  const g3 = asm('energy', root, { title: "春天的能量", sub: "K + U = ½kA²，始终" });
   const o3 = oscillator(g3, X3, 0);
   marks(X3, -0.45, 0.45, M.A, false);
   const barGeo = box(0.3, 1, 0.3, 0.008).translate(0, 0.5, 0);
   const bar = (x, pal, name, ex = [0, 0, 0]) => part(g3, barGeo, { tone: 'hi', pal, name, pos: [x, 0.02, BZ], ex });
   const BX = X3 + 1.75;   // the bars stand beside the floor, beyond x = +A
-  const bK = bar(BX, 'paper', 'Kinetic energy'), bU = bar(BX + 0.45, 'dark', 'Potential energy');
+  const bK = bar(BX, 'paper', "动能"), bU = bar(BX + 0.45, 'dark', "势能");
   const sU = bar(BX + 1.0, 'dark', 'Total'), sK = bar(BX + 1.0, 'paper', 'Total');
   { const c = []; for (let x = BX - 0.25; x < BX + 1.2; x += 0.1) c.push(x, 0.02 + M.E * BAR, BZ, x + 0.05, 0.02 + M.E * BAR, BZ); lines(root, c, '#8a8a8f'); }
   label('vec', '<i>K</i>', () => V(BX, 0.02 + M.E * BAR + 0.14, BZ)); label('vec', '<i>U</i>', () => V(BX + 0.45, 0.02 + M.E * BAR + 0.14, BZ));
@@ -153,7 +153,7 @@ export function buildWorld(E) {
   // ---------- 5 · the same block hanging from a spring ----------
   const X4 = STATIONS.hang, CY = 3.0, TOPY = CY - M.HANG.L0;     // spring's free end, unstretched
   ceiling(X4, CY, 1.6);
-  const g4 = asm('hang', root, { title: 'Hanging block', sub: 'a new equilibrium, the same period' });
+  const g4 = asm('hang', root, { title: "挂块", sub: "新的均衡，同一时期" });
   const b4 = block(g4, S), coil4 = coil(g4);
   const fs4 = force(g4), fg4 = force(g4), net4 = force(g4, 'red'), d4 = thinArrow(root, 'Stretch');
   const eqEnd = TOPY - M.D;
@@ -161,31 +161,31 @@ export function buildWorld(E) {
     for (let x = X4 - 0.6; x < X4 + 0.75; x += 0.08) c.push(x, TOPY, 0, x + 0.04, TOPY, 0, x, eqEnd, 0, x + 0.04, eqEnd, 0);
     lines(root, c, '#8a8a8f'); }
   setArrow(d4, V(X4 + 0.6, TOPY, 0), V(0, -M.D, 0));
-  label('tick', 'unstretched', () => V(X4 - 0.65, TOPY, 0)); label('tick', 'equilibrium', () => V(X4 - 0.65, eqEnd, 0));
+  label('tick', "未拉伸的", () => V(X4 - 0.65, TOPY, 0)); label('tick', "平衡", () => V(X4 - 0.65, eqEnd, 0));
   label('board', '<i>d</i> = <i>mg</i>/<i>k</i>', () => V(X4 + 0.68, TOPY - M.D / 2, 0));
   label('vec', '<i>F</i><sub>s</sub>', () => { const p = tip(fs4); return p && p.add(V(-0.16, -0.1, 0)); }); label('vec', '<i>F</i><sub>g</sub>', () => tip(fg4)); label('vec red', 'Σ<i>F</i>', () => tip(net4));
 
   // ---------- 6 · the pendulum ----------
   const X5 = STATIONS.pendulum, PIV = V(X5, 3.2, 0);
   ceiling(X5, PIV.y, 1.2);
-  const g5 = asm('pendulum', root, { title: 'The pendulum', sub: 'gravity along the arc pulls it back' });
+  const g5 = asm('pendulum', root, { title: "钟摆", sub: "沿弧线的重力将其拉回" });
   const p5 = pend(g5, PIV, M.PEND.L, 0.11);
   swingGhosts(PIV, M.PEND.L, M.PEND.th0, 0.11);
-  const pf = (pal = 'ink') => arrow(g5, pal, { r: 0.016, head: 0.08, headR: 0.042, name: pal === 'red' ? 'Restoring force' : 'Forces' });
+  const pf = (pal = 'ink') => arrow(g5, pal, { r: 0.016, head: 0.08, headR: 0.042, name: pal === 'red' ? "恢复力" : "部队" });
   const t5 = pf(), w5 = pf(), r5 = pf('red');
-  const sin5 = arrow(g5, 'dark', { r: 0.012, head: 0.07, headR: 0.034, name: 'Components', tone: 'mid' }), cos5 = arrow(g5, 'dark', { r: 0.012, head: 0.07, headR: 0.034, name: 'Components', tone: 'mid' });
-  label('vec', '<i>T</i>', () => t5.visible ? t5.localToWorld(V(-0.12, t5.userData.arrow.shaft.scale.y * 0.6, 0)) : null); label('vec', '<i>mg</i>', () => tip(w5)); label('vec red', '−<i>mg</i> sin θ', () => tip(r5, 0.3));
-  label('vec', '<i>mg</i> sin θ', () => tip(sin5, 0.32)); label('vec', '<i>mg</i> cos θ', () => { const p = tip(cos5, 0.14); return p && p.add(V(0.12, 0, 0)); });
+  const sin5 = arrow(g5, 'dark', { r: 0.012, head: 0.07, headR: 0.034, name: "成分", tone: 'mid' }), cos5 = arrow(g5, 'dark', { r: 0.012, head: 0.07, headR: 0.034, name: "成分", tone: 'mid' });
+  label('vec', '<i>T</i>', () => t5.visible ? t5.localToWorld(V(-0.12, t5.userData.arrow.shaft.scale.y * 0.6, 0)) : null); label('vec', '<i>mg</i>', () => tip(w5)); label('vec red', "−<i>mg</i> sin θ", () => tip(r5, 0.3));
+  label('vec', "<i>mg</i> sin θ", () => tip(sin5, 0.32)); label('vec', "<i>mg</i> cos θ", () => { const p = tip(cos5, 0.14); return p && p.add(V(0.12, 0, 0)); });
   label('axis', 'θ', () => PIV.clone().add(V(0.16, -0.55, 0)));
   label('tick', `<i>L</i> = ${M.PEND.L.toFixed(1)} m`, () => PIV.clone().add(V(-0.08, -0.75, 0)));
 
   // ---------- 7 · double the period: 4× the mass, 4× the length ----------
   const X6 = STATIONS.double, D = M.DOUBLE, PY6 = 3.4;
-  const g6s = asm('springs4', root, { title: 'Mass and period', sub: 'four times the mass, twice the period' });
+  const g6s = asm('springs4', root, { title: "质量和期间", sub: "四倍质量，两倍周期" });
   const o6a = oscillator(g6s, X6 - 1.9, 0.6), o6b = oscillator(g6s, X6 - 1.9, -0.6, { s: S4 });
   label('tick', '<i>m</i>', () => V(o6a.b.position.x + S / 2, S + 0.14, 0.6 + S / 2)); label('tick', '4<i>m</i>', () => V(o6b.b.position.x + S4 / 2, S4 + 0.14, -0.6 + S4 / 2));
   ceiling(X6 + 1.1, PY6, 1.8);
-  const g6p = asm('pend4', root, { title: 'Length and period', sub: 'four times the length, twice the period' });
+  const g6p = asm('pend4', root, { title: "长度和周期", sub: "四倍长度，两倍周期" });
   const pv6a = V(X6 + 0.6, PY6, 0), pv6b = V(X6 + 1.6, PY6, 0);
   const p6a = pend(g6p, pv6a, D.L, 0.1), p6b = pend(g6p, pv6b, D.L4, 0.1);
   swingGhosts(pv6a, D.L, D.th0, 0.1); swingGhosts(pv6b, D.L4, D.th0, 0.1);
@@ -193,20 +193,20 @@ export function buildWorld(E) {
 
   // ---------- 8 · what the period ignores: amplitude, and the pendulum's mass ----------
   const X7 = STATIONS.ignore, I = M.IGNORE, PY7 = 2.7;
-  const g7a = asm('amp', root, { title: 'Two amplitudes', sub: 'same spring, same mass, same period' });
+  const g7a = asm('amp', root, { title: "两个振幅", sub: "相同的弹簧，相同的质量，相同的周期" });
   const o7a = oscillator(g7a, X7 - 1.6, 0.6), o7b = oscillator(g7a, X7 - 1.6, -0.6);
   label('tick', `<i>A</i> = ${I.A1.toFixed(2)} m`, () => V(X7 - 1.6 + 1.2, 0.05, 0.6 + 0.45)); label('tick', `<i>A</i> = ${I.A2.toFixed(2)} m`, () => V(X7 - 1.6 + 1.2, 0.05, -0.6 + 0.45));
   ceiling(X7 + 0.95, PY7, 1.6);
-  const g7p = asm('bobs', root, { title: 'Two masses', sub: 'same length, same period' });
+  const g7p = asm('bobs', root, { title: "两个质量", sub: "相同长度、相同时期" });
   const pv7a = V(X7 + 0.5, PY7, 0), pv7b = V(X7 + 1.4, PY7, 0), r7b = 0.1 * Math.cbrt(I.m2 / I.m1);
-  const p7a = pend(g7p, pv7a, I.L, 0.1, '1.0 kg bob'), p7b = pend(g7p, pv7b, I.L, r7b, '4.0 kg bob');
+  const p7a = pend(g7p, pv7a, I.L, 0.1, "1.0公斤鲍勃"), p7b = pend(g7p, pv7b, I.L, r7b, "4.0公斤鲍勃");
   swingGhosts(pv7a, I.L, I.th0, 0.1); swingGhosts(pv7b, I.L, I.th0, r7b);
   label('tick', '1 kg', () => p7a.at(0).add(V(-0.14, -0.22, 0))); label('tick', '4 kg', () => p7b.at(0).add(V(-0.18, -0.28, 0)));
 
 
   // ---------- 9 · the SHM equation: two blocks, same spring, started differently ----------
   const X9 = STATIONS.ode, YC9 = 1.45;
-  const g9 = asm('starts', root, { title: 'Two starts', sub: 'same ω, different A and φ' });
+  const g9 = asm('starts', root, { title: "两次启动", sub: "相同的 ω，不同的 A 和 φ" });
   g9.userData.focus = () => ({ target: [X9 + 0.05, 0.95, 0], radius: 2.6 });
   const ref9 = new THREE.Group(); g9.add(ref9);
   const o9 = M.STARTS.map((st, i) => {
@@ -226,7 +226,7 @@ export function buildWorld(E) {
     c.push(cx - st.A - 0.1, cy, 0, cx + st.A + 0.1, cy, 0);                            // the 0 of the angle
     c.push(cx, cy, 0, cx + st.A * Math.cos(st.phi), cy + st.A * Math.sin(st.phi), 0);    // the start radius, at φ
     lines(ref9, c, '#8a8a8f');
-    const dot = part(ref9, new THREE.SphereGeometry(0.04, 20, 14), { tone: 'hi', pal: 'red', name: 'Reference circle' });
+    const dot = part(ref9, new THREE.SphereGeometry(0.04, 20, 14), { tone: 'hi', pal: 'red', name: "参考圆" });
     const rad = lines(ref9, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], '#c23b2a');
     rad.geometry.attributes.position.setUsage(THREE.DynamicDrawUsage);
     label('board', `φ = ${(st.phi / M.DEG).toFixed(0)}°`, () => ref9.visible ? V(cx + st.A + 0.1, cy + 0.14, 0) : null);
@@ -236,50 +236,50 @@ export function buildWorld(E) {
   // ---------- 10 · the physical pendulum: a rod, a hoop, and a string of the same length ----------
   const X10 = STATIONS.physical, PY10 = 3.2, RD = M.ROD, HP = M.HOOP;
   ceiling(X10 - 0.1, PY10, 3.0);
-  const pin = (g, at) => part(g, zAxis(cyl(0.025, 0.2, 16)), { tone: 'mid', pal: 'dark', pos: at.toArray(), name: 'Pivot' });
-  const gs10 = asm('string', root, { title: 'A simple pendulum', sub: 'all its mass at one distance' });
+  const pin = (g, at) => part(g, zAxis(cyl(0.025, 0.2, 16)), { tone: 'mid', pal: 'dark', pos: at.toArray(), name: "枢轴" });
+  const gs10 = asm('string', root, { title: "一个简单的钟摆", sub: "其全部质量在一定距离处" });
   const pv10s = V(X10 - 1.1, PY10, 0), p10s = pend(gs10, pv10s, RD.L, 0.1);
   gs10.userData.focus = () => ({ target: [pv10s.x, PY10 - 0.85, 0], radius: 1.1 });
   swingGhosts(pv10s, RD.L, RD.th0, 0.1);
-  label('tick', `string, <i>L</i> = ${RD.L.toFixed(1)} m`, () => pv10s.clone().add(V(-0.12, -0.9, 0)));
-  const g10 = asm('rod', root, { title: 'A swinging rod', sub: 'a physical pendulum: I about the pivot' });
+  label('tick', `字符串，<i>L</i> = ${RD.L.toFixed(1)} m`, () => pv10s.clone().add(V(-0.12, -0.9, 0)));
+  const g10 = asm('rod', root, { title: "一根摇杆", sub: "物理摆：我关于枢轴" });
   g10.userData.focus = () => ({ target: [X10 - 0.05, PY10 - 0.85, 0], radius: 1.2 });
   const pv10 = V(X10 - 0.05, PY10, 0), rodArm = new THREE.Group(); rodArm.position.copy(pv10); g10.add(rodArm);
-  part(rodArm, box(0.07, RD.L, 0.07, 0.02).translate(0, -RD.L / 2, 0), { tone: 'hi', name: 'Rod' });
+  part(rodArm, box(0.07, RD.L, 0.07, 0.02).translate(0, -RD.L / 2, 0), { tone: 'hi', name: "杆" });
   pin(g10, pv10.clone().add(V(0, -0.04, 0)));
   swingGhosts(pv10, RD.L, RD.th0, 0.001);
-  const cm10 = part(rodArm, new THREE.SphereGeometry(0.03, 16, 12), { tone: 'hi', pal: 'ink', pos: [0, -RD.d, 0.05], name: 'Centre of mass' });
-  const eq10 = part(rodArm, box(0.2, 0.025, 0.09, 0.008), { tone: 'hi', pal: 'red', pos: [0, -RD.Leq, 0], name: 'Keeps time with a 2L/3 string' });
-  const w10 = pf => arrow(g10, pf, { r: 0.016, head: 0.08, headR: 0.042, name: pf === 'red' ? 'Restoring' : 'Weight', tone: pf === 'dark' ? 'mid' : 'hi' });
+  const cm10 = part(rodArm, new THREE.SphereGeometry(0.03, 16, 12), { tone: 'hi', pal: 'ink', pos: [0, -RD.d, 0.05], name: "质心" });
+  const eq10 = part(rodArm, box(0.2, 0.025, 0.09, 0.008), { tone: 'hi', pal: 'red', pos: [0, -RD.Leq, 0], name: "用 2L/3 弦计时" });
+  const w10 = pf => arrow(g10, pf, { r: 0.016, head: 0.08, headR: 0.042, name: pf === 'red' ? "正在恢复" : "重力", tone: pf === 'dark' ? 'mid' : 'hi' });
   const mg10 = w10('ink'), sin10 = w10('red');
-  label('vec', '<i>mg</i>', () => tip(mg10)); label('vec red', '<i>mg</i> sin θ', () => tip(sin10, 0.32));
+  label('vec', '<i>mg</i>', () => tip(mg10)); label('vec red', "<i>mg</i> sin θ", () => tip(sin10, 0.32));
   label('tick', 'cm', () => rodArm.localToWorld(V(-0.07, -RD.d, 0)));
-  label('tick', `rod, <i>L</i> = ${RD.L.toFixed(1)} m`, () => pv10.clone().add(V(0.62, -1.55, 0)));
+  label('tick', `杆，<i>L</i> = ${RD.L.toFixed(1)} 米`, () => pv10.clone().add(V(0.62, -1.55, 0)));
   label('axis', '2<i>L</i>/3', () => ex(g10) > 0.3 ? rodArm.localToWorld(V(-0.14, -RD.Leq, 0)) : null);
   label('axis', '<i>d</i> = <i>L</i>/2', () => ex(g10) > 0.3 ? rodArm.localToWorld(V(-0.08, -RD.d / 2, 0)) : null);
-  const g10h = asm('hoop', root, { title: 'A hoop on a nail', sub: 'I = mR² + mR² by the parallel axes' });
+  const g10h = asm('hoop', root, { title: "钉子上有一个箍", sub: "I = mR² + mR²（平行轴）" });
   g10h.userData.focus = () => ({ target: [X10 + 1.25, PY10 - 0.5, 0], radius: 0.85 });
   const pv10h = V(X10 + 1.25, PY10 - 0.04, 0), hoopArm = new THREE.Group(); hoopArm.position.copy(pv10h); g10h.add(hoopArm);
-  part(hoopArm, new THREE.TorusGeometry(HP.R, 0.022, 14, 96).translate(0, -HP.R - 0.022, 0), { tone: 'hi', name: 'Hoop' });
+  part(hoopArm, new THREE.TorusGeometry(HP.R, 0.022, 14, 96).translate(0, -HP.R - 0.022, 0), { tone: 'hi', name: "箍" });
   pin(g10h, pv10h.clone().add(V(0, -0.012, 0)));
-  part(root, cyl(0.012, 0.04, 8), { tone: 'mid', pal: 'dark', pos: [pv10h.x, PY10 - 0.02, 0], name: 'Nail' });
+  part(root, cyl(0.012, 0.04, 8), { tone: 'mid', pal: 'dark', pos: [pv10h.x, PY10 - 0.02, 0], name: "钉子" });
   { const c = []; for (let y = 0; y < 2 * HP.R + 0.05; y += 0.1) c.push(pv10h.x, pv10h.y - y, 0, pv10h.x, pv10h.y - Math.min(y + 0.05, 2 * HP.R + 0.05), 0); lines(root, c, '#bdbdc2'); }
-  const cmh = part(hoopArm, new THREE.SphereGeometry(0.03, 16, 12), { tone: 'hi', pal: 'ink', pos: [0, -HP.R - 0.022, 0], name: 'Centre of mass' });
+  const cmh = part(hoopArm, new THREE.SphereGeometry(0.03, 16, 12), { tone: 'hi', pal: 'ink', pos: [0, -HP.R - 0.022, 0], name: "质心" });
   const dh = lines(hoopArm, [0, 0, 0, 0, -HP.R - 0.022, 0], '#6e6e74');
-  const mgh = arrow(g10h, 'ink', { r: 0.014, head: 0.07, headR: 0.036, name: 'Weight' });
+  const mgh = arrow(g10h, 'ink', { r: 0.014, head: 0.07, headR: 0.036, name: "重力" });
   label('vec', '<i>mg</i>', () => tip(mgh));
-  label('tick', `hoop, <i>R</i> = ${HP.R.toFixed(2)} m`, () => pv10h.clone().add(V(-HP.R - 0.1, -HP.R, 0)));
+  label('tick', `箍，<i>R</i> = ${HP.R.toFixed(2)} 米`, () => pv10h.clone().add(V(-HP.R - 0.1, -HP.R, 0)));
   label('axis', '<i>d</i> = <i>R</i>', () => ex(g10h) > 0.3 ? hoopArm.localToWorld(V(-0.04, -HP.R / 2, 0)) : null);
 
   // ---------- 11 · the torsion pendulum: a disc twisting on a wire ----------
   const X11 = STATIONS.torsion, TS = M.TORS, PY11 = 2.75, DY = 1.55, DH = 0.05;
   ceiling(X11, PY11, 1.0);
-  const g11 = asm('disc', root, { title: 'A disc on a wire', sub: 'twist it and it twists back: τ = −κθ' });
+  const g11 = asm('disc', root, { title: "电线上的光盘", sub: "扭转它，它又扭转回来： τ = −κθ" });
   g11.userData.focus = () => ({ target: [X11, DY + 0.15, 0], radius: 0.7 });
-  part(g11, cyl(0.006, PY11 - DY - DH / 2, 8), { tone: 'hi', pal: 'ink', pos: [X11, (PY11 + DY + DH / 2) / 2, 0], name: 'Wire' });
+  part(g11, cyl(0.006, PY11 - DY - DH / 2, 8), { tone: 'hi', pal: 'ink', pos: [X11, (PY11 + DY + DH / 2) / 2, 0], name: "电线" });
   const disc = new THREE.Group(); disc.position.set(X11, DY, 0); g11.add(disc);
-  part(disc, cyl(TS.R, DH, 64), { tone: 'hi', name: 'Disc' });
-  part(disc, box(TS.R - 0.03, 0.012, 0.035, 0.004), { tone: 'hi', pal: 'dark', pos: [(TS.R - 0.03) / 2 + 0.015, DH / 2 + 0.004, 0], name: 'Mark' });
+  part(disc, cyl(TS.R, DH, 64), { tone: 'hi', name: "光盘" });
+  part(disc, box(TS.R - 0.03, 0.012, 0.035, 0.004), { tone: 'hi', pal: 'dark', pos: [(TS.R - 0.03) / 2 + 0.015, DH / 2 + 0.004, 0], name: "马克" });
   { const c = [], y = DY + DH / 2 + 0.012, r = TS.R + 0.16, n = 40;   // the rest line, the two turning lines and the arc between them
     for (const a of [-TS.th0, 0, TS.th0]) c.push(X11, y, 0, X11 + r * Math.cos(a), y, -r * Math.sin(a));
     for (let k = 0; k < n; k++) { const a = -TS.th0 + 2 * TS.th0 * k / n, b = -TS.th0 + 2 * TS.th0 * (k + 1) / n; c.push(X11 + r * Math.cos(a), y, -r * Math.sin(a), X11 + r * Math.cos(b), y, -r * Math.sin(b)); }
@@ -287,37 +287,37 @@ export function buildWorld(E) {
   label('axis', 'θ = 0', () => V(X11 + TS.R + 0.42, DY + 0.1, 0));
   label('axis', `±${(TS.th0 / M.DEG).toFixed(0)}°`, () => V(X11 + (TS.R + 0.2) * Math.cos(TS.th0) + 0.14, DY + 0.04, -(TS.R + 0.2) * Math.sin(TS.th0)));
   label('tick', `κ = ${TS.kappa} N·m/rad`, () => V(X11 - 0.06, DY + 0.6, 0));
-  label('tick', `${TS.M.toFixed(1)} kg disc, <i>R</i> = ${TS.R.toFixed(2)} m`, () => V(X11 - TS.R - 0.08, DY - 0.12, 0));
+  label('tick', `${TS.M.toFixed(1)} kg 圆盘，<i>R</i> = ${TS.R.toFixed(2)} m`, () => V(X11 - TS.R - 0.08, DY - 0.12, 0));
   // the restoring torque (opened): a red curved arrow round the rim, back toward θ = 0
   const tq = new THREE.Group(); g11.add(tq);
-  const tqArc = part(tq, liveTube(24, 0.014), { tone: 'hi', pal: 'red', name: 'Restoring torque' });
-  const tqTip = part(tq, new THREE.ConeGeometry(0.03, 0.08, 20), { tone: 'hi', pal: 'red', name: 'Restoring torque' });
+  const tqArc = part(tq, liveTube(24, 0.014), { tone: 'hi', pal: 'red', name: "恢复力矩" });
+  const tqTip = part(tq, new THREE.ConeGeometry(0.03, 0.08, 20), { tone: 'hi', pal: 'red', name: "恢复力矩" });
   const TQR = TS.R + 0.07, TQY = DY + DH / 2 + 0.03;
   let tqMid = 0;
   label('vec red', 'τ', () => tq.visible ? V(X11 + (TQR + 0.12) * Math.cos(tqMid), TQY + 0.08, -(TQR + 0.12) * Math.sin(tqMid)) : null);
 
   // ---------- 12 · everyday: a car bouncing on its springs, a child on a swing ----------
   const X8 = STATIONS.life, C = M.CAR, BODY0 = 0.85;    // body's underside at equilibrium
-  part(root, box(7, 0.03, 3.0, 0.01), { tone: 'lo', pal: 'board', pos: [X8 - 1.5, 0.015, 0], name: 'Road' });
-  const g8c = asm('car', root, { title: 'A car on its springs', sub: `${C.m} kg on four springs, no shock absorbers` });
+  part(root, box(7, 0.03, 3.0, 0.01), { tone: 'lo', pal: 'board', pos: [X8 - 1.5, 0.015, 0], name: "道路" });
+  const g8c = asm('car', root, { title: "弹簧上的汽车", sub: `${C.m} kg，四个弹簧，无减震器` });
   const carBody = new THREE.Group(); g8c.add(carBody);
-  part(carBody, box(4.2, 0.7, 1.7, 0.18), { tone: 'hi', pos: [0, 0.35, 0], name: 'Body' });
-  part(carBody, box(2.2, 0.6, 1.5, 0.2), { tone: 'hi', pos: [-0.3, 0.98, 0], name: 'Cabin' });
+  part(carBody, box(4.2, 0.7, 1.7, 0.18), { tone: 'hi', pos: [0, 0.35, 0], name: "身体" });
+  part(carBody, box(2.2, 0.6, 1.5, 0.2), { tone: 'hi', pos: [-0.3, 0.98, 0], name: "客舱" });
   const carSprings = [], CXc = X8 - 2.2;
   for (const [x, z] of [[1.35, 1.0], [1.35, -1.0], [-1.35, 1.0], [-1.35, -1.0]]) {
-    part(g8c, zAxis(new THREE.CylinderGeometry(0.36, 0.36, 0.24, 28)), { tone: 'mid', pal: 'dark', pos: [CXc + x, 0.36, z], name: 'Wheels' });
-    part(g8c, zAxis(new THREE.CylinderGeometry(0.15, 0.15, 0.26, 20)), { tone: 'mid', pos: [CXc + x, 0.36, z], name: 'Wheels' });
-    carSprings.push([coil(g8c, { coils: 6, R: 0.08, wire: 0.014, name: 'Springs' }), V(CXc + x, 0.36, z * 0.72)]);
+    part(g8c, zAxis(new THREE.CylinderGeometry(0.36, 0.36, 0.24, 28)), { tone: 'mid', pal: 'dark', pos: [CXc + x, 0.36, z], name: "轮子" });
+    part(g8c, zAxis(new THREE.CylinderGeometry(0.15, 0.15, 0.26, 20)), { tone: 'mid', pos: [CXc + x, 0.36, z], name: "轮子" });
+    carSprings.push([coil(g8c, { coils: 6, R: 0.08, wire: 0.014, name: "斯普林斯" }), V(CXc + x, 0.36, z * 0.72)]);
   }
   const a8 = force(g8c, 'red');
   label('vec red', '<i>a</i>', () => tip(a8));
   const SW = M.SWING, PV8 = V(X8 + 1.0, 3.0, 0);
-  part(root, box(0.12, 0.12, 1.2, 0.03), { tone: 'mid', pal: 'board', pos: [PV8.x, PV8.y + 0.06, 0], name: 'Branch' });
-  const g8s = asm('swing', root, { title: 'A swing', sub: `a pendulum ${SW.L.toFixed(1)} m long` });
+  part(root, box(0.12, 0.12, 1.2, 0.03), { tone: 'mid', pal: 'board', pos: [PV8.x, PV8.y + 0.06, 0], name: "分公司" });
+  const g8s = asm('swing', root, { title: "一个秋千", sub: `摆锤 ${SW.L.toFixed(1)} 米长` });
   const swingArm = new THREE.Group(); swingArm.position.copy(PV8); g8s.add(swingArm);
-  for (const z of [-0.28, 0.28]) part(swingArm, cyl(0.01, SW.L, 8).translate(0, -SW.L / 2, z), { tone: 'hi', pal: 'ink', name: 'Ropes' });
-  part(swingArm, box(0.45, 0.05, 0.7, 0.02), { tone: 'hi', pal: 'dark', pos: [0, -SW.L, 0], name: 'Seat' });
-  part(swingArm, box(0.32, 0.5, 0.36, 0.06), { tone: 'hi', pos: [0, -SW.L + 0.27, 0], name: 'Child' });
+  for (const z of [-0.28, 0.28]) part(swingArm, cyl(0.01, SW.L, 8).translate(0, -SW.L / 2, z), { tone: 'hi', pal: 'ink', name: "绳索" });
+  part(swingArm, box(0.45, 0.05, 0.7, 0.02), { tone: 'hi', pal: 'dark', pos: [0, -SW.L, 0], name: "座位" });
+  part(swingArm, box(0.32, 0.5, 0.36, 0.06), { tone: 'hi', pos: [0, -SW.L + 0.27, 0], name: "儿童" });
   swingGhosts(PV8, SW.L, SW.th0, 0.001);
   label('tick', `${SW.m} kg`, () => swingArm.localToWorld(V(-0.2, -SW.L + 0.62, 0.2)));
   label('tick', `${C.m} kg`, () => carBody.localToWorld(V(1.3, 0.35, 0.9)));

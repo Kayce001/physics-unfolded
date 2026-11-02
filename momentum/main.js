@@ -25,19 +25,19 @@ startBook({
   },
   readout(s, page) {
     switch (page.scene) {
-      case 'mom': return `ball p = ${f(M.BALL.m, 1)} × ${f(M.BALL.v, 1)} = ${f(M.p(M.BALL.m, M.BALL.v))} kg·m/s\ncart p = ${f(M.CART.m, 1)} × ${f(M.CART.v, 1)} = ${f(M.p(M.CART.m, M.CART.v))} kg·m/s`;
+      case 'mom': return `小球 p = ${f(M.BALL.m, 1)} × ${f(M.BALL.v, 1)} = ${f(M.p(M.BALL.m, M.BALL.v))} kg·m/s\n小车 p = ${f(M.CART.m, 1)} × ${f(M.CART.v, 1)} = ${f(M.p(M.CART.m, M.CART.v))} kg·m/s`;
       case 'wall': { const w = M.wall(s.wall.t); return `t ${f(s.wall.t, 3)} s   F ${f(Math.abs(w.F), 1)} N\nv ${f(w.v)} m/s   p ${f(w.p)} kg·m/s`; }
-      case 'eggs': { const a = M.egg(s.eggs.t, M.EGG.tauSoft), b = M.egg(s.eggs.t, M.EGG.tauHard); return `pillow: v ${f(a.v)} m/s   F_net ${f(a.Fnet)} N\nfloor: v ${f(b.v)} m/s   F_net ${f(b.Fnet)} N`; }
+      case 'eggs': { const a = M.egg(s.eggs.t, M.EGG.tauSoft), b = M.egg(s.eggs.t, M.EGG.tauHard); return `软垫: v ${f(a.v)} m/s   F_net ${f(a.Fnet)} N\n地面: v ${f(b.v)} m/s   F_net ${f(b.Fnet)} N`; }
       case 'stick': case 'bounce': case 'burst': { const c = { stick: M.STICK, bounce: M.BOUNCE, burst: M.BURST }[page.scene], r = M.track(c, s[page.scene].t);
         return `p₁ ${f(r.p1, 1)}   p₂ ${f(r.p2, 1)}   P ${f(r.P, 1)} kg·m/s\nKE ${f(r.K)} J`; }
-      case 'pend': { const q = M.pend(s.pend.t); return q.stuck ? `θ ${(q.th * 180 / Math.PI).toFixed(1)}°   KE ${f(q.K)} J   Ug ${f(q.U)} J\nKE + Ug = ${f(q.K + q.U)} J` : `clay: v ${f(M.PEND.u, 1)} m/s   p ${f(M.PEND.m * M.PEND.u)} kg·m/s\nKE ${f(q.K)} J`; }
-      case 'crash': { const q = M.crash(s.crash.t), C = M.CRASH; return q.after ? `together: v′ ${f(C.v)} m/s at ${C.angle.toFixed(1)}°\nP ${Math.round(C.P)} kg·m/s` : `car ${f(C.v1, 0)} m/s east   truck ${f(C.v2, 0)} m/s north\nP ${Math.round(C.P)} kg·m/s`; }
-      case 'shell': { const q = M.shell(s.shell.t); return `t ${f(s.shell.t)} s   x_cm ${f(q.cm[0])} m\n${q.burst ? `halves at ${f(q.a[0])} m and ${f(q.b[0])} m` : 'in one piece'}`; }
+      case 'pend': { const q = M.pend(s.pend.t); return q.stuck ? `θ ${(q.th * 180 / Math.PI).toFixed(1)}°   KE ${f(q.K)} J   Ug ${f(q.U)} J\nKE + Ug = ${f(q.K + q.U)} J` : `黏土: v ${f(M.PEND.u, 1)} m/s   p ${f(M.PEND.m * M.PEND.u)} kg·m/s\nKE ${f(q.K)} J`; }
+      case 'crash': { const q = M.crash(s.crash.t), C = M.CRASH; return q.after ? `合： v′ ${f(C.v)} m/s 位于 ${C.angle.toFixed(1)}°\nP ${Math.round(C.P)} kg·m/s` : `汽车 ${f(C.v1, 0)} m/s 东货车 ${f(C.v2, 0)} m/s 北\nP ${Math.round(C.P)} kg·m/s`; }
+      case 'shell': { const q = M.shell(s.shell.t); return `t ${f(s.shell.t)} s   x_cm ${f(q.cm[0])} m\n${q.burst ? `${f(q.a[0])} m 和 ${f(q.b[0])} m 的一半` : "一体成型"}`; }
       case 'rods': { const x = M.ROD.L * Math.min(s.sweep.t / M.SWEEP, 1), q = M.rodPiece('N', 0, x);
-        return `slice at x ${f(x)} m   λ ${f(M.lam('N', x))} kg/m\n∫₀ˣ dm ${f(q.dm)} kg   ∫₀ˣ x dm ${f(q.mx)} kg·m`; }
+        return `x 处切片 ${f(x)} m λ ${f(M.lam('N', x))} kg/m\n∫₀ˣ dm ${f(q.dm)} kg ∫₀ˣ x dm ${f(q.mx)} kg·m`; }
       case 'plates': { const k = Math.min(s.sweep.t / M.SWEEP, 1), u1 = k * M.TRI.h, u2 = k * M.SEMI.R;
-        return `triangle strip: u ${f(u1)} m   w ${f(M.triW(u1))} m\nsemicircle strip: u ${f(u2)} m   w ${f(M.semiW(u2))} m`; }
-      case 'parts': return `L: centre of mass (${f(M.ELL.cm[0])}, ${f(M.ELL.cm[1])}) m, in the gap\nholed plate: (${f(M.HOLE.cm[0], 3)}, ${f(M.HOLE.cm[1], 3)}) m`;
+        return `三角形带： u ${f(u1)} m w ${f(M.triW(u1))} m\n半圆带： u ${f(u2)} m w ${f(M.semiW(u2))} m`; }
+      case 'parts': return `L：质心（${f(M.ELL.cm[0])}、${f(M.ELL.cm[1])}）m，间隙\n带孔板：（${f(M.HOLE.cm[0], 3)}、${f(M.HOLE.cm[1], 3)}）m`;
     }
     return '';
   },

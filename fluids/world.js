@@ -82,8 +82,8 @@ export function buildWorld(E) {
   // =====================================================================================
   // 0 · density: five 10 cm cubes
   const X0 = STATIONS.density, S = M.CUBE;
-  part(root, box(1.3, 0.02, 0.42, 0.005), { tone: 'lo', pal: 'board', pos: [X0, 0.01, 0], name: 'Table' });
-  const g0 = asm('blocks', root, { title: 'Five cubes, one size', sub: 'same volume, different mass' });
+  part(root, box(1.3, 0.02, 0.42, 0.005), { tone: 'lo', pal: 'board', pos: [X0, 0.01, 0], name: "表" });
+  const g0 = asm('blocks', root, { title: "五个立方体，一种尺寸", sub: "相同体积，不同质量" });
   g0.userData.focus = () => ({ target: [X0, 0.1, 0], radius: 0.55 }); g0.userData.minDist = 1;
   const cubeMat = { cork: shadeMat('base'), ice: shadeMat('paper', { opacity: 0.35 }), water: shadeMat('blue', { opacity: 0.45 }), al: shadeMat('paper'), iron: shadeMat('dark') };
   const wholes = [], pieces = [];
@@ -99,8 +99,8 @@ export function buildWorld(E) {
   // =====================================================================================
   // 1 · pressure: the same person in shoes and on snowshoes
   const X1 = STATIONS.pressure, TOP = 0.4;
-  part(root, box(2.8, TOP, 1.5, 0.02), { tone: 'lo', pos: [X1, TOP / 2, 0.05], name: 'Snow', mat: shadeMat('paper', { opacity: 0.55 }) });
-  const g1 = asm('feet', root, { title: 'Shoes and snowshoes', sub: 'same weight, spread over more area' });
+  part(root, box(2.8, TOP, 1.5, 0.02), { tone: 'lo', pos: [X1, TOP / 2, 0.05], name: "雪", mat: shadeMat('paper', { opacity: 0.55 }) });
+  const g1 = asm('feet', root, { title: "鞋子和雪鞋", sub: "相同的重力，分布在更大的区域" });
   g1.userData.focus = () => ({ target: [X1, 1.3, 0], radius: 1.75 });
   const pArrows = [];
   function person(xc, snowshoe) {
@@ -113,7 +113,7 @@ export function buildWorld(E) {
       body(box(0.1, 0.07, 0.25, 0.02), 'ink', [fx, base + 0.035, 0.06], 'Shoes');
       body(cyl(0.055, 0.82, 20), 'paper', [fx, base + 0.07 + 0.41, 0], 'Body');
       // the contact patch on the snow
-      part(g1, box(sole.w, 0.004, sole.l, 0.001), { tone: 'lo', name: 'Contact area', mat: shadeMat('dark', { opacity: 0.45 }), pos: [fx, TOP + 0.002, 0.06] });
+      part(g1, box(sole.w, 0.004, sole.l, 0.001), { tone: 'lo', name: "接触面积", mat: shadeMat('dark', { opacity: 0.45 }), pos: [fx, TOP + 0.002, 0.06] });
       // one arrow per 125 cm² of contact, as long as the pressure is high
       const nx = snowshoe ? 2 : 1, nz = snowshoe ? 8 : 2;
       for (let i = 0; i < nx; i++) for (let k = 0; k < nz; k++) {
@@ -135,13 +135,13 @@ export function buildWorld(E) {
   water(root, 5, 0.02, 2.4, [X2, D, 0], 0.3);
   const ticks = []; for (let d = 0; d <= D; d += 2) { ticks.push(X2 - 2.5, D - d, 1.2, X2 - 2.75, D - d, 1.2); label('tick', `${d} m`, () => V(X2 - 2.82, D - d, 1.2)); }
   lines(root, ticks, '#6c6c72');
-  const g2 = asm('diver', root, { title: 'A diver going down', sub: 'the deeper, the more water above' });
+  const g2 = asm('diver', root, { title: "一名潜水员正在下水", sub: "越深，上面的水就越多" });
   const diver = new THREE.Group(); g2.add(diver);
   const dv = (geo, pal, pos, name = 'Diver') => part(diver, geo, { tone: 'hi', pal, pos, name });
   dv(box(0.42, 0.7, 0.26, 0.08), 'paper', [0, 0, 0]);
   dv(new THREE.SphereGeometry(0.13, 24, 16), 'paper', [0, 0.5, 0]);
   dv(box(0.2, 0.08, 0.06, 0.02), 'ink', [0, 0.52, 0.12], 'Mask');
-  dv(cyl(0.1, 0.6, 20), 'dark', [0, 0.05, -0.22], 'Air tank');
+  dv(cyl(0.1, 0.6, 20), 'dark', [0, 0.05, -0.22], "储气罐");
   for (const s of [-1, 1]) {
     dv(cyl(0.07, 0.75, 16), 'paper', [s * 0.11, -0.72, 0]);
     dv(box(0.16, 0.36, 0.04, 0.015), 'ink', [s * 0.11, -1.25, 0.02], 'Fins');
@@ -161,22 +161,22 @@ export function buildWorld(E) {
   // =====================================================================================
   // 3 · Pascal: two pistons on one sealed column of water
   const X3 = STATIONS.pascal, PA = M.PASCAL, LX = X3 - 0.75, RX = X3 + 0.35, W0 = 0.9, YB = 0.05, TUBE = 0.06;
-  const g3 = asm('pascal', root, { title: 'Two pistons, one column of water', sub: 'the push spreads to every part' });
+  const g3 = asm('pascal', root, { title: "两个活塞，一柱水", sub: "推动力蔓延到每个部分" });
   g3.userData.focus = () => ({ target: [X3 - 0.2, 1.05, 0], radius: 1.35 });
   const wallMat = shadeMat('paper', { opacity: 0.22 });
   for (const [x, r] of [[LX, PA.r1], [RX, PA.r2]]) {
     const wall = new THREE.Mesh(new THREE.CylinderGeometry(r + 0.012, r + 0.012, 1.35, 48, 1, true), wallMat); wall.position.set(x, YB + 0.675, 0); wall.userData = { noEdge: true }; root.add(wall);
     outline(root, new THREE.CircleGeometry(r + 0.012, 48).rotateX(-Math.PI / 2), [x, YB + 1.35, 0]);
-    part(root, cyl(r + 0.012, 0.02, 48), { tone: 'mid', pal: 'paper', pos: [x, YB - 0.01, 0], name: 'Bottom' });
+    part(root, cyl(r + 0.012, 0.02, 48), { tone: 'mid', pal: 'paper', pos: [x, YB - 0.01, 0], name: "底部" });
   }
   const tubeLen = RX - LX;
   const tubeW = new THREE.Mesh(xAxis(new THREE.CylinderGeometry(TUBE + 0.01, TUBE + 0.01, tubeLen, 32, 1, true)), wallMat); tubeW.position.set((LX + RX) / 2, YB + TUBE, 0); tubeW.userData = { noEdge: true }; root.add(tubeW);
   const tubeWater = new THREE.Mesh(xAxis(new THREE.CylinderGeometry(TUBE, TUBE, tubeLen, 32)), shadeMat('blue', { opacity: 0.3 })); tubeWater.position.set((LX + RX) / 2, YB + TUBE, 0); tubeWater.userData = { noEdge: true }; root.add(tubeWater);
   const colL = new THREE.Mesh(new THREE.CylinderGeometry(PA.r1, PA.r1, 1, 32).translate(0, 0.5, 0), shadeMat('blue', { opacity: 0.3 })); colL.position.set(LX, YB, 0); colL.userData = { noEdge: true }; root.add(colL);
   const colR = new THREE.Mesh(new THREE.CylinderGeometry(PA.r2, PA.r2, 1, 48).translate(0, 0.5, 0), shadeMat('blue', { opacity: 0.3 })); colR.position.set(RX, YB, 0); colR.userData = { noEdge: true }; root.add(colR);
-  const pistL = part(g3, cyl(PA.r1, 0.04, 32), { tone: 'hi', name: 'Small piston' });
-  const pistR = part(g3, cyl(PA.r2, 0.04, 48), { tone: 'hi', name: 'Large piston' });
-  const load = part(g3, box(0.46, 0.3, 0.46, 0.03), { tone: 'hi', pal: 'dark', name: 'Load' });
+  const pistL = part(g3, cyl(PA.r1, 0.04, 32), { tone: 'hi', name: "小活塞" });
+  const pistR = part(g3, cyl(PA.r2, 0.04, 48), { tone: 'hi', name: "大活塞" });
+  const load = part(g3, box(0.46, 0.3, 0.46, 0.03), { tone: 'hi', pal: 'dark', name: "负载" });
   const F1a = force(g3, 'ink', 'Push', 0.6);
   label('vec', `<i>F</i><sub>1</sub> = ${PA.F1} N`, () => V(LX, pistL.position.y + 0.42, 0));
   label('mark', `${PA.load.toFixed(1)} kg · ${PA.F2.toFixed(0)} N`, () => V(RX, load.position.y + 0.3, 0));
@@ -192,14 +192,14 @@ export function buildWorld(E) {
   // =====================================================================================
   // 4 · buoyancy: an aluminium cube lowered into a tank
   const X4 = STATIONS.buoy, B = M.BUOY, BS = B.s;
-  part(root, box(B.tankW + 0.04, 0.02, B.tankD + 0.04, 0.005), { tone: 'lo', pal: 'board', pos: [X4, 0.01, 0], name: 'Tank floor' });
+  part(root, box(B.tankW + 0.04, 0.02, B.tankD + 0.04, 0.005), { tone: 'lo', pal: 'board', pos: [X4, 0.01, 0], name: "罐底" });
   outline(root, new THREE.BoxGeometry(B.tankW, 1.4, B.tankD), [X4, 0.72, 0]);
   const tankWater = water(root, B.tankW, 1, B.tankD, [X4, 0.5, 0], 0.2);
-  const g4 = asm('cube', root, { title: 'A cube under water', sub: 'pushed harder from below than above' });
+  const g4 = asm('cube', root, { title: "水下的立方体", sub: "从下面推得比上面更用力" });
   g4.userData.focus = () => ({ target: [X4, cube.position.y, 0], radius: 0.95 }); g4.userData.minDist = 2;
-  const cube = part(g4, box(BS, BS, BS, 0.01), { tone: 'hi', name: 'Aluminium cube' });
+  const cube = part(g4, box(BS, BS, BS, 0.01), { tone: 'hi', name: "铝立方体" });
   const str4 = thinRod(g4, 0.005);
-  part(g4, new THREE.SphereGeometry(0.03, 16, 10), { tone: 'hi', pal: 'dark', pos: [X4, 2.0, 0], name: 'String' });
+  part(g4, new THREE.SphereGeometry(0.03, 16, 10), { tone: 'hi', pal: 'dark', pos: [X4, 2.0, 0], name: "字符串" });
   const faces = [V(0, 1, 0), V(0, -1, 0), V(1, 0, 0), V(-1, 0, 0), V(0, 0, 1), V(0, 0, -1)];
   // drawn as a cross-section: three arrows across the middle of the top, bottom and two side faces
   // (the front and back faces get the same pushes as the sides, and cancel the same way)
@@ -208,7 +208,7 @@ export function buildWorld(E) {
     const u = Math.abs(n.y) > 0.5 ? V(1, 0, 0) : V(0, 1, 0), w = n.clone().cross(u);
     for (let i = -1; i <= 1; i++) for (let k = 0; k <= 0; k++) facePts.push({ n, off: n.clone().multiplyScalar(BS / 2).addScaledVector(u, i * BS / 3).addScaledVector(w, k * BS / 3), a: small(g4) });
   }
-  const totals = faces.slice(0, 4).map(() => arrow(g4, 'ink', { r: 0.009, head: 0.05, headR: 0.025, name: 'Face totals' }));
+  const totals = faces.slice(0, 4).map(() => arrow(g4, 'ink', { r: 0.009, head: 0.05, headR: 0.025, name: "脸部总数" }));
   const W4 = force(g4, 'ink', 'Forces', 0.5), Fb4 = force(g4, 'ink', 'Forces', 0.5), T4 = force(g4, 'ink', 'Forces', 0.5);
   label('vec', '<i>W</i>', () => tip(W4, 0.04)); label('vec', '<i>F</i><sub>b</sub>', () => tip(Fb4, 0.05)); label('vec', '<i>T</i>', () => tip(T4, 0.05));
   label('vec grey', '', () => ex(g4) > 0.5 ? cube.position.clone().add(V(0.32, BS / 2 + 0.08, 0)) : null, () => `${(st4.dTop > 0 ? M.RHO * M.G * st4.dTop * BS * BS : 0).toFixed(0)} N`);
@@ -219,11 +219,11 @@ export function buildWorld(E) {
   // 5 · float or sink: a wooden block, ice, a steel ball and a steel ship in a pool
   const X5 = STATIONS.float, PL = M.POOL.L;
   const poolX0 = X5 - 2.1, poolX1 = X5 + 2.4;
-  part(root, box(poolX1 - poolX0 + 0.04, 0.02, 1.64, 0.005), { tone: 'lo', pal: 'board', pos: [(poolX0 + poolX1) / 2, 0.01, 0], name: 'Pool floor' });
+  part(root, box(poolX1 - poolX0 + 0.04, 0.02, 1.64, 0.005), { tone: 'lo', pal: 'board', pos: [(poolX0 + poolX1) / 2, 0.01, 0], name: "泳池地板" });
   water(root, poolX1 - poolX0, PL, 1.6, [(poolX0 + poolX1) / 2, 0.02 + PL / 2, 0], 0.2);
   outline(root, new THREE.BoxGeometry(poolX1 - poolX0, 1.0, 1.6), [(poolX0 + poolX1) / 2, 0.52, 0]);
   const L5 = 0.02 + PL;
-  const g5 = asm('float', root, { title: 'Float or sink', sub: 'F_b = W, if it can' });
+  const g5 = asm('float', root, { title: "漂浮或下沉", sub: "F_b = W，如果可以的话" });
   g5.userData.focus = () => ({ target: [X5 + 0.15, 0.9, 0], radius: 2.4 });
   const floaters = [];
   const fl = (x, c, mat, name) => {
@@ -234,14 +234,14 @@ export function buildWorld(E) {
     outline(ghost, ghost.geometry, [0, 0, 0], edgeMat);
     floaters.push({ x, y, c, W: c.W, Fb: c.Fb, fbY: L5 - c.draft / 2, ghost });
   };
-  fl(X5 - 1.55, M.WOOD, shadeMat('base'), 'Wooden block');
+  fl(X5 - 1.55, M.WOOD, shadeMat('base'), "木块");
   fl(X5 - 0.75, M.ICE, shadeMat('paper', { opacity: 0.6 }), 'Ice');
   const BX5 = X5 + 0.1, BY5 = 0.02 + M.BALL.r;
-  part(g5, new THREE.SphereGeometry(M.BALL.r, 32, 20), { tone: 'hi', pal: 'dark', pos: [BX5, BY5, 0], name: 'Steel ball' });
+  part(g5, new THREE.SphereGeometry(M.BALL.r, 32, 20), { tone: 'hi', pal: 'dark', pos: [BX5, BY5, 0], name: "钢球" });
   const ballGhost = new THREE.Mesh(new THREE.SphereGeometry(M.BALL.r, 32, 20), shadeMat('blue', { opacity: 0.45 })); ballGhost.userData = { noEdge: true, home: V(BX5, BY5, 0), ex: V(0, 1.4, 0) }; g5.add(ballGhost);
   const SH = M.SHIP, SX = X5 + 1.5, sy0 = L5 - SH.draft, T5 = 0.016;   // plate drawn 16 mm thick so it can be seen
   for (const [w, h, d, x, y, z] of [[SH.l, T5, SH.w, 0, T5 / 2, 0], [SH.l, SH.h, T5, 0, SH.h / 2, SH.w / 2 - T5 / 2], [SH.l, SH.h, T5, 0, SH.h / 2, -SH.w / 2 + T5 / 2], [T5, SH.h, SH.w, SH.l / 2 - T5 / 2, SH.h / 2, 0], [T5, SH.h, SH.w, -SH.l / 2 + T5 / 2, SH.h / 2, 0]])
-    part(g5, box(w, h, d, 0.004), { tone: 'hi', pal: 'paper', pos: [SX + x, sy0 + y, z], name: 'Steel ship' });
+    part(g5, box(w, h, d, 0.004), { tone: 'hi', pal: 'paper', pos: [SX + x, sy0 + y, z], name: "钢船" });
   const shipGhost = new THREE.Mesh(new THREE.BoxGeometry(SH.l, SH.draft, SH.w), shadeMat('blue', { opacity: 0.45 })); shipGhost.userData = { noEdge: true, home: V(SX, L5 - SH.draft / 2, 0), ex: V(0, 1.1, 0) }; g5.add(shipGhost);
   outline(shipGhost, shipGhost.geometry, [0, 0, 0], edgeMat);
   const fArrows = [];
@@ -254,18 +254,18 @@ export function buildWorld(E) {
   label('vec', '<i>F</i><sub>b</sub>', () => V(BX5 - 0.25, BY5 + 0.05, 0));
   label('vec', '<i>F</i><sub>N</sub>', () => tip(ballN, 0.05));
   const pct = x => `${(100 * x).toFixed(0)}% under`;
-  label('mark', `wood · ${pct(M.WOOD.draft / M.WOOD.s)}`, () => V(X5 - 1.55, L5 + 0.5, 0));
-  label('mark', `ice · ${pct(M.ICE.draft / M.ICE.s)}`, () => V(X5 - 0.75, L5 + 0.5, 0));
-  label('mark', 'steel ball · sinks', () => V(BX5, L5 + 0.5, 0));
-  label('mark', 'steel ship · floats', () => V(SX, L5 + 0.5, 0));
+  label('mark', `木·${pct(M.WOOD.draft / M.WOOD.s)}`, () => V(X5 - 1.55, L5 + 0.5, 0));
+  label('mark', `冰·${pct(M.ICE.draft / M.ICE.s)}`, () => V(X5 - 0.75, L5 + 0.5, 0));
+  label('mark', "钢球 · 下沉", () => V(BX5, L5 + 0.5, 0));
+  label('mark', "钢船·浮体", () => V(SX, L5 + 0.5, 0));
 
   // =====================================================================================
   // 6 · continuity: a pipe that narrows
   const X6 = STATIONS.continuity, P1 = M.PIPE1, F = M.FLOW;
-  const g6 = asm('pipe', root, { title: 'A pipe that narrows', sub: 'what goes in must come out' });
+  const g6 = asm('pipe', root, { title: "变窄的管道", sub: "进去的必须出来" });
   g6.userData.focus = () => ({ target: [X6, PY6 + 0.5, 0], radius: 2.8 });
   const pipe6 = new THREE.Group(); pipe6.position.set(X6, PY6, 0); g6.add(pipe6);
-  part(pipe6, tubeGeo(P1), { tone: 'mid', name: 'Pipe', mat: shadeMat('paper', { opacity: 0.2 }) });
+  part(pipe6, tubeGeo(P1), { tone: 'mid', name: "管材", mat: shadeMat('paper', { opacity: 0.2 }) });
   const fill6 = new THREE.Mesh(tubeGeo(P1, 0.985), shadeMat('blue', { opacity: 0.1 })); fill6.userData = { noEdge: true }; pipe6.add(fill6);
   const rnd6 = rng(6), N6 = 650, HI6 = 70;
   const parts6 = Array.from({ length: N6 }, (_, k) => ({ u: k < HI6 ? 0.08 * k / HI6 : 0.08 + 0.92 * rnd6(), rf: 0.88 * Math.sqrt(rnd6()), th: 2 * Math.PI * rnd6() }));
@@ -273,7 +273,7 @@ export function buildWorld(E) {
   const v6a = force(g6, 'blue', 'Velocity', 0.7), v6b = force(g6, 'blue', 'Velocity', 0.7);
   label('vec blue', '<i>v</i><sub>1</sub>', () => tip(v6a, 0.06)); label('vec blue', '<i>v</i><sub>2</sub>', () => tip(v6b, 0.06));
   const discs6 = [[-1.8, F.r1, 'A₁'], [1.8, F.r2, 'A₂']].map(([x, r, name]) => {
-    const d = part(g6, xAxis(cyl(r * 0.99, 0.01, 48)), { tone: 'hi', name: 'Cross-sections', mat: shadeMat('dark', { opacity: 0.55 }), pos: [X6 + x, PY6, 0], ex: [0, 1.0, 0] });
+    const d = part(g6, xAxis(cyl(r * 0.99, 0.01, 48)), { tone: 'hi', name: "横截面", mat: shadeMat('dark', { opacity: 0.55 }), pos: [X6 + x, PY6, 0], ex: [0, 1.0, 0] });
     label('vec', `<i>A</i><sub>${name[1]}</sub>`, () => ex(g6) > 0.3 ? V(d.position.x - r - 0.15, d.position.y, d.position.z) : null);
     return d;
   });
@@ -283,10 +283,10 @@ export function buildWorld(E) {
   // =====================================================================================
   // 7 · Bernoulli: narrow, then up
   const X7 = STATIONS.bernoulli, P2 = M.PIPE2, BE = M.BERN;
-  const g7 = asm('bernoulli', root, { title: 'Bernoulli’s pipe', sub: 'P + ½ρv² + ρgy, the same all along' });
+  const g7 = asm('bernoulli', root, { title: "伯努利管", sub: "P + ½ρv² + ρgy，始终相同" });
   g7.userData.focus = () => ({ target: [X7 + 0.8, PY7 + 0.9, -0.6], radius: 4.2 });
   const pipe7 = new THREE.Group(); pipe7.position.set(X7, PY7, 0); g7.add(pipe7);
-  part(pipe7, tubeGeo(P2, 1, 320), { tone: 'mid', name: 'Pipe', mat: shadeMat('paper', { opacity: 0.2 }) });
+  part(pipe7, tubeGeo(P2, 1, 320), { tone: 'mid', name: "管材", mat: shadeMat('paper', { opacity: 0.2 }) });
   const fill7 = new THREE.Mesh(tubeGeo(P2, 0.985, 320), shadeMat('blue', { opacity: 0.1 })); fill7.userData = { noEdge: true }; pipe7.add(fill7);
   const rnd7 = rng(7), N7 = 900;
   const parts7 = Array.from({ length: N7 }, () => ({ u: rnd7(), rf: 0.88 * Math.sqrt(rnd7()), th: 2 * Math.PI * rnd7() }));
@@ -312,25 +312,25 @@ export function buildWorld(E) {
   // =====================================================================================
   // 8 · Torricelli: a tank on a block, draining through a hole
   const X8 = STATIONS.torricelli, TK = M.TANK, TX = X8 - 0.9, HOLE_X = TX + TK.w / 2;
-  part(root, box(1.2, TK.base, 0.8, 0.02), { tone: 'mid', pal: 'paper', pos: [TX, TK.base / 2, 0], name: 'Block' });
-  const g8 = asm('tank', root, { title: 'A draining tank', sub: 'v = √(2gh), then a projectile' });
+  part(root, box(1.2, TK.base, 0.8, 0.02), { tone: 'mid', pal: 'paper', pos: [TX, TK.base / 2, 0], name: "块" });
+  const g8 = asm('tank', root, { title: "一个排水罐", sub: "v = √(2gh)，则为抛射体" });
   g8.userData.focus = () => ({ target: [X8 + 0.1, 1.1, 0], radius: 1.9 });
-  part(g8, box(TK.w + 0.03, 0.02, TK.d + 0.03, 0.005), { tone: 'hi', pal: 'paper', pos: [TX, TK.base + 0.01, 0], name: 'Tank' });
+  part(g8, box(TK.w + 0.03, 0.02, TK.d + 0.03, 0.005), { tone: 'hi', pal: 'paper', pos: [TX, TK.base + 0.01, 0], name: "坦克" });
   for (const [w, d, x, z] of [[TK.w, 0.012, 0, TK.d / 2], [TK.w, 0.012, 0, -TK.d / 2], [0.012, TK.d, -TK.w / 2, 0], [0.012, TK.d, TK.w / 2, 0]]) {
     const m = new THREE.Mesh(new THREE.BoxGeometry(w, 1.6, d), wallMat); m.position.set(TX + x, TK.base + 0.8, z); m.userData = { noEdge: true }; root.add(m);
   }
   outline(root, new THREE.BoxGeometry(TK.w, 1.6, TK.d), [TX, TK.base + 0.8, 0]);
   const tankW8 = water(root, TK.w - 0.01, 1, TK.d - 0.01, [TX, 0, 0], 0.22);
-  part(g8, xAxis(cyl(Math.sqrt(TK.a / Math.PI), 0.016, 24)), { tone: 'hi', pal: 'ink', pos: [HOLE_X + 0.002, TK.yh, 0], name: 'Hole' });
+  part(g8, xAxis(cyl(Math.sqrt(TK.a / Math.PI), 0.016, 24)), { tone: 'hi', pal: 'ink', pos: [HOLE_X + 0.002, TK.yh, 0], name: "洞" });
   const N8 = 90, dots8 = dots(root, N8, 'blue', 0.02), DT8 = 0.016;
   const v8 = force(g8, 'blue', 'Velocity', 0.6);
   label('vec blue', '', () => tip(v8, 0.12), () => `<i>v</i> = ${M.torricelli(h8).toFixed(2)} m/s`);
   const hRod = thinRod(g8, 0.008, 'ink', 'Height h');
   label('vec', '', () => V(TX - TK.w / 2 + 0.38, TK.yh + h8 / 2, TK.d / 2), () => `<i>h</i> = ${h8.toFixed(2)} m`);
-  const landMark = part(g8, cyl(0.06, 0.006, 24), { tone: 'hi', pal: 'ink', name: 'Landing point' });
+  const landMark = part(g8, cyl(0.06, 0.006, 24), { tone: 'hi', pal: 'ink', name: "着陆点" });
   label('tick', '', () => V(landMark.position.x + 0.5, 0.12, 0.3), () => `range ${M.jetRange(h8).toFixed(2)} m`);
   // opened: the jet's velocity split, on one drop of water
-  const vx8 = arrow(g8, 'dark', { r: 0.014, head: 0.08, headR: 0.04, name: 'Components', tone: 'mid' }), vy8 = arrow(g8, 'dark', { r: 0.014, head: 0.08, headR: 0.04, name: 'Components', tone: 'mid' }), vv8 = force(g8, 'blue', 'Velocity', 0.6);
+  const vx8 = arrow(g8, 'dark', { r: 0.014, head: 0.08, headR: 0.04, name: "成分", tone: 'mid' }), vy8 = arrow(g8, 'dark', { r: 0.014, head: 0.08, headR: 0.04, name: "成分", tone: 'mid' }), vv8 = force(g8, 'blue', 'Velocity', 0.6);
   label('vec grey', '<i>v</i><sub>x</sub>', () => ex(g8) > 0.5 ? tip(vx8, 0.06) : null); label('vec grey', '<i>v</i><sub>y</sub>', () => ex(g8) > 0.5 ? tip(vy8, 0.06) : null);
   const traj = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineDashedMaterial({ color: '#8a8a8f', dashSize: 0.05, gapSize: 0.04 })); traj.userData = { noEdge: true }; traj.frustumCulled = false; root.add(traj);
   let h8 = TK.h0;

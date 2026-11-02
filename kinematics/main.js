@@ -44,8 +44,8 @@ startBook({
   },
   readout(s, page) {
     switch (page.scene) {
-      case 'rain': return `car ${f(M.RAIN.vc)} m/s   rain ${f(M.RAIN.vr)} m/s down\nfrom the car: ${f(M.vlen(M.V_RC))} m/s, ${f(M.RAIN_ANGLE, 1)}° from vertical`;
-      case 'river': { const t = s.river.t, [ax] = M.boatPos(0, t), [, by] = M.boatPos(M.AIM_UP, t); return `t ${f(Math.min(t, M.RIVER_RUN), 1)} s\nstraight: drift ${f(ax, 1)} m   upstream: across ${f(by, 1)} m`; }
+      case 'rain': return `车 ${f(M.RAIN.vc)} m/s 雨 ${f(M.RAIN.vr)} m/s 从车向下\n：${f(M.vlen(M.V_RC))} m/s，${f(M.RAIN_ANGLE, 1)} 从垂直方向°`;
+      case 'river': { const t = s.river.t, [ax] = M.boatPos(0, t), [, by] = M.boatPos(M.AIM_UP, t); return `t ${f(Math.min(t, M.RIVER_RUN), 1)} s\ns直线：漂移 ${f(ax, 1)} m 上游：穿过 ${f(by, 1)} m`; }
       case 'pull': { const t = s.pull.t; return `t ${f(t)} s   x ${f(M.px(t)).padStart(5)} m\nv ${f(M.pv(t)).padStart(5)} m/s   a ${f(M.pa(t))} m/s²`; }
       case 'cube': { const t = s.cube.t; return `t ${f(t)} s   x ${f(M.cx(t)).padStart(5)} m\nv ${f(M.cv(t)).padStart(5)} m/s   a ${f(M.ca(t)).padStart(5)} m/s²`; }
     }
@@ -59,8 +59,8 @@ startBook({
     const live = document.getElementById('live-sign');
     if (live) {
       const v = M.vy(t);
-      live.textContent = resting ? 'now: resting on the ground between throws' : Math.abs(v) < 0.05 ? 'now: at the top, v = 0, a = −9.80 m/s²'
-        : v > 0 ? `now: v = +${v.toFixed(2)}, a = −9.80 → opposite signs → slowing down` : `now: v = −${(-v).toFixed(2)}, a = −9.80 → same signs → speeding up`;
+      live.textContent = resting ? "现在：两次投掷之间在地上休息" : Math.abs(v) < 0.05 ? "现在：在顶部，v = 0，a = −9.80 m/s²"
+        : v > 0 ? `现在：v = +${v.toFixed(2)}，a = −9.80 → 符号相反 → 减速` : `现在：v = −${(-v).toFixed(2)}，a = −9.80 → 相同符号 → 加速`;
     }
     // live chart pieces: cursors, areas from 0 to now, tangents at now
     const cursor = (key, R, x, y) => q(`circle[data-cursor="${key}"]`).forEach(c => { c.setAttribute('cx', KC.sx(x, R)); c.setAttribute('cy', KC.sy(y, R)); });

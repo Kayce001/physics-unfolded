@@ -36,10 +36,10 @@ export function buildWorld(E) {
   for (let z = -2; z <= 2; z++) grid.push(138, 0.001, z, 166, 0.001, z);
   lines(root, grid, '#e6e6e2');
 
-  const strip = (x0, x1, z0 = -0.7, z1 = 0.7, parent = root) => part(parent, box(x1 - x0, 0.02, z1 - z0, 0.005), { tone: 'lo', pal: 'board', pos: [(x0 + x1) / 2, 0.01, (z0 + z1) / 2], name: 'Surface' });
-  const pArrow = (g, s = 1) => arrow(g, 'ink', { r: 0.022 * s, head: 0.12 * s, headR: 0.06 * s, name: 'Momentum' });
-  const totArrow = (g, s = 1) => arrow(g, 'blue', { r: 0.026 * s, head: 0.14 * s, headR: 0.07 * s, name: 'Total momentum' });
-  const fArrow = (g, s = 1) => arrow(g, 'red', { r: 0.022 * s, head: 0.12 * s, headR: 0.06 * s, name: 'Force' });
+  const strip = (x0, x1, z0 = -0.7, z1 = 0.7, parent = root) => part(parent, box(x1 - x0, 0.02, z1 - z0, 0.005), { tone: 'lo', pal: 'board', pos: [(x0 + x1) / 2, 0.01, (z0 + z1) / 2], name: "表面" });
+  const pArrow = (g, s = 1) => arrow(g, 'ink', { r: 0.022 * s, head: 0.12 * s, headR: 0.06 * s, name: "动量" });
+  const totArrow = (g, s = 1) => arrow(g, 'blue', { r: 0.026 * s, head: 0.14 * s, headR: 0.07 * s, name: "总动力" });
+  const fArrow = (g, s = 1) => arrow(g, 'red', { r: 0.022 * s, head: 0.12 * s, headR: 0.06 * s, name: "力" });
   const gArrow = (g, s = 1, name = 'Velocity') => arrow(g, 'dark', { r: 0.018 * s, head: 0.1 * s, headR: 0.05 * s, name, tone: 'mid' });
   const tip = (a, pad = 0.16) => a.visible ? a.localToWorld(V(0, a.userData.arrow.shaft.scale.y + a.userData.arrow.tip.scale.y * a.userData.arrow.head + pad / a.scale.y, 0)) : null;
   const mid = (a, off) => a.visible ? a.localToWorld(V(0, a.userData.arrow.shaft.scale.y / 2, 0)).add(off) : null;
@@ -63,7 +63,7 @@ export function buildWorld(E) {
     for (let k = 0; k < 4; k++) {
       const geo = new THREE.CylinderGeometry(r, r, 0.01, 12, 1, false, k * Math.PI / 2, Math.PI / 2); geo.rotateX(Math.PI / 2);
       const mat = shadeMat(k % 2 ? 'paper' : 'ink').clone(); mat.depthTest = false;
-      part(g, geo, { tone: 'hi', name: 'Centre of mass', mat }).renderOrder = 11;
+      part(g, geo, { tone: 'hi', name: "质心", mat }).renderOrder = 11;
     }
     return g;
   }
@@ -73,9 +73,9 @@ export function buildWorld(E) {
 
   // ---------- 1 · momentum: a fast light ball and a slow heavy cart ----------
   const X0 = STATIONS.mom, START = -2.0, RB = 0.11;
-  const gM = asm('mom', root, { title: 'Same momentum', sub: 'light and fast, heavy and slow' });
+  const gM = asm('mom', root, { title: "同样的势头", sub: "轻而快，重而慢" });
   strip(X0 - 2.6, X0 + 2.6, -1.0, 1.0, gM);
-  const ball0 = part(gM, new THREE.SphereGeometry(RB, 32, 20), { tone: 'hi', name: 'Ball · 0.5 kg' });
+  const ball0 = part(gM, new THREE.SphereGeometry(RB, 32, 20), { tone: 'hi', name: "球·0.5公斤" });
   const cart0 = cart(gM, M.CART.m, 'Cart · 2.0 kg');
   const pB0 = pArrow(gM), pC0 = pArrow(gM), vB0 = gArrow(gM), vC0 = gArrow(gM);
   label('vec', '<i>p</i>', () => tip(pB0)); label('vec', '<i>p</i>', () => tip(pC0));
@@ -85,28 +85,28 @@ export function buildWorld(E) {
 
   // ---------- 2 · impulse: a ball bounces off a wall ----------
   const X1 = STATIONS.wall, W = M.WALL;
-  part(root, box(0.16, 1.3, 1.5, 0.02), { tone: 'mid', pal: 'board', pos: [X1 + 0.08, 0.67, 0], name: 'Wall' });
-  const gW = asm('wall', root, { title: 'Ball hitting a wall', sub: 'impulse = change in momentum' });
+  part(root, box(0.16, 1.3, 1.5, 0.02), { tone: 'mid', pal: 'board', pos: [X1 + 0.08, 0.67, 0], name: "墙" });
+  const gW = asm('wall', root, { title: "球撞到墙上", sub: "冲量 = 动量变化" });
   strip(X1 - 1.6, X1 + 0.3, -0.8, 0.8, gW);
-  const ballW = part(gW, new THREE.SphereGeometry(W.r, 36, 24), { tone: 'hi', name: 'Ball · 0.5 kg' });
+  const ballW = part(gW, new THREE.SphereGeometry(W.r, 36, 24), { tone: 'hi', name: "球·0.5公斤" });
   const pW = pArrow(gW), fW = fArrow(gW);
   const dpI = pArrow(gW), dpF = pArrow(gW), dpD = gArrow(gW, 1.1, 'Δp');
   label('vec', '<i>p</i>', () => tip(pW)); label('vec red', '<i>F</i>', () => tip(fW));
-  label('vec', '<i>p</i><sub>before</sub>', () => tip(dpI)); label('vec', '<i>p</i><sub>after</sub>', () => tip(dpF)); label('vec', 'Δ<i>p</i> = <i>J</i>', () => tip(dpD));
+  label('vec', "<i>p</i><sub>之前</sub>", () => tip(dpI)); label('vec', "<i>p</i><sub>后</sub>", () => tip(dpF)); label('vec', 'Δ<i>p</i> = <i>J</i>', () => tip(dpD));
 
   // ---------- 3 · an egg on a pillow, an egg on the floor ----------
   // drawn EGG_ZOOM× life size (positions, sizes and arrows all scaled together), so it can be seen
   const ER = 0.03, EK = 1.3, PH = 0.3, EGX = [-0.2, 0.2];
   const eggRoot = new THREE.Group(); eggRoot.position.x = STATIONS.eggs; eggRoot.scale.setScalar(EGG_ZOOM); root.add(eggRoot);
-  const gE = asm('eggs', eggRoot, { title: 'Two eggs dropped', sub: 'same Δp, different stopping time' });
-  part(gE, box(1.0, 0.02, 0.7, 0.005), { tone: 'lo', pal: 'board', pos: [0, 0.01, 0], name: 'Surface' });
-  const pillow = part(gE, box(0.26, PH, 0.24, 0.06), { tone: 'mid', pal: 'board', pos: [EGX[0], 0.02 + PH / 2, 0], name: 'Pillow' });
+  const gE = asm('eggs', eggRoot, { title: "两个鸡蛋掉落", sub: "相同的Δp，不同的停止时间" });
+  part(gE, box(1.0, 0.02, 0.7, 0.005), { tone: 'lo', pal: 'board', pos: [0, 0.01, 0], name: "表面" });
+  const pillow = part(gE, box(0.26, PH, 0.24, 0.06), { tone: 'mid', pal: 'board', pos: [EGX[0], 0.02 + PH / 2, 0], name: "枕头" });
   const eggGeo = new THREE.SphereGeometry(ER, 28, 20);
-  const eggs = EGX.map((x, i) => part(gE, eggGeo, { tone: 'hi', name: i ? 'Egg on the floor' : 'Egg on the pillow' }));
+  const eggs = EGX.map((x, i) => part(gE, eggGeo, { tone: 'hi', name: i ? "地板上的鸡蛋" : "鸡蛋放在枕头上" }));
   const fE = eggs.map(() => fArrow(gE, 0.15)), jE = eggs.map(() => gArrow(gE, 0.17, 'Impulse'));
-  fE.forEach(a => label('vec red', '<i>F</i><sub>net</sub>', () => tip(a, 0.03)));
+  fE.forEach(a => label('vec red', "<i>F</i><sub>net</sub>", () => tip(a, 0.03)));
   jE.forEach(a => label('vec', '<i>J</i>', () => ex(gE) > 0.3 ? tip(a, 0.03) : null));
-  label('tick', 'pillow', () => eggRoot.localToWorld(V(EGX[0] + 0.06, 0.02, 0.24))); label('tick', 'floor', () => eggRoot.localToWorld(V(EGX[1] + 0.06, 0.02, 0.24)));
+  label('tick', "枕头", () => eggRoot.localToWorld(V(EGX[0] + 0.06, 0.02, 0.24))); label('tick', "地板", () => eggRoot.localToWorld(V(EGX[1] + 0.06, 0.02, 0.24)));
 
   // ---------- 4–6 · carts on a track ----------
   function collision(key, c, X, meta) {
@@ -120,27 +120,27 @@ export function buildWorld(E) {
     // the breakdown: momenta before and after, laid tip to tail
     const rows = ['before', 'after'].map((name, i) => ({ y: 2.15 - i * 0.6, a: pArrow(g), b: pArrow(g), t: totArrow(g) }));
     rows.forEach((r, i) => {
-      label('tick', i ? 'after' : 'before', () => ex(g) > 0.3 ? V(X - 2.9, r.y + 0.02, 0) : null);
+      label('tick', i ? "之后" : "之前", () => ex(g) > 0.3 ? V(X - 2.9, r.y + 0.02, 0) : null);
       label('vec', i ? '<i>p</i><sub>1</sub>′' : '<i>p</i><sub>1</sub>', () => ex(g) > 0.3 ? mid(r.a, V(0, -0.15, 0)) : null);
       label('vec', i ? '<i>p</i><sub>2</sub>′' : '<i>p</i><sub>2</sub>', () => ex(g) > 0.3 ? mid(r.b, V(0, 0.16, 0)) : null);
     });
-    const plunger = c.Q ? part(g, xAxis(new THREE.CylinderGeometry(0.018, 0.018, 1, 10)), { tone: 'hi', pal: 'ink', name: 'Spring plunger' }) : null;
+    const plunger = c.Q ? part(g, xAxis(new THREE.CylinderGeometry(0.018, 0.018, 1, 10)), { tone: 'hi', pal: 'ink', name: "弹簧柱塞" }) : null;
     return { g, c, X, c1, c2, cm, p1, p2, tot, rows, plunger };
   }
   const cols = [
-    collision('stick', M.STICK, STATIONS.stick, { title: 'Carts that stick', sub: 'perfectly inelastic' }),
-    collision('bounce', M.BOUNCE, STATIONS.bounce, { title: 'Carts that bounce', sub: 'elastic' }),
-    collision('burst', M.BURST, STATIONS.burst, { title: 'Carts pushed apart', sub: 'an explosion' }),
+    collision('stick', M.STICK, STATIONS.stick, { title: "粘着的推车", sub: "完全无弹性" }),
+    collision('bounce', M.BOUNCE, STATIONS.bounce, { title: "弹跳的推车", sub: "弹性的" }),
+    collision('burst', M.BURST, STATIONS.burst, { title: "推车被推开", sub: "爆炸" }),
   ];
 
   // ---------- 7 · ballistic pendulum ----------
   const X6 = STATIONS.pend, Pd = M.PEND, PIV = V(X6 + 0.4, 2.1, 0), BW = 0.3, BH = 0.22, CR = 0.035;
-  part(root, box(1.4, 0.08, 0.5, 0.02), { tone: 'mid', pal: 'board', pos: [PIV.x, PIV.y + 0.04, 0], name: 'Ceiling' });
-  const gP = asm('pend', root, { title: 'Ballistic pendulum', sub: 'momentum, then energy' });
+  part(root, box(1.4, 0.08, 0.5, 0.02), { tone: 'mid', pal: 'board', pos: [PIV.x, PIV.y + 0.04, 0], name: "天花板" });
+  const gP = asm('pend', root, { title: "弹道摆", sub: "动量，然后是能量" });
   const swingG = new THREE.Group(); swingG.position.copy(PIV); gP.add(swingG);
-  part(swingG, new THREE.CylinderGeometry(0.008, 0.008, Pd.L - BH / 2, 8).translate(0, -(Pd.L - BH / 2) / 2, 0), { tone: 'hi', pal: 'ink', name: 'String' });
-  part(swingG, box(BW, BH, 0.22, 0.02), { tone: 'hi', pos: [0, -Pd.L, 0], name: 'Block · 1.0 kg' });
-  const clay = part(gP, new THREE.SphereGeometry(CR, 24, 16), { tone: 'hi', pal: 'dark', name: 'Clay · 0.2 kg' });
+  part(swingG, new THREE.CylinderGeometry(0.008, 0.008, Pd.L - BH / 2, 8).translate(0, -(Pd.L - BH / 2) / 2, 0), { tone: 'hi', pal: 'ink', name: "字符串" });
+  part(swingG, box(BW, BH, 0.22, 0.02), { tone: 'hi', pos: [0, -Pd.L, 0], name: "块·1.0公斤" });
+  const clay = part(gP, new THREE.SphereGeometry(CR, 24, 16), { tone: 'hi', pal: 'dark', name: "粘土·0.2公斤" });
   const pP = pArrow(gP), pC = pArrow(gP);
   label('vec', '<i>p</i>', () => tip(pP)); label('vec', '<i>p</i>', () => tip(pC));
   label('tick', '0.2 kg', () => clay.visible && clay.position.x < PIV.x - 0.3 ? clay.position.clone().add(V(0.05, 0.12, 0)) : null);
@@ -161,39 +161,39 @@ export function buildWorld(E) {
 
   // ---------- 8 · crash at a crossroads ----------
   const X7 = STATIONS.crash, C = M.CRASH, RW = 7, RL = 46;
-  part(root, box(RL, 0.03, RW, 0.01), { tone: 'lo', pal: 'board', pos: [X7, 0.015, 0], name: 'Road' });
-  part(root, box(RW, 0.031, RL, 0.01), { tone: 'lo', pal: 'board', pos: [X7, 0.016, 0], name: 'Road' });
+  part(root, box(RL, 0.03, RW, 0.01), { tone: 'lo', pal: 'board', pos: [X7, 0.015, 0], name: "道路" });
+  part(root, box(RW, 0.031, RL, 0.01), { tone: 'lo', pal: 'board', pos: [X7, 0.016, 0], name: "道路" });
   { const d = []; for (let x = -RL / 2; x < RL / 2; x += 2.4) if (Math.abs(x + 0.7) > RW / 2 + 0.4) d.push(X7 + x, 0.04, 0, X7 + x + 1.4, 0.04, 0);
     for (let z = -RL / 2; z < RL / 2; z += 2.4) if (Math.abs(z + 0.7) > RW / 2 + 0.4) d.push(X7, 0.04, z, X7, 0.04, z + 1.4);
     lines(root, d, '#9a9aa0'); }
-  const gX = asm('crash', root, { title: 'Crash at a crossroads', sub: 'momentum adds as a vector' });
+  const gX = asm('crash', root, { title: "十字路口发生车祸", sub: "动量作为向量相加" });
   const car = new THREE.Group(), truck = new THREE.Group(); gX.add(car, truck);
-  part(car, box(4.2, 0.7, 1.8, 0.18), { tone: 'hi', pos: [0, 0.75, 0], name: 'Car · 1000 kg' });
-  part(car, box(2.2, 0.6, 1.6, 0.2), { tone: 'hi', pos: [-0.3, 1.38, 0], name: 'Car · 1000 kg' });
-  for (const [x, z] of [[1.35, 0.85], [1.35, -0.85], [-1.35, 0.85], [-1.35, -0.85]]) part(car, zAxis(cyl(0.36, 0.26, 24)), { tone: 'mid', pal: 'dark', pos: [x, 0.36, z], name: 'Car · 1000 kg' });
+  part(car, box(4.2, 0.7, 1.8, 0.18), { tone: 'hi', pos: [0, 0.75, 0], name: "汽车·1000公斤" });
+  part(car, box(2.2, 0.6, 1.6, 0.2), { tone: 'hi', pos: [-0.3, 1.38, 0], name: "汽车·1000公斤" });
+  for (const [x, z] of [[1.35, 0.85], [1.35, -0.85], [-1.35, 0.85], [-1.35, -0.85]]) part(car, zAxis(cyl(0.36, 0.26, 24)), { tone: 'mid', pal: 'dark', pos: [x, 0.36, z], name: "汽车·1000公斤" });
   // the truck faces north (−z): cab in front, box behind
-  part(truck, box(2.5, 3.0, 5.6, 0.12), { tone: 'hi', pos: [0, 2.0, 0.9], name: 'Truck · 8000 kg' });
-  part(truck, box(2.4, 2.2, 1.9, 0.2), { tone: 'hi', pos: [0, 1.6, -2.85], name: 'Truck · 8000 kg' });
-  for (const [x, z] of [[1.15, -2.7], [-1.15, -2.7], [1.15, 1.2], [-1.15, 1.2], [1.15, 2.6], [-1.15, 2.6]]) part(truck, xAxis(cyl(0.48, 0.32, 24)), { tone: 'mid', pal: 'dark', pos: [x, 0.48, z], name: 'Truck · 8000 kg' });
+  part(truck, box(2.5, 3.0, 5.6, 0.12), { tone: 'hi', pos: [0, 2.0, 0.9], name: "卡车·8000公斤" });
+  part(truck, box(2.4, 2.2, 1.9, 0.2), { tone: 'hi', pos: [0, 1.6, -2.85], name: "卡车·8000公斤" });
+  for (const [x, z] of [[1.15, -2.7], [-1.15, -2.7], [1.15, 1.2], [-1.15, 1.2], [1.15, 2.6], [-1.15, 2.6]]) part(truck, xAxis(cyl(0.48, 0.32, 24)), { tone: 'mid', pal: 'dark', pos: [x, 0.48, z], name: "卡车·8000公斤" });
   // where each is at the moment of impact: car (eastbound lane) nose against the truck's side
   const TRUCK_C = V(0, 0, 0.35), LANE = 1.7;                     // the truck's centre of mass, in its frame
   const TRUCK0 = V(X7 + LANE, 0, LANE).sub(TRUCK_C), CAR0 = V(X7 + LANE - 1.25 - 2.12, 0, LANE);
   const cmX = cmMark(gX, 0.5), pCar = pArrow(gX, 3), pTruck = pArrow(gX, 3), totX = totArrow(gX, 3);
-  label('vec', '<i>p</i><sub>car</sub>', () => tip(pCar, 0.6)); label('vec', '<i>p</i><sub>truck</sub>', () => tip(pTruck, 0.6)); label('vec blue', '<i>P</i>', () => tip(totX, 0.6));
+  label('vec', "<i>p</i><sub>汽车</sub>", () => tip(pCar, 0.6)); label('vec', "<i>p</i><sub>卡车</sub>", () => tip(pTruck, 0.6)); label('vec blue', '<i>P</i>', () => tip(totX, 0.6));
   const kc = n => n / 1000 * CRASH_SCALE;
   const addA = pArrow(gX, 3), addB = pArrow(gX, 3), addT = totArrow(gX, 3);
-  label('vec', '<i>p</i><sub>car</sub>', () => ex(gX) > 0.3 ? mid(addA, V(0, 0, 1.2)) : null);
-  label('vec', '<i>p</i><sub>truck</sub>', () => ex(gX) > 0.3 ? mid(addB, V(1.6, 0, 0)) : null);
-  label('vec blue', '<i>P</i><sub>total</sub>', () => ex(gX) > 0.3 ? mid(addT, V(-1.8, 0, 0)) : null);
+  label('vec', "<i>p</i><sub>汽车</sub>", () => ex(gX) > 0.3 ? mid(addA, V(0, 0, 1.2)) : null);
+  label('vec', "<i>p</i><sub>卡车</sub>", () => ex(gX) > 0.3 ? mid(addB, V(1.6, 0, 0)) : null);
+  label('vec blue', "<i>P</i><sub>总计</sub>", () => ex(gX) > 0.3 ? mid(addT, V(-1.8, 0, 0)) : null);
   label('tick', '1000 kg', () => car.position.clone().add(V(-1, 2.6, 0))); label('tick', '8000 kg', () => truck.position.clone().add(V(-1.4, 4.1, 0)));
 
   // ---------- 9 · a shell that bursts at the top ----------
   const S = M.SHELL, SR = 0.16;
-  const gS = asm('shell', root, { title: 'A shell bursts in flight', sub: 'the centre of mass flies on' });
+  const gS = asm('shell', root, { title: "炮弹在飞行中爆炸", sub: "质心继续飞行" });
   strip(SH0 - 0.8, SH0 + 1.5 * S.R + 1.0, -0.7, 0.7, gS);
   const halfGeo = front => new THREE.SphereGeometry(SR, 28, 18, front ? Math.PI / 2 : -Math.PI / 2, Math.PI);
   const halfMat = shadeMat('paper').clone(); halfMat.side = THREE.DoubleSide;
-  const halves = [0, 1].map(i => part(gS, halfGeo(i), { tone: 'hi', name: i ? 'Front half · 0.5 kg' : 'Rear half · 0.5 kg', mat: halfMat }));
+  const halves = [0, 1].map(i => part(gS, halfGeo(i), { tone: 'hi', name: i ? "前半部·0.5公斤" : "后半部·0.5公斤", mat: halfMat }));
   const cmS = cmMark(gS, 0.11), pA = pArrow(gS, 1.3), pB = pArrow(gS, 1.3), totS = totArrow(gS, 1.3);
   label('vec', '<i>p</i><sub>1</sub>', () => tip(pA, 0.25)); label('vec', '<i>p</i><sub>2</sub>', () => tip(pB, 0.25)); label('vec blue', '<i>P</i>', () => tip(totS, 0.25));
   { const path = [], a = [], b = [];
@@ -203,7 +203,7 @@ export function buildWorld(E) {
     dashed(path, '#8a8a8f'); dashed(a, '#c4c4c8'); dashed(b, '#c4c4c8');
     const tk = []; for (const x of [0, S.R / 2, S.R, 1.5 * S.R]) tk.push(SH0 + x, 0.03, -0.25, SH0 + x, 0.03, 0.25); lines(root, tk, '#6e6e74'); }
   label('tick', '<i>R</i>/2', () => V(SH0 + S.R / 2 + 0.15, 0.1, 0.6)); label('tick', '<i>R</i>', () => V(SH0 + S.R + 0.12, 0.1, 0.6)); label('tick', '3<i>R</i>/2', () => V(SH0 + 1.5 * S.R + 0.25, 0.1, 0.6));
-  label('tick', 'launch', () => V(SH0 + 0.35, 0.1, 0.6));
+  label('tick', "发射", () => V(SH0 + 0.35, 0.1, 0.6));
 
 
   // ---------- 10–12 · continuous bodies (AP Physics C) ----------
@@ -214,26 +214,26 @@ export function buildWorld(E) {
 
   // 10 · two rods on knife edges
   const XR = STATIONS.rods, R = M.ROD, RS = 0.12, YR = 0.5, X0R = XR - R.L / 2, rodZ = { U: 0.55, N: -0.55 };
-  const gR = asm('rods', root, { title: 'Two rods, sliced', sub: 'x<sub>cm</sub> = (1/<i>M</i>)∫<i>x</i> d<i>m</i>' });
+  const gR = asm('rods', root, { title: "两根棒，切片", sub: "x<sub>cm</sub> = (1/<i>M</i>)∫<i>x</i> d<i>m</i>" });
   strip(XR - 1.6, XR + 1.6, -1.1, 1.1, gR);
   gR.userData.focus = () => ({ target: [XR - 0.1, 0.55, 0], radius: 1.9 });
   const rods = ['U', 'N'].map(kind => {
     const z = rodZ[kind], sl = M.rodSlices(kind), xc = kind === 'U' ? R.xU : R.xN;
-    const bands = sl.map((q, i) => part(gR, new THREE.BoxGeometry(q.b - q.a, RS, RS), { tone: 'hi', pal: greyPal((q.dm / (q.b - q.a)) / R.lam0), pos: [X0R + (q.a + q.b) / 2, YR, z], ex: [(i - (R.n - 1) / 2) * 0.07, 0, 0], name: kind === 'U' ? 'Uniform rod · 1.0 kg' : 'Rod, λ = λ₀x/L · 1.5 kg' }));
-    part(gR, wedge(0.22, YR - RS / 2 - 0.02, 0.26), { tone: 'mid', pal: 'board', pos: [X0R + xc, 0.02, z], name: 'Knife edge' });
+    const bands = sl.map((q, i) => part(gR, new THREE.BoxGeometry(q.b - q.a, RS, RS), { tone: 'hi', pal: greyPal((q.dm / (q.b - q.a)) / R.lam0), pos: [X0R + (q.a + q.b) / 2, YR, z], ex: [(i - (R.n - 1) / 2) * 0.07, 0, 0], name: kind === 'U' ? "均匀棒·1.0公斤" : "杆，λ = λ₀x/L·1.5 kg" }));
+    part(gR, wedge(0.22, YR - RS / 2 - 0.02, 0.26), { tone: 'mid', pal: 'board', pos: [X0R + xc, 0.02, z], name: "刀口" });
     const mk = cmMark(gR, 0.05); mk.position.set(X0R + xc, YR, z + RS / 2 + 0.01);
     const slab = part(gR, new THREE.BoxGeometry(0.035, RS + 0.03, RS + 0.03), { tone: 'hi', pal: 'ink', name: 'dm' });
-    const wts = sl.map(() => gArrow(gR, 0.7, 'Weight dm·g'));
+    const wts = sl.map(() => gArrow(gR, 0.7, "重力dm·g"));
     return { kind, z, sl, xc, bands, slab, wts };
   });
-  label('tick', 'uniform', () => V(X0R - 0.12 - 0.35 * ex(gR), YR, rodZ.U)); label('tick', 'λ = λ₀x/L', () => V(X0R - 0.12 - 0.35 * ex(gR), YR, rodZ.N));
+  label('tick', "制服", () => V(X0R - 0.12 - 0.35 * ex(gR), YR, rodZ.U)); label('tick', 'λ = λ₀x/L', () => V(X0R - 0.12 - 0.35 * ex(gR), YR, rodZ.N));
   label('tick', 'x_cm = L/2', () => V(X0R + R.xU - 0.2, 0.08, rodZ.U + 0.2)); label('tick', 'x_cm = 2L/3', () => V(X0R + R.xN - 0.16, 0.3, rodZ.N));
   label('tick', 'x = 0', () => V(X0R + 0.12, YR - 0.2, rodZ.U + 0.1));
   label('vec', 'd<i>m</i>', () => ex(gR) < 0.3 ? rods[1].slab.position.clone().add(V(0, 0.22, 0)) : null);
 
   // 11 · a triangle and a semicircle, cut into strips, each on a pin
   const XP = STATIONS.plates, YP = 0.45, PT = 0.04, plates = [];
-  const gPl = asm('plates', root, { title: 'Plates, strip by strip', sub: 'triangle and semicircle' });
+  const gPl = asm('plates', root, { title: "板，条带", sub: "三角形和半圆形" });
   strip(XP - 2.0, XP + 1.6, -1.1, 1.1, gPl);
   gPl.userData.focus = () => ({ target: [XP - 0.2, 0.5, 0], radius: 2.1 });
   for (const [S, w, x0, name] of [[M.TRI, M.triW, XP - 1.65, 'Triangle · 1.8 kg'], [M.SEMI, M.semiW, XP + 0.35, 'Semicircle · 2.0 kg']]) {
@@ -242,39 +242,39 @@ export function buildWorld(E) {
       for (let j = 0; j <= k; j++) { const u = q.a + (q.b - q.a) * j / k; pts.push([u, -w(u) / 2]); }
       for (let j = k; j >= 0; j--) { const u = q.a + (q.b - q.a) * j / k; pts.push([u, w(u) / 2]); }
       return part(gPl, flat(pts, [], PT), { tone: 'hi', pos: [x0, YP, 0], ex: [(i - (st.length - 1) / 2) * 0.08, 0, 0], name }); });
-    part(gPl, new THREE.ConeGeometry(0.045, YP - 0.02, 20), { tone: 'mid', pal: 'board', pos: [x0 + S.ucm, 0.02 + (YP - 0.02) / 2, 0], name: 'Pin' });
+    part(gPl, new THREE.ConeGeometry(0.045, YP - 0.02, 20), { tone: 'mid', pal: 'board', pos: [x0 + S.ucm, 0.02 + (YP - 0.02) / 2, 0], name: "销" });
     const mk = cmMark(gPl, 0.05); mk.position.set(x0 + S.ucm, YP + PT / 2, 0);
     const slab = part(gPl, new THREE.BoxGeometry(0.03, PT + 0.03, 1), { tone: 'hi', pal: 'ink', name: 'dm' });
-    plates.push({ S, w, x0, H, st, slab, wts: st.map(() => gArrow(gPl, 0.7, 'Weight dm·g')), pieces });
+    plates.push({ S, w, x0, H, st, slab, wts: st.map(() => gArrow(gPl, 0.7, "重力dm·g")), pieces });
   }
   label('tick', 'h/3', () => V(plates[0].x0 + M.TRI.ucm - 0.08, 0.03, 0.3)); label('tick', '4R/3π', () => V(plates[1].x0 + M.SEMI.ucm - 0.08, 0.03, 0.3));
-  label('tick', 'base', () => V(plates[0].x0 - 0.06 - 0.3 * ex(gPl), YP, -0.62)); label('tick', 'diameter', () => V(plates[1].x0 - 0.06 - 0.3 * ex(gPl), YP, -0.82));
+  label('tick', "基地", () => V(plates[0].x0 - 0.06 - 0.3 * ex(gPl), YP, -0.62)); label('tick', "直径", () => V(plates[1].x0 - 0.06 - 0.3 * ex(gPl), YP, -0.82));
   label('vec', 'd<i>m</i>', () => ex(gPl) < 0.3 ? plates[1].slab.position.clone().add(V(0, 0.12, -0.15 - plates[1].slab.scale.z / 2)) : null);
 
   // 12 · by parts and by subtraction: a plate with a hole on a pin, an L hung by a string
   const XC = STATIONS.parts, Hh = M.HOLE, HX = XC - 0.95, L2 = M.ELL;
-  const gC = asm('parts', root, { title: 'By parts, by subtraction', sub: 'add the pieces; take the hole away' });
+  const gC = asm('parts', root, { title: "按部分、按减法", sub: "添加碎片；把洞拿开" });
   strip(XC - 1.8, XC + 1.7, -0.85, 0.85, gC);
   gC.userData.focus = () => ({ target: [XC + 0.05, 1.25, 0], radius: 1.95 });
   const hs = Hh.s / 2, holePath = new THREE.Path(); holePath.absarc(Hh.c[0], Hh.c[1], Hh.r, 0, Math.PI * 2, true);
-  part(gC, flat([[-hs, -hs], [hs, -hs], [hs, hs], [-hs, hs]], [holePath], PT), { tone: 'hi', pos: [HX, YP, 0], name: 'Plate with a hole · 2.3 kg' });
+  part(gC, flat([[-hs, -hs], [hs, -hs], [hs, hs], [-hs, hs]], [holePath], PT), { tone: 'hi', pos: [HX, YP, 0], name: "带孔板 · 2.3 kg" });
   const w2 = ([x, y], h = YP + PT / 2) => V(HX + x, h, -y);          // plate coordinates → world (flat)
-  part(gC, new THREE.ConeGeometry(0.045, YP - 0.02, 20), { tone: 'mid', pal: 'board', pos: w2(Hh.cm, 0.02 + (YP - 0.02) / 2).toArray(), name: 'Pin' });
+  part(gC, new THREE.ConeGeometry(0.045, YP - 0.02, 20), { tone: 'mid', pal: 'board', pos: w2(Hh.cm, 0.02 + (YP - 0.02) / 2).toArray(), name: "销" });
   const mkH = cmMark(gC, 0.05); mkH.position.copy(w2(Hh.cm));
-  const plug = part(gC, new THREE.CylinderGeometry(Hh.r, Hh.r, PT, 48), { tone: 'mid', name: 'The missing plug', mat: shadeMat('dark', { opacity: 0.45 }) });
+  const plug = part(gC, new THREE.CylinderGeometry(Hh.r, Hh.r, PT, 48), { tone: 'mid', name: "缺少的插头", mat: shadeMat('dark', { opacity: 0.45 }) });
   const mkFull = cmMark(gC, 0.035), mkPlug = cmMark(gC, 0.035);
   const holeLine = new THREE.Group(); gC.add(holeLine);
   { const d = [], A = [Hh.cm[0] - 0.12, Hh.cm[1] - 0.12], B = [Hh.c[0] + 0.12, Hh.c[1] + 0.12], n = 14;
     for (let i = 0; i < n; i++) { const t0 = i / n, t1 = (i + 0.55) / n; d.push(...w2([A[0] + (B[0] - A[0]) * t0, A[1] + (B[1] - A[1]) * t0], YP + PT + 0.005).toArray(), ...w2([A[0] + (B[0] - A[0]) * t1, A[1] + (B[1] - A[1]) * t1], YP + PT + 0.005).toArray()); }
     lines(holeLine, d, '#6e6e74'); }
-  label('vec', '−<i>m</i><sub>plug</sub>', () => ex(gC) > 0.3 ? plug.position.clone().add(V(0.42, 0.08, 0)) : null);
+  label('vec', "−<i>m</i><sub>插头</sub>", () => ex(gC) > 0.3 ? plug.position.clone().add(V(0.42, 0.08, 0)) : null);
   // the L: in the xy plane, hanging from a string tied at P
   const Q = V(XC + 0.75, 2.05, 0), CEIL = 2.4;
-  part(root, box(0.9, 0.08, 0.5, 0.02), { tone: 'mid', pal: 'board', pos: [Q.x, CEIL + 0.04, 0], name: 'Ceiling' });
-  part(gC, new THREE.CylinderGeometry(0.008, 0.008, CEIL - Q.y, 8), { tone: 'hi', pal: 'ink', pos: [Q.x, (CEIL + Q.y) / 2, 0], name: 'String' });
+  part(root, box(0.9, 0.08, 0.5, 0.02), { tone: 'mid', pal: 'board', pos: [Q.x, CEIL + 0.04, 0], name: "天花板" });
+  part(gC, new THREE.CylinderGeometry(0.008, 0.008, CEIL - Q.y, 8), { tone: 'hi', pal: 'ink', pos: [Q.x, (CEIL + Q.y) / 2, 0], name: "字符串" });
   const ellG = new THREE.Group(); ellG.position.copy(Q); ellG.rotation.z = L2.phi; gC.add(ellG);
   const arms = ['A', 'B'].map(k => { const r = L2[k], g = new THREE.Group(); ellG.add(g);
-    part(g, new THREE.BoxGeometry(r.a1 - r.a0, r.b1 - r.b0, PT), { tone: 'hi', pos: [(r.a0 + r.a1) / 2 - L2.P[0], (r.b0 + r.b1) / 2 - L2.P[1], 0], name: `L-shaped plate · ${L2.M.toFixed(2)} kg` });
+    part(g, new THREE.BoxGeometry(r.a1 - r.a0, r.b1 - r.b0, PT), { tone: 'hi', pos: [(r.a0 + r.a1) / 2 - L2.P[0], (r.b0 + r.b1) / 2 - L2.P[1], 0], name: `L型板·${L2.M.toFixed(2)} kg` });
     const mk = cmMark(g, 0.035); mk.position.set(L2['p' + k].c[0] - L2.P[0], L2['p' + k].c[1] - L2.P[1], PT / 2 + 0.01);
     return { g, mk }; });
   const hw = p => { const [x, y] = M.hang(p); return V(Q.x + x, Q.y + y, 0); };
@@ -283,9 +283,9 @@ export function buildWorld(E) {
   const armLine = lines(gC, new Array(6 * 12).fill(0), '#6e6e74');
   label('vec', '<i>m</i><sub>A</sub>', () => ex(gC) > 0.3 ? arms[0].mk.getWorldPosition(V()).add(V(0.16, 0.06, 0)) : null);
   label('vec', '<i>m</i><sub>B</sub>', () => ex(gC) > 0.3 ? arms[1].mk.getWorldPosition(V()).add(V(0.02, 0.17, 0)) : null);
-  label('tick', 'string tied here', () => Q.clone().add(V(-0.2, 0.08, 0)));
-  label('tick', 'centre of mass: in the gap', () => hw(L2.cm).add(V(-0.12, -0.02, 0)));
-  label('tick', 'pin', () => w2(Hh.cm, 0.12).add(V(-0.08, 0, 0.1)));
+  label('tick', "绳子绑在这里", () => Q.clone().add(V(-0.2, 0.08, 0)));
+  label('tick', "质心：在间隙中", () => hw(L2.cm).add(V(-0.12, -0.02, 0)));
+  label('tick', "针", () => w2(Hh.cm, 0.12).add(V(-0.08, 0, 0.1)));
 
   // ---------- per-frame ----------
   const P = n => n * P_SCALE;

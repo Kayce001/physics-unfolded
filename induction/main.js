@@ -22,15 +22,15 @@ startBook({
   readout(s, page) {
     switch (page.scene) {
       case 'flux': { const r = M.fluxScene(s.flux.t); return `Φ ${f(r.Phi * 1e6)} µWb\nε ${f(r.emf * 1e6, 1)} µV   I ${f(r.I * 1e3)} mA`; }
-      case 'lenz': { const r = M.lenzCase(M.CASES[0], s.lenz.t); return `N approaching: Φ ${f(r.Phi * 1e6)} µWb\nε ${f(r.emf * 1e6)} µV`; }
-      case 'mutual': { const a = M.coilsScene(s.coil.t), b = M.coreScene(s.coil.t); return `coils: I₁ ${f(a.I1)} A   ε₂ ${f(a.emf * 1e3, 3)} mV\ncore: B ${f(b.B, 3)} T   ε₂ ${f(b.emf2 * 1e3)} mV`; }
+      case 'lenz': { const r = M.lenzCase(M.CASES[0], s.lenz.t); return `N 靠近中: Φ ${f(r.Phi * 1e6)} µWb\nε ${f(r.emf * 1e6)} µV`; }
+      case 'mutual': { const a = M.coilsScene(s.coil.t), b = M.coreScene(s.coil.t); return `线圈: I₁ ${f(a.I1)} A   ε₂ ${f(a.emf * 1e3, 3)} mV\n铁芯: B ${f(b.B, 3)} T   ε₂ ${f(b.emf2 * 1e3)} mV`; }
       case 'wire': { const r = M.wireScene(s.wire.t); return `r ${f(r.r * 100, 1)} cm   Φ ${f(r.Phi * 1e6, 3)} µWb\nε ${f(r.emf * 1e6, 3)} µV`; }
       case 'bar': { const r = M.barScene(s.bar.t, s.bar.resting); return `v ${f(r.v)} m/s   E ${f(r.E)} V/m\nε = BLv ${f(r.emf, 3)} V   I 0`; }
       case 'crossing': { const r = M.crossScene(s.cross.t); return `Φ ${f(r.Phi * 1e3, 1)} mWb\nε ${f(r.emf * 1e3, 0)} mV   I ${f(r.I * 1e3, 0)} mA`; }
       case 'rails': { const r = M.railScene(s.rail.t); return `t ${f(s.rail.t)} s   v ${f(r.v, 3)} m/s\nI ${f(r.I, 3)} A   F ${f(r.F, 3)} N`; }
       case 'solenoid': { const r = M.solScene(s.sol.t); return `I ${f(r.I)} A   B ${f(r.B * 1e3)} mT\nε_L ${f(r.emfL * 1e3)} mV   U ${f(r.U * 1e3)} mJ`; }
-      case 'rl': { const r = M.rlScene(s.rl.t); return `${r.growing ? 'growth' : 'decay'}: t ${f(r.s)} s   I ${f(r.I, 3)} A\nIR ${f(r.VR)} V   L dI/dt ${f(r.VL)} V`; }
-      case 'lc': { const r = M.lcScene(s.lc.t); return `t ${f(s.lc.t * 1e3)} ms   q ${f(r.q * 1e6, 1)} µC   I ${f(r.I * 1e3, 1)} mA\nU_E ${f(r.UE * 1e3, 3)}  U_B ${f(r.UB * 1e3, 3)}  total ${f((r.UE + r.UB) * 1e3, 3)} mJ`; }
+      case 'rl': { const r = M.rlScene(s.rl.t); return `${r.growing ? "增长" : "衰减"}: t ${f(r.s)} s   I ${f(r.I, 3)} A\nIR ${f(r.VR)} V   L dI/dt ${f(r.VL)} V`; }
+      case 'lc': { const r = M.lcScene(s.lc.t); return `t ${f(s.lc.t * 1e3)} ms q ${f(r.q * 1e6, 1)} µC I ${f(r.I * 1e3, 1)} mA\nU_E ${f(r.UE * 1e3, 3)} U_B ${f(r.UB * 1e3, 3)} 总计 ${f((r.UE + r.UB) * 1e3, 3)} mJ`; }
     }
     return '';
   },
@@ -45,7 +45,7 @@ startBook({
     { const Rp = R.pw, X = t => CH.sx(t, Rp.x0, Rp.x1).toFixed(1), Y = p => CH.sy(p, Rp.y0, Rp.y1).toFixed(1), n = 40, pts = [];
       for (let i = 0; i <= n; i++) { const t = s.rail.t * i / n; pts.push(`L${X(t)},${Y(M.railScene(t).P)}`); }
       q('path[data-area="pw"]').forEach(p => p.setAttribute('d', `M${X(0)},${Y(0)}${pts.join('')}L${X(s.rail.t)},${Y(0)}Z`));
-      q('#raillive').forEach(el => { el.textContent = `shaded heat ${f(ra.heat * 1e3, 1)} mJ = kinetic energy lost ½m(v₀² − v²)`; }); }
+      q('#raillive').forEach(el => { el.textContent = `阴影热量 ${f(ra.heat * 1e3, 1)} mJ = 损失的动能 ½m(v₀² − v²)`; }); }
     const so = M.solScene(s.sol.t); put('iS', R.iS, s.sol.t, so.I); put('eS', R.eS, s.sol.t, so.emfL * 1e3);
     const rl = M.rlScene(s.rl.t); put('iRL', R.iRL, s.rl.t, rl.I); put('vR', R.vRL, s.rl.t, rl.VR); put('vL', R.vRL, s.rl.t, rl.VL);
     const lc = M.lcScene(s.lc.t); put('qLC', R.qLC, s.lc.t * 1e3, lc.q * 1e6); put('iLC', R.iLC, s.lc.t * 1e3, lc.I * 1e3);

@@ -26,15 +26,15 @@ startBook({
   },
   readout(s, page) {
     switch (page.scene) {
-      case 'atoms': return `neutral 0   ion −1e   ion +1e\n1 e = 1.60 × 10⁻¹⁹ C`;
-      case 'induce': { const st = s.induce; return `${st.stage}\nsphere ${f(st.Qnet / M.nC)} nC   rod ${st.rod ? f(st.dTip * 100, 0) + ' cm away' : 'gone'}`; }
-      case 'coulomb': return `r ${f(s.pairR * 100, 1)} cm\nF ${f(M.coulomb(M.PAIR.q1, M.PAIR.q2, s.pairR))} N on each, attracting`;
+      case 'atoms': return `中性 0   离子 −1e   离子 +1e\n1 e = 1.60 × 10⁻¹⁹ C`;
+      case 'induce': { const st = s.induce; return `${st.stage}\n球体 ${f(st.Qnet / M.nC)} 数控杆 ${st.rod ? f(st.dTip * 100, 0) + ' cm away' : 'gone'}`; }
+      case 'coulomb': return `r ${f(s.pairR * 100, 1)} cm\nF ${f(M.coulomb(M.PAIR.q1, M.PAIR.q2, s.pairR))} 每个 N，吸引`;
       case 'line': { const r = M.lineForces(s.lineX); return `x ${f(s.lineX * 100, 1)} cm   F_A ${f(r.FA[0], 3)} N   F_B ${f(r.FB[0], 3)} N\nΣF ${f(r.net[0], 3)} N`; }
       case 'point': { const E = M.pointMag(M.POINT.Q, s.testR); return `r ${f(s.testR * 100, 1)} cm   E ${f(E, 0)} N/C\nF = q₀E = ${f(M.POINT.q0 * E * 1e9, 1)} × 10⁻⁹ N`; }
-      case 'dipole': return `axis x ${f(s.dipoleX * 100, 1)} cm: E ${f(M.dipoleAxis(s.dipoleX), 0)} N/C\nbisector y ${f(s.dipoleY * 100, 1)} cm: E ${f(M.dipoleBisector(s.dipoleY), 0)} N/C`;
-      case 'rod': return `axis a ${f(s.rodA * 100, 1)} cm: E ${f(M.rodAxis(s.rodA), 0)} N/C\nbisector a ${f(s.rodB * 100, 1)} cm: E ${f(M.rodBisector(s.rodB), 0)} N/C`;
-      case 'ring': return `z ${f(s.ringZ * 100, 1)} cm   E ${f(M.ringAxis(s.ringZ), 0)} N/C\npeak ${f(M.ringAxis(M.RING_ZMAX), 0)} N/C at ${f(M.RING_ZMAX * 100, 1)} cm`;
-      case 'plates': { const e = M.electron(s.plates.t); return `t ${f(s.plates.t * 1e9)} ns   x ${f(e.x * 100)} cm   y ${f(e.y * 1000)} mm\n${e.inside ? `a ${(M.PLATES.a / 1e14).toFixed(2)} × 10¹⁴ m/s² up` : 'past the plates: straight line'}`; }
+      case 'dipole': return `轴线 x ${f(s.dipoleX * 100, 1)} cm: E ${f(M.dipoleAxis(s.dipoleX), 0)} N/C\n垂直平分线 y ${f(s.dipoleY * 100, 1)} cm: E ${f(M.dipoleBisector(s.dipoleY), 0)} N/C`;
+      case 'rod': return `轴线 a ${f(s.rodA * 100, 1)} cm: E ${f(M.rodAxis(s.rodA), 0)} N/C\n垂直平分线 a ${f(s.rodB * 100, 1)} cm: E ${f(M.rodBisector(s.rodB), 0)} N/C`;
+      case 'ring': return `z ${f(s.ringZ * 100, 1)} cm E ${f(M.ringAxis(s.ringZ), 0)} N/C\n峰值 ${f(M.ringAxis(M.RING_ZMAX), 0)} N/C at ${f(M.RING_ZMAX * 100, 1)} cm`;
+      case 'plates': { const e = M.electron(s.plates.t); return `t ${f(s.plates.t * 1e9)} ns   x ${f(e.x * 100)} cm   y ${f(e.y * 1000)} mm\n${e.inside ? `a ${(M.PLATES.a / 1e14).toFixed(2)} × 10¹⁴ m/s² up` : "经过板块：直线"}`; }
     }
     return '';
   },

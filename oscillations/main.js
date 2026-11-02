@@ -19,15 +19,15 @@ startBook({
     switch (page.scene) {
       case 'spring': case 'hooke': case 'trace': { const s = M.spring(t); return `x ${f(s.x)} m   v ${f(s.v)} m/s\nF ${f(s.F)} N   a ${f(s.a)} m/s²`; }
       case 'energy': { const s = M.spring(t); return `K ${f(s.KE)} J   U ${f(s.U)} J\nK + U ${f(s.KE + s.U)} J`; }
-      case 'hang': { const s = M.hang(t); return `y ${f(s.y)} m   spring ${f(s.Fs)} N   weight ${f(M.WEIGHT)} N\nΣF ${f(s.net)} N   a ${f(s.a)} m/s²`; }
-      case 'pendulum': { const p = M.pendulum(t); return `θ ${f(p.th / M.DEG, 1)}°   v ${f(p.v)} m/s\nrestoring ${f(p.restoring, 3)} N   T ${f(M.P_T, 3)} s`; }
+      case 'hang': { const s = M.hang(t); return `y ${f(s.y)} m   弹簧 ${f(s.Fs)} N   重力 ${f(M.WEIGHT)} N\nΣF ${f(s.net)} N   a ${f(s.a)} m/s²`; }
+      case 'pendulum': { const p = M.pendulum(t); return `θ ${f(p.th / M.DEG, 1)}°   v ${f(p.v)} m/s\n回复 ${f(p.restoring, 3)} N   T ${f(M.P_T, 3)} s`; }
       case 'double': { const a = M.periodSpring(1, M.K), b = M.periodSpring(4, M.K), c = M.periodPendulum(M.DOUBLE.L), d = M.periodPendulum(M.DOUBLE.L4);
-        return `cycles  m ${f(t / a, 1)}   4m ${f(t / b, 1)}\n        L ${f(t / c, 1)}   4L ${f(t / d, 1)}`; }
-      case 'ignore': return `springs: T ${f(M.T0, 3)} s, both   cycles ${f(t / M.T0, 1)}\npendulums: T ${f(M.periodPendulum(M.IGNORE.L), 3)} s, both   cycles ${f(t / M.periodPendulum(M.IGNORE.L), 1)}`;
-      case 'ode': { const a = M.start(0, t), b = M.start(1, t); return `let go: x ${f(a.x)} m   v ${f(a.v)} m/s\npushed: x ${f(b.x)} m   v ${f(b.v)} m/s`; }
-      case 'physical': { const r = M.physical(M.ROD, t), p = M.pendulum(t, M.ROD.L, M.ROD.th0); return `rod θ ${f(r.th / M.DEG, 1)}°   T ${f(M.ROD.T, 3)} s\nstring θ ${f(p.th / M.DEG, 1)}°   T ${f(M.periodPendulum(M.ROD.L), 3)} s`; }
+        return `周期数  m ${f(t / a, 1)}   4m ${f(t / b, 1)}\n        L ${f(t / c, 1)}   4L ${f(t / d, 1)}`; }
+      case 'ignore': return `弹簧： T ${f(M.T0, 3)} s，两个循环 ${f(t / M.T0, 1)}\n摆锤： T ${f(M.periodPendulum(M.IGNORE.L), 3)} s，两个循环 ${f(t / M.periodPendulum(M.IGNORE.L), 1)}`;
+      case 'ode': { const a = M.start(0, t), b = M.start(1, t); return `放开：x ${f(a.x)} m v ${f(a.v)} m/s\n推：x ${f(b.x)} m v ${f(b.v)} m/s`; }
+      case 'physical': { const r = M.physical(M.ROD, t), p = M.pendulum(t, M.ROD.L, M.ROD.th0); return `带电棒 θ ${f(r.th / M.DEG, 1)}°   T ${f(M.ROD.T, 3)} s\n绳 θ ${f(p.th / M.DEG, 1)}°   T ${f(M.periodPendulum(M.ROD.L), 3)} s`; }
       case 'torsion': { const r = M.torsion(t); return `θ ${f(r.th / M.DEG, 1)}°   τ ${f(r.torque, 3)} N·m\nT ${f(M.TORS.T, 3)} s`; }
-      case 'life': return `car: T ${f(M.CAR.T, 2)} s   bounces ${f(t / M.CAR.T, 1)}\nswing: T ${f(M.SWING.T, 2)} s   swings ${f(t / M.SWING.T, 1)}`;
+      case 'life': return `汽车: T ${f(M.CAR.T, 2)} s   反弹次数 ${f(t / M.CAR.T, 1)}\n摆动: T ${f(M.SWING.T, 2)} s   摆动 ${f(t / M.SWING.T, 1)}`;
     }
     return '';
   },

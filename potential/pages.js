@@ -46,163 +46,154 @@ const runs = (pts, lim) => pts.reduce((out, p, i) => { if (Math.abs(p[1]) > lim 
 
 export const PAGES = [
   {
-    kicker: 'Chapter 11', title: 'Electric potential energy', sub: 'the work stored in a pair of charges',
-    body: `
-      <p class="lede">Push a charge toward another of the same sign and you do work against the repulsion. That work is stored as <b>electric potential energy</b>.</p>
+    kicker: "第11章", title: "电势能", sub: "存储在一对电荷中的工作",
+    body: `<p class="lede">将一个电荷推向另一个相同符号的电荷，你确实会抵抗斥力。该功存储为 <b> 电势能 </b>.</p>
       <div class="eq"><i>U</i> = <i>kq</i><sub>1</sub><i>q</i><sub>2</sub> / <i>r</i></div>
-      <p><i>U</i> = 0 when the charges are infinitely far apart. Bringing +2 nC in from ${M.PAIR.r0 * 100} cm to ${M.PAIR.r1 * 100} cm of +4 nC takes ${uJ(Ulike.W)} μJ. Unlike charges pull together, so their <i>U</i> is <b>negative</b> and falls as they close. <i>U</i> is a scalar: the signs of the charges carry its sign.</p>
+      当电荷相距无限远时，<p><i>U</i> = 0。将 +2 nC 从 ${M.PAIR.r0 * 100} cm 引入到 ${M.PAIR.r1 * 100} cm +4 nC 需要 ${uJ(Ulike.W)} μJ。与电荷聚集不同，因此它们的 <i>U</i> 是 <b> 负 </b> 并在关闭时下降。 <i>U</i> 是标量：电荷的符号带有其符号。</p>
       <div class="charts">${chart({ ...R.pair, zero: true, xlabel: 'separation r (cm)', ylabel: 'U (μJ)', cursors: [['pairL'], ['pairU', BLUE]], label: 'Potential energy against separation for like and unlike pairs',
         series: [{ pts: samples(60, 10, 40, r => M.Upair(M.PAIR.q1, M.PAIR.q2, r / 100) * 1e6), tag: [24, 0.38, 'like: U > 0'] }, { color: BLUE, pts: samples(60, 10, 40, r => M.Upair(M.PAIR.q1, -M.PAIR.q2, r / 100) * 1e6), tag: [24, -0.18, 'unlike: U < 0'] }] })}</div>
-      <p class="hintline">Click for the path in steps, each adding <i>F</i>Δ<i>r</i>. 1 square = 10 cm; force ${(SC.F * 10).toFixed(1)} cm per μN.</p>`,
+      <p class="hintline">单击步骤中的路径，每次添加<i>F</i>Δ<i>r</i>。 1 平方 = 10 厘米；力 ${(SC.F * 10).toFixed(1)} cm/μN.</p>`,
     cam: { target: [ST.pair + 0.2, 0.3, 0], az: -12, el: 32, dist: 16 }, lit: 'pair', scene: 'pair', look: {},
-    fig: 'Like and unlike pairs, closing in',
+    fig: "相似和不同的成对，接近",
   },
   {
-    kicker: '11.1', title: 'Assembling charges', sub: 'add up every pair',
-    body: `
-      <p class="lede">The energy of a group of charges is the work to bring them in from infinity, one at a time.</p>
+    kicker: '11.1', title: "组装费", sub: "将每一对相加",
+    body: `<p class="lede">一组电荷的能量是将它们从无穷大一次引入一个的功。</p>
       <table class="data">
-        <tr><td><i>q</i><sub>1</sub></td><td>nothing there yet</td><td>0</td></tr>
-        <tr><td><i>q</i><sub>2</sub></td><td><i>kq</i>²/<i>a</i></td><td>${uJ(steps[1])} μJ</td></tr>
+        <tr><td><i>q</i><sub>1</sub></td><td>没有还有</td><td>0</td></tr>
+        <tr><td><i>q</i><sub>2</sub></td> <td><i>kq</i>²/<i>a</i></td><td>${uJ(steps[1])} μJ</td></tr>
         <tr><td><i>q</i><sub>3</sub></td><td><i>kq</i>²/<i>a</i> + <i>kq</i>²/√2<i>a</i></td><td>${uJ(steps[2])} μJ</td></tr>
         <tr><td><i>q</i><sub>4</sub></td><td>2<i>kq</i>²/<i>a</i> + <i>kq</i>²/√2<i>a</i></td><td>${uJ(steps[3])} μJ</td></tr>
       </table>
       <div class="eq"><i>U</i> = 4<i>kq</i>²/<i>a</i> + 2<i>kq</i>²/√2<i>a</i> = ${uJ(M.SQ.U)} μJ</div>
-      <p>Four +2 nC charges, <i>a</i> = ${M.SQ.a * 100} cm. Six pairs, in any order.</p>
+      <p>四个+2 nC电荷，<i>a</i> = ${M.SQ.a * 100} cm。六对，任意顺序。</p>
       <div class="charts">${chart({ ...R.square, xlabel: 'time (s)', ylabel: 'U of the group (μJ)', cursors: [['square']], label: 'Energy of the group as the charges arrive',
         series: [{ pts: samples(240, 0, M.SQ.run, t => M.square(t).U * 1e6) }] })}</div>
-      <p class="hintline">Click the square to see its six pairs.</p>`,
+      <p class="hintline">单击方块查看其六对。</p>`,
     cam: { target: [ST.square, 0.3, 0], az: -12, el: 40, dist: 15 }, lit: 'square', scene: 'square', look: {},
-    fig: 'Four charges, six pairs',
+    fig: "四个电荷，六组电荷对",
   },
   {
-    kicker: '11.2', title: 'Electric potential', sub: 'energy per unit charge',
-    body: `
-      <p class="lede"><b>Potential</b> <i>V</i> is potential energy per unit charge, in volts (J/C). A charge <i>q</i> placed there has <i>U</i> = <i>qV</i>.</p>
+    kicker: '11.2', title: "电势", sub: "每单位电荷的能量",
+    body: `<p class="lede"><b>电势</b> <i>V</i> 是每单位电荷的势能，以伏特 (J/C) 为单位。放置在那里的电荷 <i>q</i> 具有 <i>U</i> = <i>qV</i>.</p>
       <div class="eq">Δ<i>V</i> = −∫<sub>A</sub><sup>B</sup> <b><i>E</i></b> · d<b><i>s</i></b></div>
-      <p>Only the part of each step d<b><i>s</i></b> along <b><i>E</i></b> counts. With <i>E</i> = ${M.UNI.E} N/C: A → B runs across <b><i>E</i></b> and adds 0; B → C is 0.2 m along it, −${M.UNI.E} × 0.2 = <b>−10 V</b>. A → C straight gives the same. Moving <b>with</b> <b><i>E</i></b>, <i>V</i> falls. The pale sheets are <b>equipotentials</b>, at right angles to <b><i>E</i></b>. For <i>E</i> = 4<i>x</i>: −∫<sub>0</sub><sup>4</sup> 4<i>x</i> d<i>x</i> = ${M.VARY.dV} V.</p>
+      <p>仅沿 <b><i>E</i></b> 的每个步骤 d<b><i>s</i></b> 的部分计数。对于 <i>E</i> = ${M.UNI.E} N/C：A → B 穿过 <b><i>E</i></b> 并加 0； B → C 沿其长度为 0.2 m，−${M.UNI.E} × 0.2 = <b>−10 V</b>。 A → C 直行给出相同的结果。移动<b>和</b> <b><i>E</i></b>，<i>V</i>下跌。浅色片为 <b>等势面</b>，与 <b><i>E</i></b> 成直角。对于 <i>E</i> = 4<i>x</i>： −∫<sub>0</sub><sup>4</sup> 4<i>x</i> d<i>x</i> = ${M.VARY.dV}五、</p>
       <div class="charts">${chart({ ...R.uniform, xlabel: 'distance along E (cm)', ylabel: 'V (volts)', cursors: [['uni']], label: 'Potential against distance along the field', series: [{ pts: [[0, 0], [20, -10]] }] })}</div>
-      <p class="hintline">Click to split A → C into steps d<b><i>s</i></b>. <b><i>E</i></b>: one square per 25 N/C.</p>`,
+      <p class="hintline">单击将 A → C 拆分为步骤 d<b><i>s</i></b>。 <b><i>E</i></b>：每 25 N/C.</p> 一个正方形`,
     cam: { target: [ST.uniform, 0.4, 0.2], az: -18, el: 34, dist: 19 }, lit: 'uniform', scene: 'uniform', look: {},
-    fig: 'E = 50 N/C; A to C drops 10 V',
+    fig: "E = 50 常闭； A 至 C 下降 10 V",
   },
   {
-    kicker: '11.3', title: 'The potential hill', sub: 'V = kq/r, and E = −∇V',
-    body: `
-      <p class="lede">Around a point charge only the radial part of each step counts, <b>r̂</b> · d<b><i>s</i></b> = d<i>r</i>:</p>
+    kicker: '11.3', title: "电势构成的山丘", sub: "V = kq/r，且 E = −∇V",
+    body: `<p class="lede">围绕点电荷仅计算每一步的径向部分，<b>r̂</b> · d<b><i>s</i></b> = d<i>r</i>:</p>
       <div class="eq">Δ<i>V</i> = −∫ <i>kq</i>/<i>r</i>² d<i>r</i> = <i>kq</i>(1/<i>r</i><sub>B</sub> − 1/<i>r</i><sub>A</sub>)</div>
-      <p>From infinity, <i>V</i> = <i>kq</i>/<i>r</i>, drawn as height for +1 nC. The circles are equipotentials every 30 V; they crowd in where the hill is steep. <b><i>E</i></b> points straight downhill, as big as the slope: <b><i>E</i></b> = −∇<i>V</i>, or <i>E</i> = −d<i>V</i>/d<i>r</i>.</p>
+      <p>从无穷大开始，<i>V</i> = <i>kq</i>/<i>r</i>，绘制为 +1 nC 的高度。圆圈每 30 V 等电位；他们聚集在山势陡峭的地方。 <b><i>E</i></b> 指向直下坡，与坡度一样大： <b><i>E</i></b> = −∇<i>V</i>，或 <i>E</i> = −d<i>V</i>/d<i>r</i>.</p>
       <div class="charts">${chart({ ...R.hill, xlabel: 'distance r (m)', ylabel: 'V (volts)', cursors: [['hill']], label: 'Potential against distance, with the tangent at the probe',
         series: [{ pts: samples(80, 0.045, 0.4, r => M.Vpoint(M.HILL.Q, r)) }], extra: `<path class="trend" style="fill:none" data-tangent="hill" d=""/>` })}</div>
       <p class="live" id="hilllive"></p>
-      <p class="hintline">Click to lift the hill off its map. Height: one square per 60 V (rounded above 150 V); <b><i>E</i></b>: one square per kN/C.</p>`,
+      <p class="hintline">单击可将山从地图上移出。高度：每 60 V 一个正方形（150 V 以上四舍五入）； <b><i>E</i></b>：每kN/C一个正方形。</p>`,
     cam: { target: [ST.hill, 0.9, 0], az: -18, el: 30, dist: 25 }, lit: 'hill', scene: 'hill', look: {},
-    fig: 'Height = potential; arrows run downhill',
+    fig: "高度表示电势；箭头指向电势降低的方向",
   },
   {
-    kicker: '11.4', title: 'The dipole', sub: 'potentials add as numbers',
-    body: `
-      <p class="lede">Potential is a scalar: for several charges, add each <i>kq</i>/<i>r</i> with its sign. No components.</p>
+    kicker: '11.4', title: "偶极子", sub: "电势作为数字相加",
+    body: `<p class="lede">Potential 是一个标量：对于多个电荷，将每个 <i>kq</i>/<i>r</i> 及其符号相加。无组件。</p>
       <div class="eq"><i>V</i><sub>axis</sub> = −2<i>akq</i>/(<i>x</i>² − <i>a</i>²)</div>
-      <p>That is <i>kq</i>/(<i>x</i> + <i>a</i>) − <i>kq</i>/(<i>x</i> − <i>a</i>) for ±1 nC, ${2 * M.DIP.a * 100} cm apart: a hill beside a well. At P, ${M.DIP.axisX * 100} cm out, <i>V</i> = ${f(dipAxis, 1)} V. Every point of the perpendicular bisector is equally far from both, so <i>V</i> = <b>0</b> there, though <b><i>E</i></b> is not. For two like charges <i>V</i> on the bisector is not 0: it peaks at the midpoint.</p>
+      <p>即 <i>kq</i>/(<i>x</i> + <i>a</i>) − <i>kq</i>/(<i>x</i> − <i>a</i>) ±1 nC，${2 * M.DIP.a * 100} 厘米相距：井边的一座小山。在 P 处，${M.DIP.axisX * 100} 厘米出，<i>V</i> = ${f(dipAxis, 1)} V。垂直平分线的每个点到两者的距离相等，因此 <i>V</i> = <b>0</b> <b><i>E</i></b> 不是。对于平分线上的两个相似电荷 <i>V</i> 不为 0：它在中点达到峰值。</p>
       <div class="charts">${chart({ x0: -0.36, x1: 0.36, y0: -200, y1: 200, zero: true, xlabel: 'position along the axis (m)', ylabel: 'V on the axis (volts)', label: 'Potential along the dipole axis',
         series: runs(samples(720, -0.36, 0.36, x => M.Vdip([x, 0, 0])), 200).map(pts => ({ pts })),
         marks: [[M.DIP.axisX, dipAxis, `P: ${f(dipAxis, 0)} V`, 6, 16]] })}</div>
-      <p class="hintline">Click for each charge’s share at P and P′. Height: one square per 60 V. Blue: field lines traced from the model.</p>`,
+      <p class="hintline">单击查看 P 和 P′ 处每个费用的份额。高度：每 60 V 一个正方形。蓝色：从模型追踪的场线。</p>`,
     cam: { target: [ST.dipole, 0, 0], az: -14, el: 30, dist: 24 }, lit: 'dipole', scene: 'dipole', look: {},
-    fig: 'A hill, a well, and V = 0 between',
+    fig: "一座山，一口井，其间 V = 0",
   },
   {
-    kicker: '11.5', title: 'A charged rod', sub: 'add up every dq',
-    body: `
-      <p class="lede">Cut a spread-out charge into pieces d<i>q</i>, each adding <i>k</i> d<i>q</i>/<i>r</i>, and integrate.</p>
+    kicker: '11.5', title: "带电棒", sub: "将每个 dq 加起来",
+    body: `<p class="lede">将分散装药切割成碎片d<i>q</i>，每个碎片添加<i>k</i> d<i>q</i>/<i>r</i>，并积分。</p>
       <table class="data eqs">
-        <tr><td>λ = <i>Q</i>/<i>L</i>, d<i>q</i> = λ d<i>x</i></td><td>${f(M.ROD.lam * 1e9, 0)} nC/m</td></tr>
-        <tr><td>P, on the axis: <i>k</i>λ ln((<i>a</i> + <i>L</i>)/<i>a</i>)</td><td>${f(rodA, 1)} V</td></tr>
-        <tr><td>P′, on the bisector: <i>k</i>λ ln[(<i>L</i> + <i>s</i>)/(−<i>L</i> + <i>s</i>)]</td><td>${f(rodB, 1)} V</td></tr>
+        <tr><td>λ=<i>Q</i>/<i>L</i>，d<i>q</i>=λd<i>x</i></td><td>${f(M.ROD.lam * 1e9, 0)} nC/m</td></tr>
+        <tr><td>P，在轴上：<i>k</i>λ ln((<i>a</i> + <i>L</i>)/<i>a</i>)</td><td>${f(rodA, 1)} V</td></tr>
+        <tr><td>P′，在平分线上：<i>k</i>λ ln[(<i>L</i> + <i>s</i>)/(−<i>L</i> + <i>s</i>)]</td><td>${f(rodB, 1)} V</td></tr>
       </table>
-      <p>+3 nC over ${M.ROD.L * 100} cm, values at <i>a</i> = 10 cm, with <i>s</i> = √(<i>L</i>² + 4<i>a</i>²) from ∫ d<i>x</i>/√(<i>x</i>² + <i>a</i>²) = ln(<i>x</i> + √(<i>x</i>² + <i>a</i>²)). Far away the rod acts like a point charge (dashed).</p>
+      <p>+3 nC 超过 ${M.ROD.L * 100} cm，<i>a</i> = 10 cm 时的值，其中 <i>s</i> = √(<i>L</i>² + 4<i>a</i>²) 来自 ∫ d<i>x</i>/√(<i>x</i>² + <i>a</i>²) = ln(<i>x</i> + √(<i>x</i>² + <i>a</i>²))。远处的杆就像点电荷（虚线）。</p>
       <div class="charts">${chart({ ...R.rod, xlabel: 'distance a from the end (m)', ylabel: 'V at P (volts)', cursors: [['rod']], label: 'Potential on the rod axis against distance',
         series: [{ pts: samples(60, 0.04, 0.4, M.VrodAxis), tag: [0.09, 175, 'rod'] }, { cls: 'trend', pts: samples(60, 0.04, 0.4, a => M.K * M.ROD.Q / (a + M.ROD.L / 2)), tag: [0.2, 95, 'kQ/(a + L/2)'] }] })}</div>
-      <p class="hintline">Click the rod to cut it into 12 pieces d<i>q</i>.</p>`,
+      <p class="hintline">点击杆将其切成12块d<i>q</i>.</p>`,
     cam: { target: [ST.rod - 0.5, 1.6, 0], az: -12, el: 14, dist: 15 }, lit: 'rod', scene: 'rod', look: {},
-    fig: 'λ = 10 nC/m; P slides along the axis',
+    fig: "λ = 10nC/m； P沿轴滑动",
   },
   {
-    kicker: '11.6', title: 'Ring, arc and disc', sub: 'when every dq is the same distance away',
-    body: `
-      <p class="lede">At the centre of a ring or arc, every d<i>q</i> is the same distance <i>R</i> away, so <i>V</i><sub>c</sub> = (<i>k</i>/<i>R</i>)∫d<i>q</i> = <i>kQ</i>/<i>R</i>.</p>
+    kicker: '11.6', title: "环、弧、盘", sub: "当每个 dq 的距离相同时",
+    body: `<p class="lede">在圆环或圆弧的中心，每个d<i>q</i>距<i>R</i>的距离相同，因此<i>V</i><sub>c</sub> = (<i>k</i>/<i>R</i>)∫d<i>q</i> = <i>kQ</i>/<i>R</i>.</p>
       <table class="data eqs">
-        <tr><td>ring, on its axis</td><td><i>kQ</i>/√(<i>R</i>² + <i>z</i>²)</td></tr>
-        <tr><td>disc, d<i>q</i> = σ·2π<i>r</i> d<i>r</i></td><td>2π<i>k</i>σ(√(<i>R</i>² + <i>z</i>²) − <i>z</i>)</td></tr>
-        <tr><td>disc centre, σ = <i>Q</i>/π<i>R</i>²</td><td>2<i>kQ</i>/<i>R</i></td></tr>
+        <tr><td>环，在其轴上</td><td><i>kQ</i>/√(<i>R</i>² + <i>z</i>²)</td></tr>
+        <tr><td>圆盘，d<i>q</i> = σ·2π<i>r</i> d<i>r</i></td><td>2π<i>k</i>σ(√(<i>R</i>² + <i>z</i>²) − <i>z</i>)</td></tr>
+        <tr><td>圆盘中心，σ = <i>Q</i>/π<i>R</i>²</td><td>2<i>kQ</i>/<i>R</i></td></tr>
       </table>
-      <p>Each +2 nC, <i>R</i> = ${M.RING.R * 100} cm. Ring and half-ring centres: ${f(M.Varc0, 1)} V. Disc centre: ${f(M.Vdisc(0), 1)} V, twice as much, since the same charge sits closer.</p>
+      <p>Each +2 nC，<i>R</i> = ${M.RING.R * 100} 厘米。环和半环中心：${f(M.Varc0, 1)} V。圆盘中心：${f(M.Vdisc(0), 1)} V，两倍，因为相同的电荷位置更近。</p>
       <div class="charts">${chart({ ...R.ring, xlabel: 'distance z along the axis (m)', ylabel: 'V (volts)', cursors: [['ring'], ['disc', BLUE]], label: 'Potential on the axis of a ring and a disc',
         series: [{ color: BLUE, pts: samples(60, 0, 0.25, M.Vdisc), tag: [0.1, 160, 'disc'] }, { pts: samples(60, 0, 0.25, M.Vring), tag: [0.1, 70, 'ring'] }, { cls: 'trend', pts: samples(40, 0.075, 0.25, z => M.K * M.RING.Q / z), tag: [0.17, 112, 'kQ/z'] }] })}</div>
-      <p class="hintline">Click the ring, arc or disc to break it into pieces d<i>q</i>.</p>`,
+      <p class="hintline">点击环、弧或盘将其打碎 d<i>q</i>.</p>`,
     cam: { target: [ST.ring - 1.4, 1.8, 0], az: -32, el: 12, dist: 29 }, lit: 'ring', scene: 'ring', look: {},
-    fig: 'kQ/R at the centre; P out on the axis',
+    fig: "kQ/R 位于中心； P 在轴上输出",
   },
   {
-    kicker: '11.7', title: 'Charged spheres', sub: 'conductor and insulator',
-    body: `
-      <p class="lede">Find <b><i>E</i></b> in each region with Gauss’s law, then walk in from infinity: ∞ → <i>R</i> outside, <i>R</i> → <i>r</i> inside.</p>
-      <p>Outside, both act like a point charge, <i>V</i> = <i>kQ</i>/<i>r</i>. Inside a <b>conductor</b> <i>E</i> = 0, so <i>V</i> stays <i>kQ</i>/<i>R</i> = ${f(M.Vcond(0), 1)} V. Inside an <b>insulator</b> <i>E</i> = <i>kQr</i>/<i>R</i>³ keeps adding:</p>
+    kicker: '11.7', title: "带电球体", sub: "导体和绝缘体",
+    body: `<p class="lede">用高斯定律在每个区域找到<b><i>E</i></b>，然后从无穷远走进去： ∞ → <i>R</i> 外面，<i>R</i> → <i>r</i> 里面。</p>
+      <p>在外面，两者的作用都像点电荷，<i>V</i> = <i>kQ</i>/<i>r</i>。在 <b>导体</b> <i>E</i> = 0 内，因此 <i>V</i> 保持 <i>kQ</i>/<i>R</i> = ${f(M.Vcond(0), 1)} V. 在<b>绝缘子</b> <i>E</i> = <i>kQr</i>/<i>R</i>³ 不断添加：</p>
       <div class="eq"><i>V</i> = (<i>kQ</i>/<i>R</i>)(3/2 − <i>r</i>²/2<i>R</i>²)</div>
-      <p>3<i>kQ</i>/2<i>R</i> = ${f(M.Vins(0), 1)} V at the centre (+2 nC, <i>R</i> = ${M.SPH.R * 100} cm). <i>V</i> never jumps.</p>
+      <p>3<i>kQ</i>/2<i>R</i> = ${f(M.Vins(0), 1)} V 位于中心（+2 nC，<i>R</i> = ${M.SPH.R * 100} cm）。 <i>V</i>永不跳跃。</p>
       <div class="charts">${chart({ ...R.sphV, xlabel: 'r (m)', ylabel: 'V (volts)', cursors: [['sphVc'], ['sphVi', BLUE]], label: 'Potential against r for the two spheres',
         series: [{ color: BLUE, pts: samples(120, 0, 0.4, M.Vins), tag: [0.11, 215, 'insulator'] }, { pts: samples(120, 0, 0.4, M.Vcond), tag: [0.13, 150, 'conductor'] }] })}</div>
-      <p class="hintline">Click a sphere for <b><i>E</i></b> along the path. Sticks: one square per 150 V; <b><i>E</i></b>: one square per 2.5 kN/C.</p>`,
+      <p class="hintline"> 沿路径单击 <b><i>E</i></b> 的球体。棒：每 150 V 一个方块； <b><i>E</i></b>：每 2.5 kN/C 一个正方形。</p>`,
     cam: { target: [ST.spheres, 1.8, 0], az: -8, el: 10, dist: 27 }, lit: 'conductor', scene: 'spheres', look: {},
-    fig: 'Walking in from 40 cm',
+    fig: "从40厘米处走进去",
   },
   {
-    kicker: '11.8', title: 'The electron volt', sub: 'energy from a potential difference',
-    body: `
-      <p class="lede">Let a charge go: potential energy turns into kinetic, and mechanical energy is conserved.</p>
+    kicker: '11.8', title: "电子伏特", sub: "来自电势差的能量",
+    body: `<p class="lede">放掉电荷：势能转化为动能，机械能守恒。</p>
       <div class="eq"><i>qV</i><sub>0</sub> = <i>qV</i><sub>f</sub> + ½<i>mv</i>²  →  <i>v</i> = √(2<i>q</i>Δ<i>V</i>/<i>m</i>)</div>
-      <p>A proton rolls “downhill” with <b><i>E</i></b> from 7 V to 1 V; an electron goes the other way. Each gains ${M.ACC.dV} <b>eV</b> (1 eV = ${M.E_CH.toExponential(2).replace('e-', ' × 10⁻')} J, one <i>e</i> through 1 V), but the electron is ${Math.round(M.M_P / M.M_E)} times lighter:</p>
+      <p>A质子与<b><i>E</i></b>一起“下坡”，从7V到1V；电子则朝相反的方向运动。每个增益${M.ACC.dV} <b>eV</b>（1 eV = ${M.E_CH.toExponential(2).replace('e-', ' × 10⁻')} J，一个<i>e</i>通过1 V），但电子比${Math.round(M.M_P / M.M_E)}轻：</p>
       <table class="data">
-        <tr><th></th><th>proton</th><th>electron</th></tr>
-        <tr><td>final speed</td><td>${f(M.ACC.vp / 1000, 1)} km/s</td><td>${f(M.ACC.ve / 1e6, 2)} × 10⁶ m/s</td></tr>
-        <tr><td>time across 6 cm</td><td>${f(M.ACC.Tp * 1e6, 2)} μs</td><td>${f(M.ACC.Te * 1e9, 0)} ns</td></tr>
+        <tr><th></th><th>质子</th><th>电子</th></tr>
+        <tr><td>最终速度</td><td>${f(M.ACC.vp / 1000, 1)} km/s</td><td>${f(M.ACC.ve / 1e6, 2)} × 10⁶ m/s</td></tr>
+        <tr><td>跨过6厘米的时间</td><td>${f(M.ACC.Tp * 1e6, 2)} μs</td><td>${f(M.ACC.Te * 1e9, 0)} ns</td></tr>
       </table>
       <div class="charts">${chart({ ...R.accel, xlabel: 'distance from the 7 V plate (cm)', ylabel: 'K (eV)', cursors: [['accP'], ['accE', BLUE]], label: 'Kinetic energy against position for the proton and the electron',
         series: [{ pts: [[0, 0], [6, 6]], tag: [3.6, 3.0, 'proton →'] }, { color: BLUE, pts: [[6, 0], [0, 6]], tag: [0.5, 3.4, '← electron'] }] })}</div>
-      <p class="hintline">Each slowed to cross in ${M.ACC.run} s. Click for forces and strobes. 1 square = 1 cm; <b><i>E</i></b>: one square per 50 V/m.</p>`,
+      <p class="hintline">Each 在 ${M.ACC.run} 秒内减速穿越。单击以获取力和频闪。 1 平方 = 1 厘米； <b><i>E</i></b>：每 50 V/m 一个正方形。</p>`,
     cam: { target: [ST.accel, 2.3, 0], az: -16, el: 10, dist: 21 }, lit: 'accel', scene: 'accel', look: {},
-    fig: 'Down 6 V and up 6 V: 6 eV each',
+    fig: "下降 6 V 和上升 6 V：各 6 eV",
   },
 ];
 
 // ---------- click a scene: what it breaks into ----------
 const pairFacts = s => { const a = M.pair(s.pair.t, 1), b = M.pair(s.pair.t, -1);
-  return [['separation r', `${f(a.r * 100, 1)} cm`], ['like: F on +2 nC', `${f(a.F * 1e6)} μN, away`], ['like: U', `${uJ(a.U)} μJ`], ['like: work done so far', `${uJ(a.W)} μJ`], ['unlike: U', `${uJ(b.U)} μJ`], ['unlike: work done so far', `${uJ(b.W)} μJ`]]; };
+  return [['separation r', `${f(a.r * 100, 1)} cm`], ['like: F on +2 nC', `${f(a.F * 1e6)} μN, away`], ['like: U', `${uJ(a.U)} μJ`], ["喜欢：到目前为止完成的工作", `${uJ(a.W)} μJ`], ['unlike: U', `${uJ(b.U)} μJ`], ["不同之处：到目前为止已完成的工作", `${uJ(b.W)} μJ`]]; };
 export const PLATES = {
-  pair: { text: `Ghosts mark the path in 5 cm steps, each with the electric force there. The force grows as 1/<i>r</i>², so each step costs more than the last; the total, −∫<i>F</i> d<i>r</i>, is the change in <i>U</i>. For the like pair you push against the force (positive work); for the unlike pair the force does the pulling and you hold back (negative work).`, facts: pairFacts },
-  square: { text: `The six links are the six pairs. Each stores <i>kq</i>²/<i>r</i>: the four sides at <i>r</i> = <i>a</i>, the two diagonals at √2<i>a</i>. Their sum is the energy of the group.`,
-    facts: s => { const st = M.square(s.square.t); return [['charges in place', `${st.n} of 4`], ['U now', `${uJ(st.U)} μJ`], ['each side kq²/a', `${uJ(M.K * M.SQ.q ** 2 / M.SQ.a)} μJ`], ['each diagonal kq²/√2a', `${uJ(M.K * M.SQ.q ** 2 / (Math.SQRT2 * M.SQ.a))} μJ`], ['all six', `${uJ(M.SQ.U)} μJ`]]; } },
-  uniform: { text: `A → C cut into four steps d<b><i>s</i></b> (black). Only the grey part d<i>x</i>, along <b><i>E</i></b>, counts: <b><i>E</i></b> · d<b><i>s</i></b> = <i>E</i> d<i>x</i>. Four steps of 5 cm each drop the potential by 2.5 V. The sideways part of each step runs along an equipotential and adds nothing, which is why the path doesn’t matter.`,
-    facts: s => { const r = M.uniPath(s.uniform.t); return [['each step: −E dx', `−${M.UNI.E} × 0.05 = −2.5 V`], ['A → C, four steps', '−10.00 V'], ['charge at', `x = ${f(r.p[0] * 100, 1)} cm`], ['V there', `${f(r.V)} V`], ['U = qV (q = +1 nC)', `${f(r.U * 1e9)} nJ`]]; } },
-  hill: { text: `The surface lifts off the floor map. Each contour ring drops onto its equipotential circle: an equipotential is a level path around the hill. The blue <b><i>E</i></b> arrows cross the circles at right angles, pointing downhill, longest where the circles crowd.`,
-    facts: s => { const r = M.hillProbe(s.clock); return [['probe at r', `${f(r * 100, 1)} cm`], ['V = kq/r', `${f(M.Vpoint(M.HILL.Q, r), 1)} V`], ['E = kq/r²', `${f(M.Epoint(M.HILL.Q, r), 0)} N/C`], ['slope −dV/dr', `${f(M.Epoint(M.HILL.Q, r), 0)} V/m`]]; } },
-  dipole: { text: `At each point the red stick is +1 nC’s <i>kq</i>/<i>r</i>, the blue stick −1 nC’s, and the black stick their sum. On the axis the near −q wins. On the bisector P′ the two cancel exactly: <i>V</i> = 0, and the black stick vanishes.`,
+  pair: { text: `鬼魂以 5 厘米的步长标记路径，每个步长都带有电力。力以 1/<i>r</i>² 的形式增长，因此每一步的成本都比上一步高；总和 −∫<i>F</i> d<i>r</i> 是 <i>U</i> 的变化。对于相似的一对，你要对抗力量（正的工作）；对于不同的一对，力产生拉力，而你阻止（负功）。`, facts: pairFacts },
+  square: { text: `六个链接是六对。每个存储 <i>kq</i>²/<i>r</i>：<i>r</i> = <i>a</i> 处的四个边，√2<i>a</i> 处的两条对角线。它们的总和就是团体的能量。`,
+    facts: s => { const st = M.square(s.square.t); return [["收费到位", `${st.n} of 4`], ['U now', `${uJ(st.U)} μJ`], ["每边 kq²/a", `${uJ(M.K * M.SQ.q ** 2 / M.SQ.a)} μJ`], ["每条对角线 kq²/√2a", `${uJ(M.K * M.SQ.q ** 2 / (Math.SQRT2 * M.SQ.a))} μJ`], ["所有六个", `${uJ(M.SQ.U)} μJ`]]; } },
+  uniform: { text: `A→C 切成四步 d<b><i>s</i></b>（黑色）。仅灰色部分d<i>x</i>，沿着<b><i>E</i></b>，计数：<b><i>E</i></b>· d<b><i>s</i></b> = <i>E</i> d<i>x</i>。四个 5 厘米的台阶，每个台阶都会使电势下降 2.5 V。每个台阶的侧面部分沿着等电势运行，不会增加任何东西，这就是路径无关紧要的原因。`,
+    facts: s => { const r = M.uniPath(s.uniform.t); return [["每一步：−E dx", `−${M.UNI.E} × 0.05 = −2.5 V`], ["A→C，四步", '−10.00 V'], ["电荷于", `x = ${f(r.p[0] * 100, 1)} cm`], ['V there', `${f(r.V)} V`], ['U = qV (q = +1 nC)', `${f(r.U * 1e9)} nJ`]]; } },
+  hill: { text: `表面从楼层地图上升起。每个等高线环都落在其等势圆上：等势线是围绕山丘的水平路径。蓝色的 <b><i>E</i></b> 箭头与圆圈成直角交叉，指向下坡，圆圈拥挤的地方最长。`,
+    facts: s => { const r = M.hillProbe(s.clock); return [["探针在 r", `${f(r * 100, 1)} cm`], ['V = kq/r', `${f(M.Vpoint(M.HILL.Q, r), 1)} V`], ['E = kq/r²', `${f(M.Epoint(M.HILL.Q, r), 0)} N/C`], ['slope −dV/dr', `${f(M.Epoint(M.HILL.Q, r), 0)} V/m`]]; } },
+  dipole: { text: `在每一点，红棒是 +1 nC 的 <i>kq</i>/<i>r</i>，蓝棒是 -1 nC，黑棒是它们的总和。在轴上，靠近 -q 的获胜。在平分线 P′ 上，两者完全抵消：<i>V</i> = 0，黑棒消失。`,
     facts: () => { const a = M.DIP.axisX, z = M.DIP.bisZ, v1 = M.Vpoint(M.DIP.q, a + M.DIP.a), v2 = M.Vpoint(-M.DIP.q, a - M.DIP.a), w = M.Vpoint(M.DIP.q, Math.hypot(M.DIP.a, z));
       return [['P: from +q', `${f(v1, 1)} V`], ['P: from −q', `${f(v2, 1)} V`], ['P: total', `${f(v1 + v2, 1)} V`], ['P′: ±q each', `±${f(w, 1)} V`], ['P′: total', '0 V']]; } },
-  rod: { text: `The rod as ${12} slices of d<i>q</i> = λΔ<i>x</i> = 0.25 nC, each a point charge. Every slice sends <i>k</i> d<i>q</i>/<i>r</i> to P and to P′; the lines are those distances <i>r</i>. Twelve slices already come close to the integral.`,
-    facts: s => { const a = M.rodProbe(s.clock); return [['P: distance a', `${f(a * 100, 1)} cm`], ['P: kλ ln((a+L)/a)', `${f(M.VrodAxis(a), 1)} V`], ['P: sum of 12 slices', `${f(M.rodSum(12, [-a, 0, 0]), 1)} V`], ['P′: closed form', `${f(rodB, 1)} V`], ['P′: sum of 12 slices', `${f(M.rodSum(12, [M.ROD.L / 2, 0, -M.ROD.bisA]), 1)} V`]]; } },
-  ring: { text: `Sixteen pieces of 0.125 nC, every one the same distance √(<i>R</i>² + <i>z</i>²) from P, so the sum is just <i>kQ</i> over that distance.`,
-    facts: s => { const z = M.axisProbe(s.clock); return [['P at z', `${f(z * 100, 1)} cm`], ['each piece is', `${f(Math.hypot(M.RING.R, z) * 100, 1)} cm away`], ['kQ/√(R² + z²)', `${f(M.Vring(z), 1)} V`], ['sum of 16 pieces', `${f(M.ringSum(16, z), 1)} V`]]; } },
-  arc: { text: `A half ring, eight pieces of 0.25 nC, all ${M.ARC.R * 100} cm from the centre C. The arc’s span doesn’t matter, only its total charge: <i>V</i><sub>c</sub> = <i>kQ</i>/<i>R</i>. (Its field at C would depend on the shape; its potential doesn’t.)`,
-    facts: () => [['each piece', `k(0.25 nC)/0.15 m = ${f(M.Varc0 / 8, 2)} V`], ['eight pieces', `${f(M.arcSum(8), 1)} V`], ['kQ/R', `${f(M.Varc0, 1)} V`]] },
-  disc: { text: `Five rings, slid apart. Each is a ring of charge d<i>q</i> = σ · 2π<i>r</i> d<i>r</i> at distance √(<i>r</i>² + <i>z</i>²) from P; the outer rings hold more charge but sit further away. Adding them is the integral over <i>r</i>.`,
-    facts: s => { const z = M.axisProbe(s.clock); return [['P at z', `${f(z * 100, 1)} cm`], ['σ', `${f(M.DISC.sigma * 1e9, 1)} nC/m²`], ['2πkσ(√(R² + z²) − z)', `${f(M.Vdisc(z), 1)} V`], ['sum of 5 rings', `${f(M.discSum(5, z), 1)} V`]]; } },
-  conductor: { text: `The walk in, in two legs. From ∞ to <i>R</i> the field is <i>kQ</i>/<i>r</i>² (blue) and <i>V</i> climbs to <i>kQ</i>/<i>R</i>. Inside, <i>E</i> = 0: no arrows, nothing to add, so <i>V</i> stays flat. The whole conductor is one equipotential.`,
-    facts: s => { const r = M.sphProbe(s.spheres.t); return [['probe at r', `${f(r * 100, 1)} cm`], ['E there', `${f(M.Econd(r), 0)} N/C`], ['V there', `${f(M.Vcond(r), 1)} V`], ['∞ → R adds', `${f(M.Vcond(M.SPH.R), 1)} V`], ['R → 0 adds', '0 V']]; } },
-  insulator: { text: `The same walk. Outside, the same <i>kQ</i>/<i>r</i>² field. Inside, the field shrinks toward the centre as <i>kQr</i>/<i>R</i>³ (only the charge inside <i>r</i> counts) but it is not zero, so <i>V</i> keeps rising, by another <i>kQ</i>/2<i>R</i> at the centre.`,
-    facts: s => { const r = M.sphProbe(s.spheres.t); return [['probe at r', `${f(r * 100, 1)} cm`], ['E there', `${f(M.Eins(r), 0)} N/C`], ['V there', `${f(M.Vins(r), 1)} V`], ['∞ → R adds', `${f(M.Vins(M.SPH.R), 1)} V`], ['R → 0 adds', `${f(M.Vins(0) - M.Vins(M.SPH.R), 1)} V`]]; } },
-  accel: { text: `The same force <i>eE</i> on each, in opposite directions: positive charges are pushed along <b><i>E</i></b>, negative against it. The strobe images, equal times apart, spread out as each speeds up. Equal forces over equal distances: equal work, 6 eV each.`,
+  rod: { text: `将杆视为 ${12} 切片 d<i>q</i> = λΔ<i>x</i> = 0.25 nC，每个点电荷。每个切片将<i>k</i> d<i>q</i>/<i>r</i>发送到P和P′；这些线是距离 <i>r</i>。十二个切片已经接近积分。`,
+    facts: s => { const a = M.rodProbe(s.clock); return [['P: distance a', `${f(a * 100, 1)} cm`], ['P: kλ ln((a+L)/a)', `${f(M.VrodAxis(a), 1)} V`], ["P：12片的总和", `${f(M.rodSum(12, [-a, 0, 0]), 1)} V`], ["P′：封闭形式", `${f(rodB, 1)} V`], ["P′：12 个切片的总和", `${f(M.rodSum(12, [M.ROD.L / 2, 0, -M.ROD.bisA]), 1)} V`]]; } },
+  ring: { text: `十六块 0.125 nC，每块与 P 的距离相同 √(<i>R</i>² + <i>z</i>²)，因此该距离的总和仅为 <i>kQ</i>。`,
+    facts: s => { const z = M.axisProbe(s.clock); return [['P at z', `${f(z * 100, 1)} cm`], ["每一件都是", `${f(Math.hypot(M.RING.R, z) * 100, 1)} 厘米远`], ['kQ/√(R² + z²)', `${f(M.Vring(z), 1)} V`], ["16 件之和", `${f(M.ringSum(16, z), 1)} V`]]; } },
+  arc: { text: `一个半环，八块 0.25 nC，距离中心 C 均为 ${M.ARC.R * 100} 厘米。电弧的跨度并不重要，重要的是其总电荷：<i>V</i><sub>c</sub> = <i>kQ</i>/<i>R</i>。 （它在 C 处的场取决于形状；但它的电势则不然。）`,
+    facts: () => [["每件", `k(0.25 nC)/0.15 m = ${f(M.Varc0 / 8, 2)} V`], ["八块", `${f(M.arcSum(8), 1)} V`], ['kQ/R', `${f(M.Varc0, 1)} V`]] },
+  disc: { text: `五环，滑开。每个都是一个电荷环 d<i>q</i> = σ · 2π<i>r</i> d<i>r</i> 距 P 的距离为 √(<i>r</i>² + <i>z</i>²)；外环容纳更多电荷，但距离较远。将它们相加就是对 <i>r</i> 的积分。`,
+    facts: s => { const z = M.axisProbe(s.clock); return [['P at z', `${f(z * 100, 1)} cm`], ['σ', `${f(M.DISC.sigma * 1e9, 1)} nC/m²`], ['2πkσ(√(R² + z²) − z)', `${f(M.Vdisc(z), 1)} V`], ["5个环的总和", `${f(M.discSum(5, z), 1)} V`]]; } },
+  conductor: { text: `两条腿走路。从 ∞ 到 <i>R</i>，磁场为 <i>kQ</i>/<i>r</i>²（蓝色），<i>V</i> 攀升至 <i>kQ</i>/<i>R</i>。在内部，<i>E</i> = 0：没有箭头，没有任何可添加的内容，因此 <i>V</i> 保持平坦。整个导体是一个等电位。`,
+    facts: s => { const r = M.sphProbe(s.spheres.t); return [["探针在 r", `${f(r * 100, 1)} cm`], ['E there', `${f(M.Econd(r), 0)} N/C`], ['V there', `${f(M.Vcond(r), 1)} V`], ['∞ → R adds', `${f(M.Vcond(M.SPH.R), 1)} V`], ['R → 0 adds', '0 V']]; } },
+  insulator: { text: `同样的步行。外部，相同的 <i>kQ</i>/<i>r</i>² 字段。在内部，磁场向中心收缩为 <i>kQr</i>/<i>R</i>³（仅计算 <i>r</i> 内部的电荷），但它不为零，因此 <i>V</i> 不断上升，中心是另一个 <i>kQ</i>/2<i>R</i>。`,
+    facts: s => { const r = M.sphProbe(s.spheres.t); return [["探针在 r", `${f(r * 100, 1)} cm`], ['E there', `${f(M.Eins(r), 0)} N/C`], ['V there', `${f(M.Vins(r), 1)} V`], ['∞ → R adds', `${f(M.Vins(M.SPH.R), 1)} V`], ['R → 0 adds', `${f(M.Vins(0) - M.Vins(M.SPH.R), 1)} V`]]; } },
+  accel: { text: `每个 <i>eE</i> 上的力相同，方向相反：正电荷沿着 <b><i>E</i></b> 推动，负电荷则相反。频闪图像的间隔时间相等，随着每个图像的加速而散开。等距离上的等力：等功，每个 6 eV。`,
     facts: s => { const u = s.accel.t / M.ACC.run, p = M.accel(u, 'p'), e = M.accel(u, 'e');
-      return [['force eE on each', `${(M.E_CH * M.ACC.E).toExponential(2)} N`], ['proton: V, K', `${f(p.V)} V, ${f(M.eV(p.K))} eV`], ['proton: v', `${f(p.v / 1000, 1)} km/s`], ['electron: V, K', `${f(e.V)} V, ${f(M.eV(e.K))} eV`], ['electron: v', `${f(e.v / 1e6, 3)} × 10⁶ m/s`]]; } },
+      return [["对每个强制 eE", `${(M.E_CH * M.ACC.E).toExponential(2)} N`], ['proton: V, K', `${f(p.V)} V, ${f(M.eV(p.K))} eV`], ['proton: v', `${f(p.v / 1000, 1)} km/s`], ['electron: V, K', `${f(e.V)} V, ${f(M.eV(e.K))} eV`], ['electron: v', `${f(e.v / 1e6, 3)} × 10⁶ m/s`]]; } },
 };

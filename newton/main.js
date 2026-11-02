@@ -19,19 +19,19 @@ startBook({
   },
   readout(s, page) {
     switch (page.scene) {
-      case 'tension': { const th = M.hangAngle(s.clock * M.SLOW); return `one string: T ${f(M.W1)} N\ntwo strings at ${th.toFixed(1)}°: T ${f(M.tension2(th))} N each`; }
-      case 'plane': return `lift ${f(M.PLANE.L / 1000)} kN   weight ${f(M.PLANE.W / 1000)} kN\nthrust ${f(M.PLANE.T / 1000)} kN   drag ${f(M.PLANE.D / 1000)} kN   ΣF 0`;
-      case 'car': { const c = M.car(s.car.t); return `t ${f(s.car.t)} s   v ${f(c.v)} m/s\nfriction ${f(M.CAR.F)} N   drag ${f(c.D)} N   a ${f(c.a)} m/s²`; }
+      case 'tension': { const th = M.hangAngle(s.clock * M.SLOW); return `一个字符串：T ${f(M.W1)} N\n${th.toFixed(1)}°处的两个字符串：T ${f(M.tension2(th))} N 每个`; }
+      case 'plane': return `升力 ${f(M.PLANE.L / 1000)} kN 重力 ${f(M.PLANE.W / 1000)} kN\n推力 ${f(M.PLANE.T / 1000)} kN 阻力 ${f(M.PLANE.D / 1000)} kN ΣF 0`;
+      case 'car': { const c = M.car(s.car.t); return `t ${f(s.car.t)} s   v ${f(c.v)} m/s\n摩擦 ${f(M.CAR.F)} N   阻力 ${f(c.D)} N   a ${f(c.a)} m/s²`; }
       case 'rest': return `ΣF = ${f(M.FN)} − ${f(M.W1)} = 0 N\na = 0 m/s²`;
       case 'glide': return `v ${f(M.V_GLIDE)} m/s   ΣF 0 N\na 0 m/s²`;
       case 'second': { const t = s.second.t; return `t ${f(t)} s\n2 kg: v ${f(M.A1 * t)} m/s   4 kg: v ${f(M.A2 * t)} m/s`; }
       case 'friction': { const r = M.friction(s.friction.t); return `F ${f(r.F)} N   f ${f(r.f)} N (${r.kind})\nΣF ${f(r.F - r.f)} N   a ${f(r.a)} m/s²`; }
       case 'third': { const t = s.third.t; return `t ${f(t)} s   a ${f(M.A_PAIR)} m/s²\nF_A on B ${f(M.CONTACT, 1)} N   F_B on A ${f(M.CONTACT, 1)} N`; }
-      case 'incline': { const r = M.incline(s.incline.t); return `along the slope: s ${f(r.s)} m   v ${f(r.v)} m/s\na = g sin θ = ${f(M.A_INC)} m/s²`; }
-      case 'tug': { const r = M.tug(s.tug.t); return `x_A ${f(r.xA)} m   x_B ${f(r.xB)} m\nx_cm ${f(0)} m   T ${M.TUG.T} N each`; }
-      case 'board': { const r = M.board(s.board.t); return `t ${f(s.board.t)} s   F ${M.BOARD.F} N   a_cm ${f(M.BOARD.aCm)} m/s²\nv block ${f(r.vBlock)}   board ${f(r.vBoard)}   cm ${f(M.xcm([M.BOARD.m, M.BOARD.Mb], [r.vBlock, r.vBoard]))} m/s`; }
+      case 'incline': { const r = M.incline(s.incline.t); return `沿斜坡： s ${f(r.s)} m v ${f(r.v)} m/s\na = g sin θ = ${f(M.A_INC)} m/s²`; }
+      case 'tug': { const r = M.tug(s.tug.t); return `x_A ${f(r.xA)} m   x_B ${f(r.xB)} m\nx_cm ${f(0)} m   T ${M.TUG.T} N 每个`; }
+      case 'board': { const r = M.board(s.board.t); return `t ${f(s.board.t)} s F ${M.BOARD.F} N a_cm ${f(M.BOARD.aCm)} m/s²\nv 块 ${f(r.vBlock)} 板 ${f(r.vBoard)} cm ${f(M.xcm([M.BOARD.m, M.BOARD.Mb], [r.vBlock, r.vBoard]))} m/s`; }
       case 'drag': { const r = M.linDrag(s.drag.t); return `t ${f(s.drag.t)} s   v ${f(r.v)} m/s (${(100 * r.v / M.DRAG.vt).toFixed(1)}% of v_t)\nmg ${f(M.DRAG.W)} N   bv ${f(r.D)} N`; }
-      case 'honey': { const r = M.honey(s.honey.t); return `sunk ${f(r.x * 100, 1)} cm   v ${f(r.v * 100)} cm/s\nmg ${f(M.HONEY.W * 1000, 1)} mN = bv ${f(M.HONEY.b * r.v * 1000, 1)} + B ${f(M.HONEY.B * 1000, 1)} mN`; }
+      case 'honey': { const r = M.honey(s.honey.t); return `沉没 ${f(r.x * 100, 1)} cm v ${f(r.v * 100)} cm/s\nmg ${f(M.HONEY.W * 1000, 1)} mN = bv ${f(M.HONEY.b * r.v * 1000, 1)} + B ${f(M.HONEY.B * 1000, 1)} mN`; }
     }
     return '';
   },
