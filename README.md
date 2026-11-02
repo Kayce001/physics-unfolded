@@ -1,5 +1,7 @@
 # 物理展开 · Physics Unfolded
 
+在线体验：[physics.selfworks.ai](https://physics.selfworks.ai/)
+
 用可以旋转、拆解和翻页的三维图示学习物理。
 
 本项目是 [Nathan Liow 的 Atlas of Physics](https://github.com/nathanliow/atlas-of-physics) 的简体中文翻译版，覆盖 AP Physics 1、AP Physics C 力学与电磁学。中文版本维护于 [Kayce001/physics-unfolded](https://github.com/Kayce001/physics-unfolded)。
@@ -60,6 +62,10 @@ node tools/zh-smoke.mjs
 每个章节目录包含 `pages.js`（正文与拆解说明）、`practice.js`（练习与解析）、`world.js`（图示）、`model.js`（物理计算）和 `checks.mjs`（数值检查）。共享交互位于 `engine/`，公式表位于 `equations/`。
 
 中文化保持原有物理模型、单位、公式、题目数值及正确答案索引。
+
+## 部署
+
+正式站部署在现有 VPS 的独立 Nginx 站点，通过 Cloudflare 代理并使用严格 HTTPS。公开文件清单、证书续期、更新发布与回退方法见 [部署记录](deploy/README.md)。GitHub 推送与服务器发布是分开的操作。
 
 ## 来源与许可
 
