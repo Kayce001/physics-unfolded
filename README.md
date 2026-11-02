@@ -19,27 +19,6 @@
 | 转动、流体 | 磁场、电磁感应 |
 
 
-
-## 开发与检查
-
-需要 Node.js 22 或更新版本。
-
-```powershell
-npm ci
-npm run check
-```
-
-检查入口兼容 Windows、macOS 与 Linux，运行全部章节原有的物理不变量、练习数值检查及公式链接检查。
-
-浏览器测试需要本地服务器和 Chrome：
-
-```powershell
-$env:CHROME = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
-node tools/zh-smoke.mjs
-```
-
-翻译工具 `tools/localize.mjs` 与 `tools/translate.py` 仅在制作翻译时使用，网站运行时不会调用翻译服务。工具从英文源码中提取可见文字，保护代码插值及 HTML 标记，缓存结果并验证后再写回；请勿对已翻译的工作树重复运行提取/回写。翻译统计见 [TRANSLATION_REPORT.json](TRANSLATION_REPORT.json)，进度与验收记录见 [WORK_PLAN.md](WORK_PLAN.md)。
-
 ## 项目结构
 
 每个章节目录包含 `pages.js`（正文与拆解说明）、`practice.js`（练习与解析）、`world.js`（图示）、`model.js`（物理计算）和 `checks.mjs`（数值检查）。共享交互位于 `engine/`，公式表位于 `equations/`。
