@@ -28,3 +28,5 @@ __pycache__/
 .wrangler/
 .venv/
 Thumbs.db
+/docs/PUBLICATION.md
+/TRANSLATION_REPORT.json
