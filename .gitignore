@@ -6,3 +6,25 @@ shots/
 .translation/
 qa-artifacts/
 __pycache__/
+
+# Local operations, private material and generated state
+/deploy/
+/private-ops/
+/backups/
+/logs/
+/WORK_PLAN.md
+*.pem
+*.key
+*.p12
+*.pfx
+*.tfstate
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+.ssh/
+.aws/
+.kube/
+.wrangler/
+.venv/
+Thumbs.db
